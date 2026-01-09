@@ -1,0 +1,21 @@
+ <?php   
+include_once("../koneksi.php");
+$ipadd	= $_SERVER['REMOTE_ADDR'];
+
+$sqlsimpan=mysql_query("INSERT INTO `tbl_log_surat_jalan` SET 
+`userid`='PPC', 
+`ipaddress`='$ipadd', 
+`no_sj`='".$_GET['nosj']."',
+`aksi`='hapus', 
+`ket`='".$_GET['dono']."',
+`tgl_update`=now()
+");
+$cari	=	mysql_query("update `packing_list` set
+			`no_sj`=null,
+			`tgl_update`=null
+			where `id`='".$_GET['id']."' limit 1");
+if($cari >0){ 
+ 	  echo "<script>alert('Data Terhapus');window.location.href='../index1.php?p=surat_keluar&dono=".$_GET['dono']."&nosj=".$_GET['nosj']."';</script>";
+	 }
+
+?>

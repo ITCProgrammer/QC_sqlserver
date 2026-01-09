@@ -1,0 +1,21 @@
+RewriteEngine on
+
+RewriteRule ^login.QC-PACKING$ index_login.php [L]
+RewriteRule ^form-Packing$ index1.php [L]
+RewriteRule ^laporan-harian$ pages/lihat_data.php [L]
+RewriteRule ^laporan-harian-produksi$ pages/lihat_data_produksi.php [L]
+RewriteRule ^laporan-harian-kain$ pages/lihat_data_kain_jadi.php [L]
+RewriteRule ^laporan-harian-kain-online$ pages/lihat_data_online_kain_jadi.php [L]
+RewriteRule ^laporan-harian-online$ pages/lihat_data_online.php [L]
+RewriteRule ^laporan-harian-online-produksi$ pages/lihat_data_online_produksi.php [L]
+RewriteRule ^laporan-harian-manager$ pages/lihat_data_manager.php [L]
+RewriteRule ^laporan-harian-online-manager$ pages/lihat_data_manager_online.php [L]
+RewriteRule ^laporan-harian-mutasi-online$ pages/lihat_data_online_mutasi.php [L]
+RewriteRule ^laporan-harian-mutasi$ pages/lihat_data_mutasi.php [L]
+RewriteRule ^laporan-harian-mutasi-manager$ pages/lihat_data_mutasi_manager.php [L]
+RewriteRule ^laporan-harian-mutasi-online-manager$ pages/lihat_data_online_mutasi_manager.php [L]
+RewriteRule ^cetak$ pages/simpan_cetak.php [L]
+RewriteRule ^cetak-laporan$ pages/cetak_excel.php [L]
+
+
+Options All -Indexes

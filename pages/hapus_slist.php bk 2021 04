@@ -1,0 +1,7 @@
+<?php
+	   $cari=mysql_query("update detail_pergerakan_stok set refno=null WHERE id='$_GET[id]' limit 1");
+	  if($cari >0){ 
+ 	  echo "<script>alert('Data Terhapus');window.location.href='index1.php?p=hapus_rlist&dono=$_GET[dono]&nosj=$_GET[nosj]&nolist=$_GET[nolist]&nokk=$_GET[nokk]';</script>";
+	 }
+
+?>

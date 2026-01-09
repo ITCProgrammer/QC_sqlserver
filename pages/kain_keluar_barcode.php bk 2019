@@ -1,0 +1,416 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PENGIRIMAN</title>
+<!-- Copyright 2000-2006 Adobe Macromedia Software LLC and its licensors. All rights reserved. -->
+<!-- Copyright 2000-2006 Adobe Macromedia Software LLC and its licensors. All rights reserved. -->
+<!-- Copyright 2000-2006 Adobe Macromedia Software LLC and its licensors. All rights reserved. -->
+<!-- Copyright 2000-2006 Adobe Macromedia Software LLC and its licensors. All rights reserved. -->
+<style>
+.rol{
+    width: 100%;
+    height: 243px;
+    overflow: scroll;
+}
+</style>
+<script>
+
+          function ganti()
+{     var lprn= document.forms['form2']['jnis'].value;
+if(lprn=="BONGKARAN"){
+	window.location.href="index1.php?p=kain_keluar_bongkaran_barcode";
+	}
+}
+           </script>
+           <script type="text/javascript">
+$(function () {
+    $('fieldset.CkNokk1').show();
+    $('input[name="CkNokk1"]').click(function () {
+        if (this.checked) {
+            $('fieldset.CkNokk1').hide();
+
+        } else {
+            $('fieldset.CkNokk1').show();
+
+        }
+    });
+});
+</script>
+</head>
+
+<body><?php
+function docno(){
+		date_default_timezone_set("Asia/Jakarta");
+		$format = date("y");
+		$sql=mysql_query("SELECT documentno FROM pergerakan_stok WHERE substr(documentno,1,2) like '%".$format."%'
+		ORDER BY documentno DESC LIMIT 1 ") or die (mysql_error());
+		$d=mysql_num_rows($sql);
+		if($d>0){
+			$r=mysql_fetch_array($sql);
+			$d=$r['documentno'];
+			$str=substr($d,2,5);
+			$Urut = (int)$str;
+		}else{
+			$Urut = 0;
+		}
+		$Urut = $Urut + 1;
+		$Nol="";
+		$nilai=5-strlen($Urut);
+		for ($i=1;$i<=$nilai;$i++){
+			$Nol= $Nol."0";
+		}
+		$nipbr =$format.$Nol.$Urut;
+		return $nipbr;
+}
+$nou=docno();
+#awalan
+$usernm=strtoupper($_SESSION['username']);
+$tglTransaksi 	= isset($_POST['awal']) ? $_POST['awal'] :'' ;
+$DataKet	= isset($_POST['ket']) ? $_POST['ket'] : '';
+$DataSJ	= isset($_POST['no_dok']) ? $_POST['no_dok'] : '';
+//$DataOrder	= isset($_POST['nodo']) ? $_POST['nodo'] : '';
+//$DataNopo	= isset($_POST['nopo']) ? $_POST['nopo'] : '';
+//$DataKK	= isset($_POST['nokk']) ? $_POST['nokk'] : '';
+//$DataTerima	= isset($_POST['terima']) ? $_POST['terima'] : '';
+if(isset($_POST['btnBatal'])){
+	# Kosongkan Tmp jika datanya sudah dipindah
+		$hapusSql = "DELETE FROM tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
+		mysql_query($hapusSql) or die ("Gagal kosongkan tmp".mysql_error());
+
+		// Refresh form
+		//echo "<meta http-equiv='refresh' content='0; url=cetak/transaksi_pembelian_cetak.php?noNota=$noTransaksi'>";
+		echo "<script>";
+		//echo "window.open('../cetak/benang_masuk_cetak.php?noNota=$noTransaksi', width=330,height=330,left=100, top=25)";
+		echo "</script>";
+		echo "<meta http-equiv='refresh' content='0; url=index1.php?p=kain_keluar_barcode&status=Data Sudah DiBatalkan'>";
+	}
+if(isset($_POST['btnTambah'])){
+
+			# Jika sudah pernah dipilih
+		$cekSql ="SELECT * FROM tmp_detail_pergerakan_stok WHERE SN='$_POST[barcode]' AND transtatus='2' AND userid='".$usernm."'";
+		$cekQry = mysql_query($cekSql) or die ("Gagal Query".mysql_error());
+		$cekSql1 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$_POST[barcode]' AND (transtatus='1' or transtatus='0')";
+		$cekQry1 = mysql_query($cekSql1) or die ("Gagal Query d".mysql_error());
+		$cekSql0 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$_POST[barcode]' and transtatus=' '";
+		$cekQry0 = mysql_query($cekSql0) or die ("Gagal Query d".mysql_error());
+		$c0=mysql_fetch_array($cekQry0);
+		$cekSql2 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$_POST[barcode]' AND transtatus='2'";
+		$cekQry2 = mysql_query($cekSql2) or die ("Gagal Query d".mysql_error());
+		//if ((mysql_num_rows($cekQry) >= 1)  or (mysql_num_rows($cekQry0)<=1) or (mysql_num_rows($cekQry2)>=1)) {
+			if ((mysql_num_rows($cekQry) >= 1) or (mysql_num_rows($cekQry2)>=1)) {
+
+			$pesanError = array();
+			if(mysql_num_rows($cekQry)>=1){
+			$pesanError[] = "<b>Data BARCODE <font color='#FF0000'>Sudah ADA </font> di Daftar list ini</b> !";
+			}
+			if((mysql_num_rows($cekQry0)==1)){
+			$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>Belum Masuk atau Belum diSCAN</font> </b> !";
+			}
+			//if((mysql_num_rows($cekQry0)==0)){
+			//$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>Tidak ADA</font> </b> !";
+		//	}
+			if(mysql_num_rows($cekQry2)>=1){
+			$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>SUDAH KELUAR</font> </b> !";
+			}
+			# JIKA ADA PESAN ERROR DARI VALIDASI
+			if (count($pesanError)>=1 ){
+			echo "<div class='mssgBox'>";
+			echo "<img src='images/attention.png'> <br><hr>";
+			$noPesan=0;
+			foreach ($pesanError as $indeks=>$pesan_tampil) {
+			$noPesan++;
+				echo "&nbsp;&nbsp; $noPesan. $pesan_tampil<br>";
+			}
+			echo "</div> <br>";
+			}
+
+			}
+	else{# Kode Kain Baru
+
+			# Cek data di dalam tabel Kain, mungkin yang diinput dari form adalah Barcode dan mungkin Kode-nya
+			$mySql ="SELECT * FROM detail_pergerakan_stok WHERE SN='$_POST[barcode]' AND transtatus='1'";
+			$myQry = mysql_query($mySql) or die ("Gagal Query Tmp".mysql_error());
+			$myRow = mysql_fetch_array($myQry);
+			$myQty = mysql_num_rows($myQry);
+			if ($myQty >= 1) {
+				$ketc=str_replace("'","''",$myRow[ket_c]);
+				// Data yang ditemukan dimasukkan ke keranjang transaksi
+				$tmpSql 	= "INSERT INTO tmp_detail_pergerakan_stok
+				(id_detail_kj,weight,yard_,no_roll,grade,satuan,sisa,SN,ket,nokk,ket_c,transtatus,userid)
+							VALUES ('$myRow[id_detail_kj]','$myRow[weight]','$myRow[yard_]','$myRow[no_roll]'
+							, '$myRow[grade]', '$myRow[satuan]', '$myRow[sisa]', '$myRow[SN]', '$myRow[ket]', '$myRow[nokk]', '$ketc','2','".$usernm."')";
+				mysql_query($tmpSql) or die ("Gagal Query tmp : ".mysql_error());
+			}}
+	}
+
+if(isset($_POST['btnSimpan'])){
+
+	$pesanError = array();
+	if (trim($_POST['no_dok2'])=="") {
+		$pesanError[] = "Data <b>No Dokumen</b> belum diisi !";
+	}
+
+	if (trim($_POST['awal'])=="") {
+		$pesanError[] = "Data <b> TANGGAL</b> belum diisi, pilih pada combo !";
+	}
+	if (trim($_POST['shift'])=="") {
+		$pesanError[] = "Data <b> SHIFT</b> belum diisi, pilih pada combo !";
+	}
+	/*
+	if (trim($_POST['nopo'])=="") {
+		$pesanError[] = "Data <b>NO PO</b> belum diisi!";
+	}
+	if (trim($_POST['nodo'])=="") {
+		$pesanError[] = "Data <b>NO ORDER</b> belum diisi!";
+	}
+	if (trim($_POST['terima'])=="") {
+		$pesanError[] = "Data <b>TERIMA KAIN DARI </b> belum diisi, pilih pada combo !";
+	}
+	*/
+	# Validasi jika belum ada satupun data item yang dimasukkan
+	$tmpSql ="SELECT COUNT(*) As qty FROM tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
+	$tmpQry = mysql_query($tmpSql) or die ("Gagal Query Tmp".mysql_error());
+	$tmpData = mysql_fetch_array($tmpQry);
+	if ($tmpData['qty'] < 1) {
+		$pesanError[] = "<b>DAFTAR KAIN JADI KOSONG</b>, Daftar item kain belum ada yang dimasukan, <b>minimal 1 data </b>.";
+	}
+
+
+	# Baca variabel
+	$txtKeterangan	= $_POST['ket'];
+	$cmbTanggal 	= $_POST['awal'];
+	$txtDok			= $_POST['no_dok'];
+
+
+	# JIKA ADA PESAN ERROR DARI VALIDASI
+	if (count($pesanError)>=1 ){
+		echo "<div class='mssgBox'>";
+		echo "<img src='images/attention.png'> <br><hr>";
+			$noPesan=0;
+			foreach ($pesanError as $indeks=>$pesan_tampil) {
+			$noPesan++;
+				echo "&nbsp;&nbsp; $noPesan. $pesan_tampil<br>";
+			}
+		echo "</div> <br>";
+	}
+	else {
+		# SIMPAN KE DATABASE
+		# Jika jumlah error pesanError tidak ada, maka proses Penyimpanan akan dilakukan
+
+		// Membuat kode Transaksi baru
+		// $noTransaksi = buatKode("benang_masuk", "NP");
+
+		// Skrip menyimpan data ke tabel transaksi utama
+		$mySql	= "INSERT INTO pergerakan_stok SET
+						tgl_update='".$_POST['awal']."',
+						documentno='".$_POST['no_dok2']."',
+						tgl_sj='".$_POST['awal']."',
+						shift='".$_POST['shift']."',
+						ket='$txtKeterangan',
+						typestatus='3',
+						typetrans='1',
+						fromtoid='OUT',
+						no_sj ='$txtDok',
+						userid='".$usernm."'";
+		mysql_query($mySql) or die ("Gagal query 1 ".mysql_error());
+		# Ambil semua data benang/benang yang dipilih, berdasarkan user yg login
+		$tmpSql1 ="SELECT id  FROM pergerakan_stok WHERE typestatus='3' and userid='".$usernm."' ORDER BY id DESC" ;
+		$tmpQry1 = mysql_query($tmpSql1) or die ("Gagal Query stok ".mysql_error());
+		$tmpData1= mysql_fetch_array($tmpQry1);
+		# Ambil semua data benang/benang yang dipilih, berdasarkan user yg login
+		$tmpSql ="SELECT * FROM tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
+		$tmpQry = mysql_query($tmpSql) or die ("Gagal Query Tmp".mysql_error());
+		while ($tmpData = mysql_fetch_array($tmpQry)) {
+			$dataBerat 	= $tmpData['weight'];
+			$dataYard 	= $tmpData['yard_'];
+			$dataKJ 	= $tmpData['id_detail_kj'];
+			$dataSatuan	= $tmpData['satuan'];
+			$dataGrade	= $tmpData['grade'];
+			$dataRol	= $tmpData['no_roll'];
+			$dataSN		= $tmpData['SN'];
+			$dataKK		= $tmpData['nokk'];
+			$dataSisa	= $tmpData['sisa'];
+			$dataKetC	= str_replace("'","''",$tmpData['ket_c']);
+			$dataID		= $tmpData1['id'];
+
+			// Masukkan semua benang/benang dari TMP ke tabel benang_masuk detail
+			$itemSql = "INSERT INTO detail_pergerakan_stok SET
+									id_stok='$dataID',
+									id_detail_kj='$dataKJ',
+									weight='$dataBerat',
+									yard_='$dataYard',
+									no_roll='$dataRol',
+									status ='2',
+									ket_c='$dataKetC',
+									nokk ='$dataKK',
+									transtatus='2',
+									satuan='$dataSatuan',
+									grade='$dataGrade',
+									sisa='$dataSisa',
+									SN='$dataSN'";
+			mysql_query($itemSql) or die ("Gagal Query item".mysql_error());
+
+			$itemSqlU="UPDATE detail_pergerakan_stok
+								SET transtatus='0'
+								where  (transtatus !='2' or transtatus !=NULL)
+								and SN='$dataSN'";
+			mysql_query($itemSqlU) or die ("Gagal Query UPdate".mysql_error());
+		}
+
+		# Kosongkan Tmp jika datanya sudah dipindah
+		$hapusSql = "DELETE FROM tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
+		mysql_query($hapusSql) or die ("Gagal kosongkan tmp".mysql_error());
+
+		// Refresh form
+		//echo "<meta http-equiv='refresh' content='0; url=cetak/transaksi_pembelian_cetak.php?noNota=$noTransaksi'>";
+		echo "<script>";
+		//echo "window.open('../cetak/benang_masuk_cetak.php?noNota=$noTransaksi', width=330,height=330,left=100, top=25)";
+		echo "</script>";
+		echo "<meta http-equiv='refresh' content='0; url=index1.php?p=kain_keluar_barcode&status=Data Sudah Tersimpan'>";
+	}
+}
+
+
+$data1=mysql_query("SELECT * FROM tbl_kite WHERE nokk='".$_GET['kkno']."'");
+$rowk=mysql_fetch_array($data1);
+?>
+<fieldset>
+<legend>PILIH DATA KAIN KELUAR</legend>
+<form action="" method="post" name="form2">
+<table width="637" border="0" cellpadding="0">
+  <tr>
+    <th width="19%" scope="row">JENIS KELUAR</th>
+    <td width="1%">:</td>
+    <td width="80%"><label for="jnis"></label>
+      <select name="jnis" id="jnis" onchange="ganti()">
+        <option value="PENGIRIMAN">PENGIRIMAN</option>
+        <option value="BONGKARAN">BONGKARAN</option>
+      </select></td>
+  </tr>
+  <tr>
+    <th scope="row">&nbsp;</th>
+    <td>&nbsp;</td>
+    <td align="right"> <?php if($_SESSION['username']=="GB ADM" or $_SESSION['username']=="GB ADM A" or $_SESSION['username']=="GB ADM B" or $_SESSION['username']=="GB ADM C"){ ?>
+    <button type="button" style="cursor:pointer;" name="btnLOT" onclick="window.location.href='?p=kain_keluar_barcode_lot'"> Per LOT </button>
+    <?php } ?></td>
+  </tr>
+</table>
+
+</form>
+</fieldset>
+<form action="" method="post" name="form1">
+<fieldset>
+  <legend>Data Pokok</legend>
+  <div align="center"><font color="#FF0000"><?php echo $_GET['status'];?></font></div>
+      <table width="637" border="0" cellpadding="0">
+  <tr>
+    <td>No Dokumen</td>
+    <td>:</td>
+    <td><input name="no_dok2" type="text" id="no_dok2" value="<?php echo $nou; ?>" readonly="readonly"/></td>
+  </tr>
+  <tr>
+    <td width="15%">No Surat Jln</td>
+    <td width="1%">:</td>
+    <td><input name="no_dok" type="text" id="no_dok" value="<?php echo $DataSJ; ?>"/></td>
+    </tr>
+  <tr>
+    <td>Tgl Keluar</td>
+    <td>:</td>
+    <td><label for="nokk">
+      <input type="text" id="awal" name="awal" value="<?php echo $tglTransaksi;?>" onclick="if(self.gfPop)gfPop.fPopCalendar(document.form1.awal);return false;"/>
+      <a href="javascript:void(0)" onclick="if(self.gfPop)gfPop.fPopCalendar(document.form1.awal);return false;"><img src="calender/calender.jpeg" alt="" name="popcal" width="34" height="29" id="popcal" style="border:none" align="absmiddle" border="0" /></a></label></td>
+    </tr>
+  <tr>
+    <td>Shift</td>
+    <td>:</td>
+    <td><label for="shift"></label>
+      <select name="shift" id="shift">
+        <option value="">Pilih</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+      </select></td>
+  </tr>
+  <tr>
+    <td>Keterangan</td>
+    <td>:</td>
+    <td><textarea name="ket" cols="35" rows="2" id="ket" ><?php echo $DataKet; ?></textarea></td>
+  </tr>
+  </table>
+
+</fieldset>
+<fieldset>
+  <legend>Data Kain</legend>
+  <table width="100%" border="0" cellpadding="0">
+  <tr>
+    <td width="11%">Barcode</td>
+    <td width="1%">:</td>
+    <td width="17%"><input type="text" name="barcode" id="barcode" /></td>
+    <td width="71%"><button type="submit" value="TAMBAH" style="cursor:pointer;" name="btnTambah"> TAMBAH </button></td>
+  </tr>
+  <tr>
+    <td><button type="submit" style="cursor:pointer;" name="btnSimpan"> SIMPAN </button></td>
+    <td>&nbsp;</td>
+    <td><button type="submit" style="cursor:pointer;" name="btnBatal" onclick="return confirm('ANDA YAKIN AKAN MENBATALKAN DATA INI ... ?')"> BATAL </button></td>
+    <td><a href="index1.php?p=data_kain_keluar_barcode">Ubah Kain Keluar</a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4"></td>
+  </tr>
+  </table></fieldset>
+  <div class="rol">
+    <table width="" border="0" cellpadding="1" cellspacing="1">
+      <tr>
+        <th  bgcolor="#9966CC" scope="col">No</th>
+        <th  bgcolor="#9966CC" scope="col">No KK</th>
+        <th  bgcolor="#9966CC" scope="col">No Order</th>
+        <th  bgcolor="#9966CC" scope="col">No PO</th>
+        <th  bgcolor="#9966CC" scope="col">Warna</th>
+        <th  bgcolor="#9966CC" scope="col">No Roll</th>
+        <th  bgcolor="#9966CC" scope="col">Qty (KG)</th>
+        <th  bgcolor="#9966CC" scope="col">Yard</th>
+        <th  bgcolor="#9966CC" scope="col">Grade</th>
+        <th  bgcolor="#9966CC" scope="col">BARCODE</th>
+        <th  bgcolor="#9966CC" scope="col">Ket</th>
+        <th  bgcolor="#9966CC" scope="col">AKSI</th>
+      </tr>
+      <?php
+	//tambahan
+	$data=mysql_query("SELECT a.*,b.no_order,b.no_po,b.warna FROM tmp_detail_pergerakan_stok a
+	INNER JOIN tmp_detail_kite c on c.id=a.id_detail_kj
+INNER JOIN tbl_kite b ON c.id_kite = b.id WHERE a.transtatus='2' and a.userid='".$usernm."' order by a.no_roll ASC");
+	$no=1;
+	 while($rowd=mysql_fetch_array($data)){?>
+      <?php
+	 $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
+	 ?>
+      <tr bgcolor="<?php echo $bgcolor; ?>">
+        <td align="center" ><?php echo $no; ?></td>
+        <td align="center" ><?PHP echo $rowd['nokk']; ?></td>
+        <td align="center" ><?PHP echo $rowd['no_order']; ?></td>
+        <td align="center" ><?PHP echo $rowd['no_po']; ?></td>
+        <td align="center" ><?PHP echo $rowd['warna']; ?></td>
+        <td align="center" ><?PHP echo $rowd['no_roll']; ?></td>
+        <td align="center" ><?PHP echo number_format($rowd['weight'],'2','.',','); ?></td>
+        <td align="center" ><?PHP echo number_format($rowd['yard_'],'2','.',','); ?></td>
+        <td align="center" ><?PHP echo $rowd['grade']; ?></td>
+        <td align="center" ><?PHP echo $rowd['SN']; ?></td>
+        <td align="center" ><?PHP echo $rowd['sisa']; ?></td>
+        <td align="center" >&nbsp;&nbsp;<a  onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA INI ... ?')" href="pages/hapus_tmp_b.php?nokk=<?PHP echo $rowd['nokk']; ?>&amp;idtmp=<?PHP echo $rowd['id']; ?>">HAPUS</a>&nbsp;&nbsp;</td>
+      </tr>
+      <?php
+	$totalyard=$totalyard+$rowd['yard_'];
+	$totalqty=$totalqty+$rowd['weight'];
+	$no++;}?>
+     <br /> Total Yard : <?php echo $totalyard; ?><br />
+    <b>Total Qty : <?php echo $totalqty; ?></b>
+    </table>
+    </div>
+</form>
+</body>
+</html>
+<script type="text/javascript">
+document.getElementById('barcode').focus();
+</script>

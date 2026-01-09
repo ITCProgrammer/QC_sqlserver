@@ -1,0 +1,415 @@
+<?php 
+session_start();
+//include("koneksi.php");
+$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");
+ini_set("error_reporting",1);
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<script>
+function roundToTwo(num) {    
+    return +(Math.round(num + "e+2")  + "e-2");
+}   
+           function ganti()
+{     var lprn= document.forms['form1']['lprn'].value;  
+if(lprn=="Krah-Manset"){
+	window.location.href="index1.php?p=surat_keluar_krah";
+	}
+if(lprn=="Export"){
+	window.location.href="index1.php?p=surat_keluar_export";
+	}
+
+}
+function myFungsi() {
+                var no_ref= document.forms['form1']['no_ref'].value;
+				
+                if(no_ref==null || no_ref=="")
+                    {
+                        alert("No list Belum di Input!!!");
+                        return false;
+                    }
+					
+					        }
+//check all checkbox
+function checkAll(form1){
+    for (var i=0;i<document.forms['form1'].elements.length;i++)
+    {
+        var e=document.forms['form1'].elements[i];
+        if ((e.name !='allbox') && (e.type=='checkbox'))
+        {
+            e.checked=document.forms['form1'].allbox.checked;
+			
+        }
+    }
+}
+
+			var total = 0 ;
+            function calculate (checkbox)
+            {
+                var resultLabel = document.getElementById ( "result_label" ) ;
+                
+ 				var value = parseFloat(checkbox.value);
+                if (checkbox.checked)
+                    total += value ;
+                else
+                    total -= value ;
+ 
+                resultLabel.innerHTML = total.toFixed(2);
+            }
+           </script> 
+</head>
+
+<body>
+<form name="form1" action="pages/simpan_cetak_sj.php" method="post" onsubmit="return myFungsi();">
+<?php
+function listurut(){
+//include("koneksi.php");
+$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+date_default_timezone_set("Asia/Jakarta");
+$format = date("y");
+$sqlnu=mysqli_query($con,"SELECT no_sj FROM packing_list WHERE substr(no_sj,1,2) like '%".$format."%' ORDER BY no_sj DESC LIMIT 1 ") or die("Query error : " . mysqli_error($con));
+$d=mysqli_num_rows($sqlnu);
+if($d>0){
+$r=mysqli_fetch_array($sqlnu);
+$d=$r['no_sj'];
+$str=substr($d,2,4);
+$Urut = (int)$str;
+}else{
+$Urut = 0;
+}
+$Urut = $Urut + 1;
+$Nol="";
+$nilai=4-strlen($Urut);
+for ($i=1;$i<=$nilai;$i++){
+$Nol= $Nol."0";
+}
+$nipbr =$format.$Nol.$Urut;
+return $nipbr;
+}
+$no=listurut();
+$sqlSkrng=mysqli_query($con,"SELECT DATE_FORMAT(now(),'%Y-%m-%d') AS tgl")or die("Query error : " . mysqli_error($con));
+$rskrng=mysqli_fetch_array($sqlSkrng);	
+$tglSkrng=$rskrng['tgl'];	
+?>
+<?php 
+	  
+if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
+	$sqllist= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con)); 
+	$sqllist1= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
+	$sqllist2= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
+	$sqllist3= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
+	$sqllist4= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
+	$sqllist5= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));	  
+	$sqllist6= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
+	$sqllist7= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
+	$sqllist8= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
+	$sqllist9= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));   
+	
+	  ?>
+<table width="100%" border="0">
+  <tr>
+    <th height="22" colspan="6" scope="row">&nbsp;</th>
+    </tr>
+  <tr>
+    <th colspan="6" scope="row">SURAT JALAN</th>
+    </tr>
+  <tr>
+    <th colspan="6" scope="row">&nbsp;</th>
+    </tr>
+  <tr>
+    <th scope="row" align="right">Mutasi Keluar</th>
+    <td>:</td>
+    <td><label for="select"></label>
+      <select name="lprn" onchange="ganti()">
+     	 <option value="Kain" selected="selected">Kain</option>
+        <option value="Krah-Manset" >Krah-Manset</option>
+        <option value="Export" >Export</option>
+      </select>
+      </td>
+    <td>No Surat Jalan</td>
+    <td>:</td>
+    <td><input name="ket" type="text" id="ket"  tabindex="2" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj='+this.value"  value="<?php echo $_GET['nosj'];?>" size="15"/>
+      *</td>
+      <?php if($_GET['nosj']!='')
+	{ 
+	$sqltgl= mysqli_query($con,"SELECT `tgl_update`,`tgl_buat` from packing_list where `no_sj`='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y') GROUP BY no_sj")or die("Query error : " . mysqli_error($con)); 
+	$rtgl=mysqli_fetch_array($sqltgl);
+		
+	}
+	  ?>
+    </tr>
+  <tr>
+    <th align="right" valign="top" scope="row">No Order</th>
+    <td valign="top">:</td>
+    <td valign="top"><input name="dono" type="text" id="dono"  onchange="window.location='index1.php?p=surat_keluar&amp;dono='+this.value"  value="<?php echo $_GET['dono'];?>" size="20" tabindex="1"/>
+      *</td>
+    <td valign="top">No List</td>
+    <td valign="top">:</td>
+    <td><select name="no_list" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist='+this.value" >
+      <option value="">-PILIH-</option>
+      <?php 
+	while($r=mysqli_fetch_array($sqllist)){
+	?>
+      <option value="<?php echo $r['listno'];?>" <?php if($r['listno']==$_GET['nolist']){ echo "SELECTED";}?>><?php echo $r['listno'];?></option>
+      <?php }?>
+       </select> 
+      *  <br />
+    <?php if($_GET['nolist']!=""){?>
+      <select name="no_list2" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r1=mysqli_fetch_array($sqllist1)){
+	?>
+        <option value="<?php echo $r1['listno'];?>" <?php if($r1['listno']==$_GET['nolist1']){ echo "SELECTED";}?> ><?php echo $r1['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>
+      <?php if($_GET['nolist1']!=""){?>
+      <select name="no_list3" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r2=mysqli_fetch_array($sqllist2)){
+	?>
+        <option value="<?php echo $r2['listno'];?>" <?php if($r2['listno']==$_GET['nolist2']){ echo "SELECTED";}?> ><?php echo $r2['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>
+      <?php if($_GET['nolist2']!=""){?>
+      <select name="no_list4" id="no_list4" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r3=mysqli_fetch_array($sqllist3)){
+	?>
+        <option value="<?php echo $r3['listno'];?>" <?php if($r3['listno']==$_GET['nolist3']){ echo "SELECTED";}?> ><?php echo $r3['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>
+      <?php if($_GET['nolist3']!=""){?>
+      <select name="no_list5" id="no_list5" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r4=mysqli_fetch_array($sqllist4)){
+	?>
+        <option value="<?php echo $r4['listno'];?>" <?php if($r4['listno']==$_GET['nolist4']){ echo "SELECTED";}?> ><?php echo $r4['listno'];?></option>
+        <?php }?>
+       </select> <br>
+      <?php } ?>
+	  <?php if($_GET['nolist4']!=""){?>
+      <select name="no_list6" id="no_list6" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r5=mysqli_fetch_array($sqllist5)){
+	?>
+        <option value="<?php echo $r5['listno'];?>" <?php if($r5['listno']==$_GET['nolist5']){ echo "SELECTED";}?> ><?php echo $r5['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>
+	<?php if($_GET['nolist5']!=""){?>
+      <select name="no_list7" id="no_list7" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r6=mysqli_fetch_array($sqllist6)){
+	?>
+        <option value="<?php echo $r6['listno'];?>" <?php if($r6['listno']==$_GET['nolist6']){ echo "SELECTED";}?> ><?php echo $r6['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>
+	<?php if($_GET['nolist6']!=""){?>
+      <select name="no_list8" id="no_list8" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6=<?php echo $_GET['nolist6'];?>&amp;nolist7='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r7=mysqli_fetch_array($sqllist7)){
+	?>
+        <option value="<?php echo $r7['listno'];?>" <?php if($r7['listno']==$_GET['nolist7']){ echo "SELECTED";}?> ><?php echo $r7['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>
+	 <?php if($_GET['nolist7']!=""){?>
+      <select name="no_list9" id="no_list9" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6=<?php echo $_GET['nolist6'];?>&amp;nolist7=<?php echo $_GET['nolist7'];?>&amp;nolist8='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r8=mysqli_fetch_array($sqllist8)){
+	?>
+        <option value="<?php echo $r8['listno'];?>" <?php if($r8['listno']==$_GET['nolist8']){ echo "SELECTED";}?> ><?php echo $r8['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>
+	<?php if($_GET['nolist8']!=""){?>
+      <select name="no_list10" id="no_list10" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6=<?php echo $_GET['nolist6'];?>&amp;nolist7=<?php echo $_GET['nolist7'];?>&amp;nolist8=<?php echo $_GET['nolist8'];?>&amp;nolist9='+this.value" >
+        <option value="">-PILIH-</option>
+        <?php 
+	while($r9=mysqli_fetch_array($sqllist9)){
+	?>
+        <option value="<?php echo $r9['listno'];?>" <?php if($r9['listno']==$_GET['nolist9']){ echo "SELECTED";}?> ><?php echo $r9['listno'];?></option>
+        <?php }?>
+       </select> <br />
+      <?php } ?>	
+	  </td>
+      
+    </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Tgl Surat Jalan</td>
+    <td>:</td>
+    <td><input name="tglawal" type="text" id="tglawal" onclick="if(self.gfPop)gfPop.fPopCalendar(document.form1.tglawal);return false;" size="20"/ value="<?php echo $rtgl['tgl_update'];?>" />
+      *
+        <?php if($_GET['nolist']!="" and $_SESSION['password']=="ppc01"){?>
+        <input name="submit" type="submit" value="TAMBAH" />
+      <?php }?></td> 
+    </tr>
+<tr>
+  <th scope="row" align="right" valign="top">&nbsp;</th>
+  <td>&nbsp;</td>
+  <td> <label for="ket"></label>
+    <label for="langgan">* wajib di isi</label></td>
+  <td>Tgl Buat</td>
+  <td>:</td>
+  <td><input name="tglbuat" type="text" id="tglbuat" onclick="if(self.gfPop)gfPop.fPopCalendar(document.form1.tglbuat);return false;" size="20"/ value="<?php if($rtgl['tgl_buat']!=""){echo $rtgl['tgl_buat'];}else{ echo $tglSkrng;}?>"/>
+  *</td>
+</tr>   
+</table>
+<div align="center"> DETAIL DATA LIST</div>
+  <table width="100%" border="1">
+    <tr>
+      <th width="20" rowspan="2" bgcolor="#9966CC" scope="col">No</th>
+      <th colspan="4" bgcolor="#9966CC" scope="col">BANYAK</th>
+      <th width="169" rowspan="2" bgcolor="#9966CC" scope="col">NAMA BARANG<div align="left"><?php echo $_GET['dono'];?></div></th>
+      <th width="76" rowspan="2" bgcolor="#9966CC" scope="col">LAIN</th>
+      <th width="76" rowspan="2" bgcolor="#9966CC" scope="col">AKSI</th>
+    </tr>
+    <tr>
+      <th width="44" bgcolor="#9966CC" scope="col">ROLL</th>
+      <th width="34" bgcolor="#9966CC" scope="col">KG</th>
+      <th width="60" bgcolor="#9966CC" scope="col">YARD</th>
+      <th width="60" bgcolor="#9966CC" scope="col">METER</th>
+    </tr>
+    
+    <?php
+	if($_GET['nolist']!="")
+	{ 
+	$sql= "SELECT *,count(detail_pergerakan_stok.no_roll) as roll,sum(detail_pergerakan_stok.weight) as _berat,sum(detail_pergerakan_stok.yard_) as _yard_ from packing_list 
+LEFT JOIN detail_pergerakan_stok ON packing_list.listno=detail_pergerakan_stok.refno
+LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj=tmp_detail_kite.id
+LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
+where packing_list.listno='".$_GET['nolist']."' or packing_list.listno='".$_GET['nolist1']."'
+or packing_list.listno='".$_GET['nolist2']."' or packing_list.listno='".$_GET['nolist3']."' 
+or packing_list.listno='".$_GET['nolist4']."' or packing_list.listno='".$_GET['nolist5']."'
+or packing_list.listno='".$_GET['nolist6']."' or packing_list.listno='".$_GET['nolist7']."'
+or packing_list.listno='".$_GET['nolist8']."' or packing_list.listno='".$_GET['nolist9']."'
+GROUP BY no_item,no_lot,no_warna,warna,packing_list.listno"; 
+		
+		$data=mysqli_query($con,$sql) or die("Query error : " . mysqli_error($con));
+	$nb=1;
+	$n=1;
+	$c=0;
+	 while($rowd=mysqli_fetch_array($data)){
+		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
+	  {
+		 ?>
+    <tr bgcolor="<?php echo $bgcolor;?>">
+      <td align="center" ><?php echo $nb; ?></td>
+      <td align="center" ><?php echo $rowd['roll']; ?></td>
+      <td align="center" ><?php echo number_format($rowd['_berat'],'2','.',','); ?></td>
+      <td align="center" ><?php echo number_format($rowd['_yard_'],'2','.',','); ?></td>
+      <td align="center" >&nbsp;</td>
+      <td align="left" ><?php echo $rowd['no_item']."/".$rowd['jenis_kain']; ?>
+        <table width="100%" border="0">
+          <tr>
+            <td><?php echo $rowd['no_warna']; ?></td>
+            <td><?php echo $rowd['warna']; ?></td>
+            <td><?php echo $rowd['lebar']; ?>"</td>
+          </tr>
+      </table></td>
+      <td align="center" ><?php echo $rowd['no_lot']; ?></td>
+      <td align="center" ><?php if($_SESSION['password']=='ppc01'){?><a href="?p=hapus_rlist&dono=<?php echo $_GET['dono'];?>&nosj=<?php echo $_GET['nosj'];?>&nolist=<?php echo $_GET['nolist'];?>&nokk=<?php echo $rowd['nokkKite']; ?>">HAPUS</a><?php } ?></td>
+    </tr>
+    <?php 
+	$totalyard=$totalyard+$rowd['roll'];
+	$totalqty=$totalqty+$rowd['_berat'];
+	$nb++; } }}?>
+    <p align="right"><font color="red">
+    <b>Total ROLL : <?php echo $totalyard; ?></b><br />
+    <b>Total BERAT : <?php echo $totalqty; ?></b> <br />
+    </font></p>
+    
+   
+  </table>
+  
+  <br />
+<div align="center"> DETAIL DATA SURAT JALAN</div>
+  <table width="100%" border="1">
+    <tr>
+      <th width="20" rowspan="2" bgcolor="#9966CC" scope="col">No</th>
+      <th colspan="4" bgcolor="#9966CC" scope="col">BANYAK</th>
+      <th width="169" rowspan="2" bgcolor="#9966CC" scope="col">NAMA BARANG<div align="left"><?php echo $_GET['dono'];?></div></th>
+      <th width="76" rowspan="2" bgcolor="#9966CC" scope="col">LAIN</th>
+      <th width="76" rowspan="2" bgcolor="#9966CC" scope="col">AKSI</th>
+    </tr>
+    <tr>
+      <th width="44" bgcolor="#9966CC" scope="col">ROLL</th>
+      <th width="34" bgcolor="#9966CC" scope="col">KG</th>
+      <th width="60" bgcolor="#9966CC" scope="col">YARD</th>
+      <th width="60" bgcolor="#9966CC" scope="col">METER</th>
+    </tr>
+    
+    <?php
+	if($_GET['nosj']!="")
+	{ 
+	$sql= "SELECT *,count(detail_pergerakan_stok.no_roll) as roll,sum(detail_pergerakan_stok.weight) as _berat,sum(detail_pergerakan_stok.yard_) as _yard_ ,packing_list.id as ids from packing_list 
+LEFT JOIN detail_pergerakan_stok ON packing_list.listno=detail_pergerakan_stok.refno
+LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj=tmp_detail_kite.id
+LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
+where packing_list.no_sj='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y')
+GROUP BY no_item,no_lot,no_warna,warna,packing_list.listno"; 
+		
+		$data=mysqli_query($con,$sql) or die("Query error : " . mysqli_error($con));
+	$nb=1;
+	$n=1;
+	$c=0;
+	 while($rowd=mysqli_fetch_array($data)){
+		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
+	  {
+		 ?>
+    <tr bgcolor="<?php echo $bgcolor;?>">
+      <td align="center" ><?php echo $nb; ?></td>
+      <td align="center" ><?php echo $rowd['roll']; ?></td>
+      <td align="center" ><?php echo number_format($rowd['_berat'],'2','.',','); ?></td>
+      <td align="center" ><?php echo number_format($rowd['_yard_'],'2','.',','); ?></td>
+      <td align="center" >&nbsp;</td>
+      <td align="left" ><?php echo $rowd['no_item']."/".$rowd['jenis_kain']; ?>
+        <table width="100%" border="0">
+          <tr>
+            <td><?php echo $rowd['no_warna']; ?></td>
+            <td><?php echo $rowd['warna']; ?></td>
+            <td><?php echo $rowd['lebar']; ?>"</td>
+          </tr>
+      </table></td>
+      <td align="center" ><?php echo $rowd['no_lot']; ?></td>
+      <td align="center" ><?php if($_SESSION['password']=='ppc01'){?><a href="pages/hapus_sj.php?id=<?php echo $rowd['ids']?>&dono=<?php echo $_GET['dono']; ?>&nosj=<?php echo $_GET['nosj'];?>">HAPUS</a><?php }?></td>
+    </tr>
+    <?php 
+	$totalyard=$totalyard+$rowd['roll'];
+	$totalqty=$totalqty+$rowd['_berat'];
+	$nb++; } }}?>
+    <p align="right"><font color="red">
+    <b>Total ROLL : <?php echo $totalyard; ?></b><br />
+    <b>Total BERAT : <?php echo $totalqty; ?></b><br />
+    </font></p>
+    
+    
+  </table>
+  <input name="cetak" type="button" value="Lihat LIST" onclick="window.location.href='index1.php?p=cetak_list'" />
+  <input name="cetak" type="button" value="Lihat Surat Jalan" onclick="window.location.href='index1.php?p=cetak_list_sj'" /> 
+  <a href="pages/cetak_surat_jalan.php?no_sj=<?php echo $_GET['nosj']; ?>" target="_blank">Cetak Surat Jalan </a>
+  <a href="?p=surat_keluar&amp;po=<?php echo $myData['nopo']; ?>&amp;kd=<?php echo $Kode; ?>#popup"></a>
+</form>
+
+
+</body>
+</html>
+<?php mysqli_close($con); ?>

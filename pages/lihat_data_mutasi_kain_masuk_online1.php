@@ -1,0 +1,343 @@
+ 
+   <!--
+    Created by Artisteer v2.3.0.21098
+    Base template (without user's data) checked by http://validator.w3.org : "This page is valid XHTML 1.0 Transitional"
+    -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <title>QC</title>
+
+    <script type="text/javascript" src="../script.js"></script>
+
+    <link rel="stylesheet" href="../style.css" type="text/css" media="screen" />
+    <link href="/..pages/styles_cetak.css" rel="stylesheet" type="text/css">
+    <!--[if IE 6]><link rel="stylesheet" href="style.ie6.css" type="text/css" media="screen" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" href="style.ie7.css" type="text/css" media="screen" /><![endif]-->
+    <style type="text/css">
+<!--
+.warnaa {
+	color: #808040;
+}
+-->
+</style>
+</head>
+<body>
+<div id="art-page-background-simple-gradient">
+    </div>
+    <div id="art-page-background-glare">
+        <div id="art-page-background-glare-image"></div>
+    </div>
+    <div id="art-main">
+      <div class="art-Sheet-tl"></div>
+            <div class="art-Sheet-tr"></div>
+            <div class="art-Sheet-bl"></div>
+            <div class="art-Sheet-br"></div>
+            <div class="art-Sheet-tc"></div>
+            <div class="art-Sheet-bc"></div>
+            <div class="art-Sheet-cl"></div>
+            <div class="art-Sheet-cr"></div>
+            <div class="art-Sheet-cc"></div>
+           
+                
+                     <input type="button" class="art-button" onClick="window.location.href='login.QC-PACKING?act=logout'" value="Logout"/>
+                            <?php if($_SESSION['status']==0){ ?><input type="button" class="art-button" onClick="window.location.href='../form-Packing?p=mutasi_kain_masuk'" value="Home"/><br /><?php } ?>
+                       
+             <form action="simpan_masuk_kain.php" method="post">           
+       <table width="100%">
+  <tr>
+    <td>&nbsp;</td>
+    <td colspan="20" align="center"><b>BUKTI MUTASI KAIN ONLINE</b></td>
+  </tr>
+  <tr>
+   <?php $tgl_cetak1= trim($_POST['thn1']."-".$_POST['bln1']."-".$_POST['tgl1']);
+   	$tgl_cetak2= trim($_POST['thn2']."-".$_POST['bln2']."-".$_POST['tgl2']);?>
+    <td colspan="21"><b>Tanggal : <?php echo  date("d-M-Y"); ?> <br>
+        No Mutasi: <?php echo $_POST['no_mutasi'];?></b></td>
+  </tr>
+  <tr align="center" bgcolor="#0099FF">
+    <td rowspan="2">No MC</td>
+    <td rowspan="2">Tanggal</td>
+    <td rowspan="2">Langganan</td>
+    <td rowspan="2" width="15">PO</td>
+    <td rowspan="2" width="15">Order</td>
+    <td rowspan="2">Jenis Kain</td>
+    <td rowspan="2" >No. Warna</td>
+    <td rowspan="2">Warna</td>
+    <td rowspan="2">L/Grm2</td>
+    <td rowspan="2">Lot</td>
+    <td rowspan="2">Jml.Roll</td>
+    <td rowspan="2">Bruto(Kg)</td>
+    <td colspan="3">Netto (KG)</td>
+    <td colspan="2">SISA</td>
+    <td rowspan="2">Yard</td>
+    <td rowspan="2">No.Kartu Kerja</td>
+    <td rowspan="2">Tempat</td>
+    <td rowspan="2">Item</td>
+  </tr>
+  <tr align="center" bgcolor="#0099FF">
+    <td>Grade<br /> A+B</td>
+    <td>Grade <br /> C</td>
+    <td>Keterangan<br />(Grade C)</td>
+    <td>Jml. Roll</td>
+    <td>Qty(KG)</td>
+    </tr>
+  <?php 
+  	mysql_connect("192.168.0.254","root","gogogo");
+	mysql_select_db("db_qc")or die("Gagal Koneksi");
+    if($_POST['no_mutasi']==""){$no=$_GET['no_mutasi'];}else{$no=$_POST['no_mutasi'];}
+	
+  $sql=mysql_query("SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+FROM tbl_kite
+INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
+WHERE 
+tbl_kite.no_mutasi = '$no'
+GROUP BY tbl_kite.id
+ORDER BY tbl_kite.id ASC");
+  $i=1;
+  while($row=mysql_fetch_array($sql))
+  {
+	  
+	  	 $sql1=mysql_query("SELECT sum(detail_kite.net_wight) as grd_c
+FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
+WHERE tbl_kite.id='$row[id]' and grade='C'
+GROUP BY tbl_kite.id
+ORDER BY tbl_kite.id ASC");
+		 $row1=mysql_fetch_array($sql1);
+		 
+		 $sql2=mysql_query("SELECT sum(detail_kite.net_wight) as grd_a_b
+FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
+WHERE tbl_kite.id='$row[id]' and grade between 'A' and 'B'
+GROUP BY tbl_kite.id
+ORDER BY tbl_kite.id ASC");
+$row2=mysql_fetch_array($sql2);
+$sql4=mysql_query("SELECT *, sum(detail_kite.net_wight) as qty,count(detail_kite.sisa) as jml , grade
+FROM tbl_kite
+LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
+WHERE sisa = 'SISA'
+AND nokkKite = '$row[nokk]'
+GROUP BY tbl_kite.id
+ORDER BY tbl_kite.id ASC");
+		 $row4=mysql_fetch_array($sql4);
+		 $sql5=mysql_query("SELECT sum(detail_kite.net_wight) as grd_c
+FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
+WHERE tbl_kite.id='$row[id]' and grade='C' and
+sisa = 'SISA'
+AND nokkKite = '$row[nokk]'
+GROUP BY tbl_kite.id
+ORDER BY tbl_kite.id ASC");
+		 $row5=mysql_fetch_array($sql5);
+		 
+		 $sql6=mysql_query("SELECT sum(detail_kite.net_wight) as grd_a_b
+FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
+WHERE tbl_kite.id='$row[id]' and grade between 'A' and 'B' and sisa = 'SISA'
+AND nokkKite = '$row[nokk]'
+GROUP BY tbl_kite.id
+ORDER BY tbl_kite.id ASC");
+$row6=mysql_fetch_array($sql6);		
+	  ?>
+    <tr bgcolor="#9999FF">
+    <td><?php echo $row['no_mc'];?></td>
+    <td><?php echo date("d-M-Y", strtotime($row['tanggal_update']));?></td>
+    <td><?php echo $row['pelanggan'];?></td>
+    <td><?php echo $row['no_po'];?></td>
+    <td><?php echo $row['no_order'];?></td>
+    <td><?php echo $row['jenis_kain'];?></td>
+    <td><?php echo $row['no_warna'];?></td>
+    <td><?php echo $row['warna'];?></td>
+    <td><?php echo $row['lebar']."/".$row['berat'];?> </td>
+    <td><?php echo $row['no_lot'];?></td>
+    <td align="right"><?php echo $row['roll']-$row4['jml'];?></td>
+    <td align="right"><?php echo number_format($row['bruto'],'2','.',',');?></td>
+    <td align="right"><?php if($row4['grade']=="A" || $row4['grade']=="B"){echo number_format($row2['grd_a_b']-$row6['grd_a_b'],'2','.',',');}else{echo number_format($row2['grd_a_b'],'2','.',',');}?></td>
+    <td align="right"><?php 
+	if($row4['grade']=="C"){echo number_format($row2['grd_a_b']-$row5['grd_c'],'2','.',',');}else{
+	echo number_format($row1['grd_c'],'2','.',',');}?></td>
+    <td><?php echo $row1['sisa'];?></td>
+    <td align="right"><?php if($row4>0){echo $row4['jml'];}else{echo "0";}?></td>
+    <td align="right"><?php if($row4>0){echo number_format($row4['qty'],'2','.',',');}else{echo "0.00";}?></td>
+    <td align="right"><?php echo number_format($row['yard_'],'2','.',',')." ".$row['satuan'];?></td>
+    <td>
+    <?php if($row['satuan']=="Yard"){?>
+    <a href="form-Packing?p=mutasi_detail&id=<?php echo $row['nokk'];?>&tgl1=<?php echo $tgl_cetak1; ?>&tgl2=<?php echo $tgl_cetak2; ?>&sift=<?php echo $_POST['sift'];?>"><?php echo $row['nokk'];?></a>
+    <?php }else{?>
+    <a href="form-Packing?p=mutasi_detail_m&id=<?php echo $row['nokk'];?>&tgl1=<?php echo $tgl_cetak1; ?>&tgl2=<?php echo $tgl_cetak2; ?>&sift=<?php echo $_POST['sift'];?>"><?php echo $row['nokk'];?></a>
+    <?php }?>
+    
+    </td>
+    <td><input name="tempat[<?php echo $i;?>]" type="text" value="<?php echo $row['tempat'];?>">
+    <input name="no_mutasi" type="hidden" value="<?php echo $_POST['no_mutasi'];?>"></td>
+    <td><?php echo $row['no_item'];?></td>
+  </tr>
+ 
+      <?php
+	  $totbruto=$totbruto+$row['bruto'];
+	  $totyard=$totyard+$row['yard_'];
+	  $totrol=$totrol+$row['roll'];
+	  $totab=$totab+$row2['grd_a_b'];
+	  $tota=$tota+$row1['grd_c'];
+	  	if($row['satuan']=='Meter')
+		{$kartot=$kartot + $row['yard_']; $totkar = $totkar + $row['roll'];}
+		if($row['satuan']=='Yard')
+		{$pltot=$pltot + $row['yard_'];   $totpl = $totpl + $row['roll'];}
+	  $i++;
+	  }
+  ?>
+  <?php
+ if($_POST['sift']=="1"){
+  
+   $sql3=mysql_query("SELECT *
+FROM tbl_kite
+LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
+WHERE 
+tanggal_update
+BETWEEN '$tgl_cetak1 07:00:00'
+AND '$tgl_cetak2 14:59:59'
+AND tbl_kite.user_packing = '$_POST[user_name]' AND sisa = 'SISA'
+ORDER BY tbl_kite.id DESC");
+ }else  if($_POST['sift']=="2"){$sql3=mysql_query("SELECT *
+FROM tbl_kite
+LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
+WHERE
+tanggal_update
+BETWEEN '$tgl_cetak1 15:00:00'
+AND '$tgl_cetak2 22:59:59'
+AND tbl_kite.user_packing = '$_POST[user_name]' AND sisa = 'SISA'
+ORDER BY tbl_kite.id ASC");
+ }else{$sql3=mysql_query("SELECT *
+FROM tbl_kite
+LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
+WHERE 
+tanggal_update
+BETWEEN '$tgl_cetak1 23:00:00'
+AND '$tgl_cetak2 06:59:59'
+AND tbl_kite.user_packing = '$_POST[user_name]' AND sisa = 'SISA'
+ORDER BY tbl_kite.id ASC");}
+
+
+		 while($row3=mysql_fetch_array($sql3)){
+			 
+  ?>
+ <?php
+		 }
+ ?>
+  <tr bgcolor="#99FFFF">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td></td>
+    <td></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+ <tr bgcolor="#99FFFF">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td colspan="2">Meter</td>
+    <td align="right"><?php echo number_format($totkar); ?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Meter</td>
+    <td align="right">&nbsp;</td>
+    <td align="right">&nbsp;</td>
+    <td align="right"><?php echo number_format($kartot,'2','.',','); ?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr bgcolor="#99FFFF">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td colspan="2">Yard</td>
+    <td align="right"><?php echo  number_format($totpl);?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Yard</td>
+    <td align="right">&nbsp;</td>
+    <td align="right">&nbsp;</td>
+    <td align="right"><?php echo  number_format($pltot,'2','.',',');?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr bgcolor="#99FFFF">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td colspan="2"><b>Total</b></td>
+    <td>&nbsp;</td>
+    <td align="right"><b><?php echo $totrol;?></td>
+    <td align="right"><b><?php echo number_format($totbruto,'2','.',',');?></b></td>
+    <td align="right"><b><?php echo number_format($totab,'2','.',',');?></b></td>
+    <td align="right"><b><?php echo number_format($tota,'2','.',',');?></b></td>
+    <td>&nbsp;</td>
+    <td align="right">&nbsp;</td>
+    <td align="right">&nbsp;</td>
+    <td align="right"><b><?php echo number_format($totyard,'2','.',',');?></b></td>
+    
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  
+</table>
+      <input name="masuk" type="submit" value="masuk kain">  </form>                      
+
+
+                            
+                            
+<div class="cleared"></div>
+                            </div>
+                        </div>
+                        <div class="art-Post"></div>
+                    </div>
+                </div>
+                <div class="cleared"></div><div class="art-Footer">
+                    <div class="art-Footer-inner">
+                        <div class="art-Footer-text">
+                          <p><br />
+                              Copyright &copy; 2014 ---. All Rights Reserved.</p>
+                        </div>
+                    </div>
+                    <div class="art-Footer-background"></div>
+                </div>
+        		<div class="cleared"></div>
+            </div>
+        </div>
+        <div class="cleared"></div>
+      
+    </div>
+    
+</body>
+</html>

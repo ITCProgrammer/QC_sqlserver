@@ -1,0 +1,305 @@
+<?php
+header("Content-type: application/octet-stream");
+header("Content-Disposition: attachment; filename=kain_jadi.xls");//ganti nama sesuai keperluan
+header("Pragma: no-cache");
+header("Expires: 0");
+//disini script laporan anda
+?>
+<body>                  
+                        
+<table width="100%" border="1">
+  <tr>
+    <td colspan="24" align="center"><h1><b>LAPORAN HARIAN KAIN JADI <?php if($_GET['jlap']=="Pengiriman"){echo " PENGIRIMAN ";}else if($_GET['jlap']=="Bongkaran"){ echo " BONGKARAN ";}else if($_GET['jlap']=="Ganti Stiker"){ echo " GANTI STIKER ";} ?></b></h1></td>
+    </tr>
+  <tr>
+ <td colspan="24">Shift :
+   <?php if($_GET[shft]==""){echo "All";}else{echo $_GET[shft];} ?></td>
+ </tr>
+  <tr align="center" valign="middle">
+    <td rowspan="2">TGL</td>
+    <td rowspan="2">NO SJ</td>
+    <td rowspan="2">DOCUMENTNO</td>
+    <td rowspan="2">NO ITEM</td>
+    <td rowspan="2">LANGGANAN</td>
+    <td rowspan="2">PO</td>
+    <td rowspan="2">ORDER</td>
+    <td rowspan="2">JENIS KAIN</td>
+    <td rowspan="2" >NO WARNA</td>
+    <td rowspan="2">WARNA</td>
+    <td rowspan="2">NO CARD</td>
+    <td rowspan="2">LOT</td>
+    <td rowspan="2">ROLL</td>
+    <td colspan="3">Netto (KG)</td>
+    <td rowspan="2">Yard / Meter</td>
+    <td rowspan="2">UNIT</td>
+    <td rowspan="2">EXTRA Q</td>
+    <td rowspan="2">LBR</td>
+    <td rowspan="2">X</td>
+    <td rowspan="2">GRMS</td>
+    <td rowspan="2">OL</td>
+    <td rowspan="2">Keterangan</td>
+  </tr>
+  <tr align="center">
+    <td>Grade<br /> A+B</td>
+    <td>Grade <br /> C</td>
+    <td>Keterangan<br />(Grade C)</td>
+    </tr>
+  <?php 
+  mysql_connect("192.168.0.4","dit","4dm1n");
+mysql_select_db("db_qc")or die("Gagal Koneksi");
+if($_GET['tgl1']!="")
+  {$tgll=" AND a.tgl_update='$_GET[tgl1]' ";}
+  else if($_GET['tgl1']="")
+  {$tgll=" ";}
+ if($_GET['shft']!="")
+  {$shft1=" AND a.shift='$_GET[shft]' ";}else{$shft1="";}
+  if($_GET['order']!="")
+  {$order=" AND c.no_order='$_GET[order]' ";}
+   else if($tgl1="" and $order="")
+  {$tgll=" AND a.tgl_sj='$_GET[tgl1]' ";}
+  if($_GET['jlap']=="Pengiriman"){
+	  $tran=" AND typetrans='1'";}
+		  else if($_GET['jlap']=="Bongkaran"){
+	  $tran=" AND typetrans='2' AND NOT a.ket LIKE 'GANTI STIKER%'"  ;}
+		  else if($_GET['jlap']=="Ganti Stiker"){
+	  $tran=" AND typetrans='2' AND a.ket LIKE 'GANTI STIKER%'"  ;}
+	else{$tran="";}
+  $sql=mysql_query("SELECT
+	b.id_detail_kj,a.no_sj,a.tgl_sj,a.documentno,a.blok,b.weight,b.yard_,b.no_roll,
+	b.satuan,b.grade,b.sisa,b.nokk,sum(b.weight) as tot_qty,count(b.yard_) as tot_rol,sum(b.yard_) as tot_yard,
+	SUM(case when b.grade='A' or b.grade='B' or b.grade='' then b.weight else 0 end) as grd_ab,
+	SUM(case when b.grade='C' then b.weight else 0 end) as grd_c,
+	SUM(if(b.grade='A' or b.grade='B' or b.grade='', 1, 0)) as jml_ab,
+	SUM(if(b.grade = 'C', 1, 0)) as jml_grd_c,a.ket,SUM(d.netto) as netto
+	FROM
+	pergerakan_stok a
+	INNER JOIN detail_pergerakan_stok b ON a.id = b.id_stok
+	LEFT JOIN tmp_detail_kite d ON b.id_detail_kj=d.id
+	WHERE
+	a.typestatus = '3'
+	$tran $tgll $shft1
+	GROUP BY
+	a.id,b.nokk,b.sisa
+	ORDER BY
+	a.id");
+  $c=1;
+  while($row=mysql_fetch_array($sql))
+  {
+	  $qry1=mysql_query("SELECT * FROM tbl_kite WHERE nokk='$row[nokk]' LIMIT 1");
+		  $rowk=mysql_fetch_array($qry1);
+	  ?>
+    <tr>
+      <td align="left"><?php echo date("d-M-Y", strtotime($row['tgl_sj']));?></td>
+      <td align="left">'<?php $qry=mysql_query(" SELECT b.no_sj,a.refno,a.id_detail_kj from detail_pergerakan_stok a
+INNER JOIN pergerakan_stok c ON a.id_stok=c.id
+LEFT JOIN packing_list b ON a.refno=b.listno
+WHERE a.nokk='$row[nokk]' and a.id_detail_kj='$row[id_detail_kj]' and ISNULL(a.transtatus) and NOT ISNULL(a.refno) and NOT ISNULL(b.no_sj) "); 
+	  $rsj=mysql_fetch_array($qry);
+	  if($row['no_sj']==""){echo $rsj[no_sj];}else{echo $row['no_sj'];}?></td>
+      <td align="left"><?php echo $row['documentno'];?></td>
+    <td align="left"><?php echo $rowk['no_item'];?></td>
+    <td><?php echo $rowk['pelanggan'];?></td>
+    <td><?php echo $rowk['no_po'];?></td>
+    <td><?php echo $rowk['no_order'];?></td>
+    <td><?php echo htmlentities($rowk['jenis_kain'],ENT_QUOTES);?></td>
+    <td><?php echo $rowk['no_warna'];?></td>
+    <td><?php echo $rowk['warna'];?></td>
+    <td align="right">' <?php echo $row['nokk'];?></td>
+    <td align="right">'  <?php echo $rowk['no_lot'];?></td>
+    <td align="right"><?php 
+	$rol=$row['tot_rol'];
+	echo $rol;
+	?></td>
+    <td align="right"><?php 
+	$grab=$row['grd_ab'];echo number_format($grab,'2','.',',');?></td>
+    <td align="right"><?php 
+	$grc=$row['grd_c'];
+	echo number_format($grc,'2','.',',');?></td>
+    <td><?php if($row['sisa']=="SISA" || $row['sisa']=="FKSI"){echo "SISA";}?></td>
+    <td align="right"><?php 
+	if($row['satuan']=="PCS"){echo number_format($row['netto'])." ".$row['satuan'];}else{
+	echo number_format($row['tot_yard'],'2','.',',')." ".$row['satuan'];} ?></td>
+    <td><?php echo $row['blok']; ?></td>
+    <td><?php if($row['sisa']=="FOC"){echo "EXTRA FULL";}?></td>
+    <td><?php echo $rowk['lebar'];?></td>
+    <td>X</td>
+    <td><?PHP echo $rowk['berat']; ?></td>
+    <td>&nbsp;</td>
+    <td align="center"><?php echo $row['ket'];?></td>
+  </tr>
+ 
+      <?php
+	  if($row['sisa']=="SISA" || $row['sisa']=="FKSI" || $row['sisa']=="FOC"){$brtoo=0;}else{$brtoo=number_format($row['bruto'],'2','.',',');}
+	   $totbruto=$totbruto+$brtoo;
+	  $totyard=$totyard+$row['tot_yard'];
+	  $totrol=$totrol+$rol;
+	  $totab=$totab+$grab;
+	  $tota=$tota+$grc;
+	  	if($row['satuan']=='Meter')
+		{$kartot=$kartot + $row['tot_yard']; $totrolm = $totrolm + $row['tot_rol'];}
+		if($row['satuan']=='Yard')
+		{$pltot=$pltot + $row['tot_yard'];   $totroly = $totroly + $row['tot_rol'];}
+	  
+	  }
+  ?>
+  <tr >
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+ <tr>
+   <td>&nbsp;</td>
+   <td>&nbsp;</td>
+   <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Meter</td>
+    <td align="right"><?php echo number_format($totrolm); ?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Meter</td>
+    <td align="right"><?php echo number_format($kartot,'2','.',','); ?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Yard</td>
+    <td align="right"><?php echo  number_format($totroly);?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Yard</td>
+    <td align="right"><?php echo  number_format($pltot,'2','.',',');?></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr >
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><b>Total</b></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+	<td align="right"><b><?php echo $totrol;?></b></td>
+    <td align="right"><b><?php echo number_format($totab,'2','.',',');?></b></td>
+    <td align="right"><b><?php echo number_format($tota,'2','.',','); ?></b></td>
+    <td>&nbsp;</td>
+    <td align="right">&nbsp;</td>
+    
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr >
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr >
+    <td colspan="6" align="center">&nbsp;</td>
+    <td colspan="9" align="center">Dibuat Oleh</td>
+    <td colspan="9" align="center">Diperiksa oleh</td>
+  </tr>
+  <tr >
+    <td colspan="6" >Nama</td>
+    <td colspan="9" align="center">&nbsp;</td>
+    <td colspan="9" align="center">&nbsp;</td>
+  </tr>
+  <tr >
+    <td colspan="6" >Jabatan</td>
+    <td colspan="9" align="center">Clerk</td>
+    <td colspan="9" align="center">Supervisor</td>
+  </tr>
+  <tr >
+    <td height="26" colspan="6" >Tanggal</td>
+    <td colspan="9" align="center">&nbsp;</td>
+    <td colspan="9" align="center">&nbsp;</td>
+  </tr>
+  <tr >
+    <td colspan="6" ><p>Tanda Tangan</p>
+    <p>&nbsp;</p></td>
+    <td colspan="9" align="center">&nbsp;</td>
+    <td colspan="9" align="center">&nbsp;</td>
+  </tr>
+  
+</table>
+</body>
+</html>

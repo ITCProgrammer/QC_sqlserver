@@ -1,0 +1,85 @@
+<?php
+header("Content-type: application/vnd-ms-excel");
+header("Content-Disposition: attachment; filename=Perhitungan-Konversi-".date($_GET['awal']).".xls");
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Perhitungan Konversi</title>
+</head>
+
+<body>
+<?php 
+include"../koneksi.php";
+$bulan=array("","JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER");
+$bln=number_format(date("m", strtotime($_GET['awal'])));
+$thn=date("Y", strtotime($_GET['awal'])); 
+$sqlKonv = mysql_query("SELECT * from tbl_konversi_accsj LIMIT 1");
+$dtKonv = mysql_fetch_array($sqlKonv);
+$cekKonv=mysql_num_rows($sqlKonv);
+?>
+<div align="center"><h1>PT INDO TAICHEN TEXTILE INDUSTRY <br />
+PERHITUNGAN KONVERSI</h1></div>
+<div align="center">Nilai Kurs : Rp <?php echo $dtKonv['konversi'];?></div> 
+<table width="100%" border="1">
+  <tr bgcolor="#3399CC">
+    <td width="3%" align="center" bgcolor="#FFFFFF"><strong>NO</strong></td>
+    <td width="9%" align="center" bgcolor="#FFFFFF"><strong>TANGGAL</strong></td>
+    <td width="6%" align="center" bgcolor="#FFFFFF"><strong>NO SJ</strong></td>
+    <td width="6%" align="center" bgcolor="#FFFFFF"><strong>CUSTOMER</strong></td>
+    <td width="8%" align="center" bgcolor="#FFFFFF"><strong>HARGA/Y/M</strong></td>
+    <td width="5%" align="center" bgcolor="#FFFFFF"><strong>BERAT/Y/M</strong></td>
+    <td width="14%" align="center" bgcolor="#FFFFFF">&nbsp;</td>
+    <td width="7%" align="center" bgcolor="#FFFFFF">&nbsp;</td>
+  </tr>
+  <?php 
+  $ttgl=date("d", strtotime($_GET['awal']));
+  $newdate = strtotime( '-1 day' , strtotime ($_GET['awal']) );
+  $ttglm=date("d", $newdate);
+  if($_GET['awal']!=""){
+	  $tgll= " tmp_hapus='0' AND tgl_buat='$_GET[awal]' ";
+	  }else{$tgll= " tmp_hapus='0' AND tgl_buat!='' ";}	  
+  if($_GET['no_sj']!=""){
+	  $sj= " AND no_sj='$_GET[no_sj]' ";
+	  }	  	  
+  $sql=mysql_query("SELECT
+	*
+FROM
+	tbl_pengiriman
+WHERE
+	not no_sj='' AND ISNULL(kategori) AND approve_acc='Approve' AND $tgll $sj
+ORDER BY no_sj asc");
+$no=1;
+$c=0;
+while($row=mysql_fetch_array($sql)){
+  $pos=strpos($row['buyer'], "/");
+	$posbuyer=substr($row['buyer'],0,$pos);
+	$cust=str_replace("'","''",$posbuyer);
+	$bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
+  ?>
+  <tr valign="top" >
+    <td><?php echo $no; ?></td>
+    <td><?php echo date("d-M-y", strtotime($row['tgl_buat'])); ?></td>
+    <td>'<?php echo $row['no_sj']; ?></td>
+    <td><?php echo $cust; ?></td>
+    <td align="right"><?php echo $row['currency']." ".number_format($row['price'],3); ?></td>
+    <td align="right"><?php if($row['satuan_mkt']=="yard" or $row['satuan_mkt']=="meter"){echo $row['panjang']." ".$row['satuan_mkt'];}
+    else if($row['satuan_mkt']=="kg"){echo $row['qty']." ".$row['satuan_mkt'];}
+    else if($row['satuan_mkt']=="pc"){echo $row['netto']." ".$row['satuan_mkt'];} ?></td>
+    <td><?php if($row['satuan_mkt']=="yard" or $row['satuan_mkt']=="meter"){echo round($row['price']*$row['panjang'],2);}
+    else if($row['satuan_mkt']=="kg"){echo round($row['price']*$row['qty'],2);}
+    else if($row['satuan_mkt']=="pc"){echo round($row['price']*$row['netto'],2);} ?></td>
+    <td align="right"><?php if($row['currency']=="US$" AND ($row['satuan_mkt']=='yard' OR $row['satuan_mkt']=='meter')){echo number_format((($row['price']*$row['panjang'])*$dtKonv['konversi'])/$row['panjang'],3);}
+    else if($row['currency']=="US$" AND $row['satuan_mkt']=='kg'){echo number_format((($row['price']*$row['qty'])*$dtKonv['konversi'])/$row['qty'],3);}
+    else if($row['currency']=="US$" AND $row['satuan_mkt']=='pc'){echo number_format((($row['price']*$row['netto'])*$dtKonv['konversi'])/$row['netto'],3);}
+    else if($row['currency']=="Rp" AND ($row['satuan_mkt']=='yard' OR $row['satuan_mkt']=='meter')){echo number_format(($row['price']*$row['panjang'])/$row['panjang'],3);}
+    else if($row['currency']=="Rp" AND $row['satuan_mkt']=='kg'){echo number_format(($row['price']*$row['qty'])/$row['qty'],3);}
+    else if($row['currency']=="Rp" AND $row['satuan_mkt']=='pc'){echo number_format(($row['price']*$row['netto'])/$row['netto'],3);}
+    else{echo "0.000";} ?></td>
+  </tr>
+  <?php $no++;
+  } ?>
+</table>
+</body>
+</html>

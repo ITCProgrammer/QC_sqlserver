@@ -1,0 +1,185 @@
+<?php
+session_start();
+//include config
+//require_once "waktu.php";
+include_once('koneksi.php');
+
+?>
+<?php
+//set base constant
+if (!isset($_SESSION['username']) || !isset($_SESSION['password'])) {
+    ?>
+<script>
+  setTimeout("location.href='index.php'", 500);
+
+</script>
+<?php
+ die('Illegal Acces');
+}
+
+//request page
+$page	= isset($_GET['p'])?$_GET['p']:'laporan_harian_mutasi';
+$act	= isset($_GET['act'])?$_GET['act']:'';
+$id		= isset($_GET['id'])?$_GET['id']:'';
+$page	= strtolower($page);
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US" xml:lang="en">
+
+  <head>
+    <!--
+    Created by Artisteer v2.3.0.21098
+    Base template (without user's data) checked by http://validator.w3.org : "This page is valid XHTML 1.0 Transitional"
+    -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <title>INDOTAICHEN
+      <?php echo strtoupper($_SESSION['username']);?>
+    </title>
+
+    <script type="text/javascript" src="script.js"></script>
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+    <!--[if IE 6]><link rel="stylesheet" href="style.ie6.css" type="text/css" media="screen" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" href="style.ie7.css" type="text/css" media="screen" /><![endif]-->
+  </head>
+
+  <body>
+    <div id="art-page-background-simple-gradient">
+    </div>
+    <div id="art-page-background-glare">&nbsp; &nbsp; &nbsp; &nbsp;<img src="images/head1.png" width="600" height="50" />
+      <div align="center">
+        <h1>
+          <?php echo strtoupper($_SESSION['username']);?>
+        </h1>
+      </div>
+      <div id="art-page-background-glare-image"></div>
+    </div>
+    <div id="art-main">
+      <div class="art-Sheet">
+        <div class="art-Sheet-tl"></div>
+        <div class="art-Sheet-tr"></div>
+        <div class="art-Sheet-bl"></div>
+        <div class="art-Sheet-br"></div>
+        <div class="art-Sheet-tc"></div>
+        <div class="art-Sheet-bc"></div>
+        <div class="art-Sheet-cl"></div>
+        <div class="art-Sheet-cr"></div>
+        <div class="art-Sheet-cc"></div>
+        <div class="art-Sheet-body">
+          <div class="art-contentLayout">
+            <div class="art-content">
+              <input type="button" class="art-button" onClick="window.location.href='index_login.php?act=logout'" value="Logout" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=cek_harian'" value="Data Mutasi" />
+              <?php if ($_SESSION['level']=="PACKING") {
+    ?>
+              <input type="button" class="art-button" onClick="window.location.href='?p=transfer-out'" value="Transfer OUT" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_mutasi'" value="Mutasi" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=form_Qc_waste'" value="Mutasi Waste" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian'" value="Laporan" /><br />
+              <?php
+} elseif ($_SESSION['level']=="KAIN") {
+        $page	= isset($_GET['p'])?$_GET['p']:'laporan_harian_kain'; ?>
+              <?php if ($_SESSION['password']!='ADM PPC') {
+            ?>
+              <!--<input type="button" class="art-button" onClick="window.location.href='?p=mutasi_kain_masuk'" value="Mutasi Masuk" />-->
+              <input type="button" class="art-button" onClick="window.location.href='index1.php?p=kain_masuk_barcode'" value="Kain Masuk" />
+              <input type="button" class="art-button" onClick="window.location.href='index1.php?p=kain_keluar_barcode'" value="Kain Keluar" />
+              <input type="button" class="art-button" onClick="window.location.href='index1.php?p=transfer-out-gkj'" value="Transfer Out" />
+              <input type="button" class="art-button" onClick="window.location.href='index1.php?p=tutup-transaksi'" value="Tutup Transaksi" />
+              <?php
+        } ?>
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_kain'" value="Laporan" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=ganti-password'" value="Ganti Password" />
+              <!--    <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_produksi'" value="Lap produksi"/> -->
+              <br />
+              <?php
+    } elseif ($_SESSION['level']=="KAIN BS") {
+        $page	= isset($_GET['p'])?$_GET['p']:'laporan_harian_kain_bs'; ?><input type="button" class="art-button" onClick="window.location.href='?p=mutasi_kain_masuk'" value="Mutasi Masuk" />
+              <input type="button" class="art-button" onClick="window.location.href='index1.php?p=kain_bs_masuk_barcode'" value="Kain BS Masuk" />
+              <input type="button" class="art-button" onClick="window.location.href='index1.php?p=kain_bs_keluar_barcode'" value="Kain BS Keluar" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_kain_bs'" value="Laporan BS" />
+              <!-- <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_produksi'" value="Lap produksi"/> -->
+              <br />
+              <?php
+    } elseif ($_SESSION['level']=="PPC") {
+             $page	= isset($_GET['p'])?$_GET['p']:'laporan_harian_kain'; ?>
+              <input type="button" class="art-button" onClick="window.location.href='?p=packing_list'" value="Packing List" />
+              <?php if ($_SESSION['password']=='ppc' or $_SESSION['password']=='ppc01') {
+                 ?>
+              <input type="button" class="art-button" onClick="window.location.href='?p=surat_keluar'" value="Surat Jalan" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=pengirim'" value="Pengiriman" />
+              <?php
+             } ?>
+
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_kain'" value="Laporan" />
+              <!-- <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_produksi'" value="Laporan produksi"/> -->
+              <br />
+              <?php
+         } elseif ($_SESSION['level']=="EXIM") {
+             $page	= isset($_GET['p'])?$_GET['p']:'packing_data'; ?>
+              <input type="button" class="art-button" onClick="window.location.href='?p=packing_data'" value="Data Packing" />
+			  <input type="button" class="art-button" onClick="window.location.href='?p=packing_qty'" value="Data Pas QTY" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=packing_list_export'" value="Packing List" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_produksi'" value="Laporan produksi" />
+              <br />
+              <?php
+         } elseif ($_SESSION['level']=="MANAGER") {
+             $page	= isset($_GET['p'])?$_GET['p']:'laporan_harian_manager'; ?><input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_mutasi_manager'"
+                value="Mutasi" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_manager'" value="Laporan" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=cek_inspek'" value="Inspek" />
+              <input type="button" class="art-button" onClick="window.location.href='?p=laporan_harian_produksi'" value="Laporan produksi" /><br />
+              <?php
+         } ?>
+              <div class="art-Post">
+
+                <div class="art-Post-body">
+
+                  <?php
+                    if (!empty($page) and !empty($act)) {
+                        $files = 'pages/'.$page.'.'.$act.'.php';
+                    } elseif (!empty($page)) {
+                        $files = 'pages/'.$page.'.php';
+                    } else {
+                        $files = 'pages/form_Qc.php';
+                    }
+
+                    if (file_exists($files)) {
+                        include_once($files);
+                    } else {
+                        echo '<h3>Error Document Not Found</h3>';
+                    }
+                    ?>
+
+
+
+
+                  <div class="cleared"></div>
+                </div>
+              </div>
+              <div class="art-Post"></div>
+            </div>
+          </div>
+          <div class="cleared"></div>
+          <div class="art-Footer">
+            <div class="art-Footer-inner">
+              <div class="art-Footer-text">
+                <p><br />
+                  Copyright &copy; 2015 ---. All Rights Reserved.</p>
+              </div>
+            </div>
+            <div class="art-Footer-background"></div>
+          </div>
+          <div class="cleared"></div>
+        </div>
+      </div>
+      <div class="cleared"></div>
+      <p class="art-page-footer">created with Artisteer by usman_as</p>
+      <p class="art-page-footer"><a href="mailto:usman@indotaichen.com">email:usman@indotaichen.com</a></p>
+    </div>
+    <iframe width=174 height=189 name="gToday:normal:calender/agenda.js" id="gToday:normal:calender/agenda.js" src="calender/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; top:-500px; left:-500px;">
+    </iframe>
+  </body>
+
+</html>

@@ -1,0 +1,13 @@
+ <?php 
+   
+include_once("../koneksi.php");
+	
+	
+	?>
+<?php
+	   $cari=mysql_query("update `packing_list` set `no_sj`=null,`tgl_update`=null where `id`='$_GET[id]' limit 1");
+	  if($cari >0){ 
+ 	  echo "<script>alert('Data Terhapus');window.location.href='../index1.php?p=surat_keluar&dono=$_GET[dono]&nosj=$_GET[nosj]';</script>";
+	 }
+
+?>

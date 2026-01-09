@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Ganti Status Kain</title>
+</head>
+
+<body>
+<?Php 
+$Order	= isset($_POST['order']) ? $_POST['order'] : '';
+$Itm	= isset($_POST['itm']) ? $_POST['itm'] : '';
+$Wrn	= isset($_POST['wrn']) ? $_POST['wrn'] : '';
+$KK		= isset($_POST['nokk']) ? $_POST['nokk'] : '';	
+?>	
+<form id="form1" name="form1" method="POST" action="" enctype="multipart/form-data">
+
+<table width="100%" border="0">
+  <tr>
+    <th height="22" colspan="6" scope="row">&nbsp;</th>
+  </tr>
+  <tr>
+    <th colspan="6" scope="row">Filter Persediaan Kain Jadi</th>
+    </tr>
+    <th width="11%" align="left" valign="top" scope="row">No Order</th>
+    <th width="1%" align="right" valign="top" scope="row">:</th>
+    <td width="88" colspan="4"><input type="text" name="order" id="order" value="<?php echo $Order;?>"/></td>
+  </tr>	
+  <tr>
+    <th align="left" valign="top" scope="row">Item</th>
+    <th align="left" valign="top" scope="row">:</th>
+    <td colspan="4"><input type="text" name="itm" id="itm" value="<?php echo $Itm;?>"/></td>
+  </tr>
+  <tr>
+    <th align="left" valign="top" scope="row">Warna</th>
+    <th align="left" valign="top" scope="row">:</th>
+    <td colspan="4"><input type="text" name="wrn" id="wrn" value="<?php echo $Wrn;?>"/></td>
+  </tr>
+  <tr>
+    <th align="left" valign="top" scope="row">No Kartu Kerja</th>
+    <th align="left" valign="top" scope="row">:</th>
+    <td colspan="4"><input type="text" name="nokk" id="nokk" value="<?php echo $KK;?>"/></td>
+  </tr>
+  <tr>
+    <th align="left" valign="top" scope="row"><input type="submit" name="cari" id="cari" value="Cari Data"/></th>
+    <th align="left" valign="top" scope="row">&nbsp;</th>
+    <td colspan="4" align="right"><a href="pages/gantistatus-kain-excel.php?itm=<?Php echo $Itm;?>&amp;wrn=<?Php echo $Wrn;?>&amp;nowrn=<?Php echo $_GET['nowrn'];?>&amp;order=<?Php echo $Order;?>&amp;nokk=<?Php echo $KK;?>" target="_blank">Cetak Excel</a><br><br>
+		<?php if($Order!="" and $Itm=="" and $Wrn=="" and $KK==""){ ?><a href="#" onClick="window.open('pages/detail-persediaan-ganti-status-semua.php?order=<?php echo $Order;?>','MyWindow','height=400,width=500,top=250,left=500');">Ubah Semua</a><?php } ?></td>
+  </tr>
+	
+  </table>
+<div align="center"> DETAIL DATA</div>
+
+<table width="100%" align="center" style="font-size:11px">
+  <tr align="center" bgcolor="#0099FF">
+    <td rowspan="3" bgcolor="#3366CC">NO</td>
+    <td rowspan="3" bgcolor="#3366CC">LANGGANAN</td>
+    <td width="15" rowspan="3" bgcolor="#3366CC">PO</td>
+    <td width="15" rowspan="3" bgcolor="#3366CC">ORDER</td>
+    <td rowspan="3" bgcolor="#3366CC">JENIS_KAIN</td>
+    <td rowspan="3" bgcolor="#3366CC" >NO WARNA</td>
+    <td rowspan="3" bgcolor="#3366CC">WARNA</td>
+    <td rowspan="3" bgcolor="#3366CC">NO CARD</td>
+    <td rowspan="3" bgcolor="#3366CC">LOT</td>
+    <td rowspan="3" bgcolor="#3366CC">ROLL</td>
+    <td colspan="7" bgcolor="#3366CC">Netto (KG)</td>
+    <td rowspan="3" bgcolor="#3366CC">Yard / Meter</td>
+    <td rowspan="3" bgcolor="#3366CC">LOKASI</td>
+    <td rowspan="3" bgcolor="#3366CC">EXTRA Q</td>
+    <td rowspan="3" bgcolor="#3366CC">LBR</td>
+    <td rowspan="3" bgcolor="#3366CC">X</td>
+    <td rowspan="3" bgcolor="#3366CC">GRMS</td>
+    <td rowspan="3" bgcolor="#3366CC">OL</td>
+    <td rowspan="3" bgcolor="#3366CC">Status</td>
+    <td rowspan="3" bgcolor="#3366CC">Keterangan</td>
+  </tr>
+  <tr align="center" bgcolor="#0099FF">
+    <td colspan="2" bgcolor="#3366CC">GRADE A</td>
+    <td colspan="2" bgcolor="#3366CC">GRADE B</td>
+    <td colspan="2" bgcolor="#3366CC">GRADE C</td>
+    <td rowspan="2" bgcolor="#3366CC">Keterangan</td>
+  </tr>
+  <tr align="center" bgcolor="#0099FF">
+    <td bgcolor="#3366CC">ROLL</td>
+    <td bgcolor="#3366CC">KG</td>
+    <td bgcolor="#3366CC">ROLL</td>
+    <td bgcolor="#3366CC">KG</td>
+    <td bgcolor="#3366CC">ROLL</td>
+    <td bgcolor="#3366CC"> KG</td>
+    </tr>
+  <?php
+	if($_POST['itm']!='')
+	{
+	$item=trim($_POST['itm']);
+	$where5.= " AND trim(c.no_item)='$item' ";
+	}else{ $where5.= " "; }
+	if($_POST['wrn']!='')
+	{
+	$warna=trim($Wrn);
+	$where6.= " AND trim(c.warna)='$warna' ";
+	}else{ $where6.= " "; }
+	if($_POST['nokk']!='')
+	{
+	$nokk=trim($KK);
+	$where7.= " AND trim(c.nokk)='$nokk' ";
+	}else{ $where7.= " "; }
+	if($Order!='')
+	{
+	$ordr=trim($Order);
+	$where8.= " AND trim(c.no_order)='$ordr' ";
+	}else{ $where8.= " "; }
+	if($Order=="" and $Itm=="" and $KK=="" and $Wrn==""){ $nowhere.=" AND a.id='' "; }else{$nowhere.="";}
+  $sql=mysqli_query($con," SELECT
+	a.tgl_update,c.no_po,c.no_order,a.blok,
+	b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
+	c.warna,c.lebar,c.berat,c.no_item,b.id_stok,a.catat,a.id,a.sts_stok,b.ket_stok,
+	GROUP_CONCAT(DISTINCT lokasi) as lokasi
+	FROM
+	pergerakan_stok a
+	LEFT JOIN detail_pergerakan_stok b ON a.id = b.id_stok
+  	LEFT JOIN tmp_detail_kite d ON d.id=b.id_detail_kj
+	LEFT JOIN tbl_kite c ON c.id = d.id_kite
+	WHERE
+	(a.typestatus = '1' OR a.typestatus = '2')
+	AND not ISNULL(b.transtatus) AND b.transtatus='1' ".$where8.$where7.$where6.$where5.$nowhere." 
+	GROUP BY
+	b.nokk,b.sisa,b.id_stok,b.ket_stok
+	ORDER BY
+	a.tgl_update,a.id ");
+  $c=1;
+  $i=1;
+  $no=1;
+  $n=1;	
+  $sts_sisa="";	
+  while($row=mysqli_fetch_array($sql))
+  {
+	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
+	   $mySql =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc");
+	   $myBlk = mysqli_fetch_array($mySql);
+	   $mySqlC =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id desc");
+	   $myBlkC = mysqli_fetch_array($mySqlC);
+	   $sqlCtt=mysqli_query($con,"SELECT keterangan FROM tbl_ket_ppc
+						WHERE nokk='".$row['nokk'] ."' AND ket_sisa='".$row['sisa'] ."' AND idp='".$row['id_stok']."' ORDER BY id DESC");
+	   $ctt=mysqli_fetch_array($sqlCtt);
+	   //$mySqlC1 =mysqli_query($con,"CALL ketorder('$row[id_stok]','$row[nokk]','$row[sisa]');");
+	   //$mySqlC1 = mysqli_query($con,"CALL `db_qc`.`ketorder`(1710169575,'101801520190001','');",$dbconn12) or die("Query fail: " . mysql_error());;
+	   $mySqlC1 =mysqli_query($con,"SELECT GROUP_CONCAT(
+		CONCAT(
+			'Untuk Order ',
+			no_order,
+			' Qty ',
+			qty_minta,
+			' ',
+			satuan,' Sisa '
+		)
+	) AS catatan,a.sisa,a.catat
+FROM
+	tbl_catat_kain a
+LEFT JOIN tbl_catat_detail b ON a.id = b.id_catat
+WHERE
+	a.id_kain = '".$row['id_stok']."'
+AND a.nokk = '".$row['nokk']."'
+AND a.ket = '".$row['sisa']."'
+AND b.tmp_hapus='0'");
+	   $myBlkC1 = mysqli_fetch_array($mySqlC1);	  
+	  if($row['ket_stok']!=""){$stks=" and b.ket_stok='".$row['ket_stok']."' ";}else{ $stks="";}
+	   $mysqlCek=mysqli_query($con," SELECT
+	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
+	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
+	SUM(if(b.grade='A' or b.grade='', 1, 0)) as rol_a,
+	SUM(if(b.grade='B', 1, 0)) as rol_b,
+	SUM(if(b.grade='C', 1, 0)) as rol_c,
+	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.yard_ else 0 end) as tot_yard,
+	SUM(case when b.grade='A' or b.grade='B' or b.grade='' then b.weight else 0 end) as grd_ab,
+	SUM(case when b.grade='A' or b.grade='' then b.weight else 0 end) as grd_a,
+	SUM(case when b.grade='B' then b.weight else 0 end) as grd_b,
+	SUM(case when b.grade='C' then b.weight else 0 end) as grd_c,
+	SUM(if(b.grade='A' or b.grade='B' or b.grade='', 1, 0)) as jml_ab,
+	SUM(if(b.grade = 'C', 1, 0)) as jml_grd_c,b.sisa,b.satuan,SUM(d.netto) as netto,
+	a.blok,a.tgl_update
+	FROM
+	pergerakan_stok a
+	LEFT JOIN detail_pergerakan_stok b  ON a.id = b.id_stok
+    LEFT JOIN tmp_detail_kite d ON d.id=b.id_detail_kj
+	LEFT JOIN tbl_kite c ON c.id = d.id_kite
+	WHERE
+	b.`transtatus`='1' and b.nokk='".$row['nokk']."' and b.sisa='".$row['sisa']."' and b.id_stok='".$row['id_stok']."' $stks
+	AND (a.fromtoid = 'GUDANG KAIN JADI' OR a.fromtoid = 'PACKING' OR a.fromtoid='LAIN' OR a.fromtoid='INSPEK MEJA' OR a.fromtoid ='GANTI STIKER' OR a.fromtoid ='REVISI STIKER' OR a.fromtoid ='POTONG SISA')
+	GROUP BY
+	b.sisa,b.id_stok,b.ket_stok
+	ORDER BY
+	a.id,b.ket_stok ASC");
+	$myro = mysqli_fetch_array($mysqlCek);
+	if($myBlkC1['sisa'] != number_format($myro['tot_yard'],'2','.','')." ".$myro['satuan']."s"){
+	  if($myBlkC1['catatan']!=""){$catat=$myBlkC1['catatan'].$myBlkC1['sisa'];}else{
+		  $catat= $myBlkC1['catat']; //$myBlkC['catatan'];
+	  }}else{}
+	  if($myro['tot_rol']>0){
+	   $mySql1 =mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
+	   $myBlk1 = mysqli_fetch_array($mySql1);
+	   $mySql2 =mysqli_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
+INNER JOIN detail_pergerakan_stok b ON a.id=b.id_stok
+WHERE b.nokk='".$row['nokk']."' and ISNULL(b.transtatus)
+GROUP BY b.nokk");
+	   $myBlk2 = mysqli_fetch_array($mySql2);
+		if($row['sisa']=="SISA" || $row['sisa']=="FKSI"){
+			$brt_sisa=$myro['grd_a']+$myro['grd_b']+$myro['grd_c'];
+			if($brt_sisa>10 and substr($row['tgl_update'],0,10)>="2019-08-07"){$sts_sisa="Sisa Produksi";}
+			else if($brt_sisa<=10 and substr($row['tgl_update'],0,10)>="2019-08-07"){$sts_sisa="Sisa Toleransi";}
+		}else{$sts_sisa="";}
+	  if($myBlk1['no_po']!=""){$p0=$myBlk1['no_po'];}else{$p0=$myBlk2['no_po'];}
+	  $strp0=strtoupper($p0);
+	  $strp1=strtoupper($p0);
+	  $cBooking=strpos($strp0,"BOOKING");
+	  $cMiniBulk=strpos($strp0,"MINI BULK");
+	  $cTrutexPro=strpos($strp0,"TRUTEX PROJECTION");	  
+	  ?>
+    <tr bgcolor="<?php echo $bgcolor; ?>">
+      <td><?php echo $no;?></td>
+      <td><b title="<?php echo $myBlk1['pelanggan'];?>"><a href="#" onClick="window.open('pages/ket-persediaan.php?id=<?php echo $row['id_stok'];?>&nokk=<?php echo $row['nokk'];?>&ket=<?php echo $row['sisa'];?>&no_po=<?php if($myBlk1['no_po']!=""){echo $myBlk1['no_po'];}else{echo $myBlk2['no_po'];}?>','MyWindow','height=400,width=550,top=250,left=500');"><?php echo substr($myBlk1['pelanggan'],0,7)."...";?></a></b></td>
+    <td><b title="<?php if($myBlk1['no_po']!=""){echo $myBlk1['no_po'];}else{echo $myBlk2['no_po'];}?>"><a href="#" onClick="window.open('pages/tambah-catat-booking.php?id=<?php echo $row['id_stok'];?>&nokk=<?php echo $row['nokk'];?>&ket=<?php echo $row['sisa'];?>&no_po=<?php if($myBlk1['no_po']!=""){echo $myBlk1['no_po'];}else{echo $myBlk2['no_po'];}?>','MyWindow','height=400,width=550,top=250,left=500');"><?php if($myBlk1['no_po']!=""){echo substr($myBlk1['no_po'],0,7)."...";}else{echo substr($myBlk2['no_po'],0,7)."...";}?></a></b></td>
+    <td><?php if($myBlk1['no_order']!=""){echo $myBlk1['no_order'];}else{echo $myBlk2['no_order'];}?></td>
+    <td><b title="<?php echo htmlentities($myBlk1['jenis_kain'],ENT_QUOTES);?>"><?php echo htmlentities(substr($myBlk1['jenis_kain'],0,7)."...",ENT_QUOTES);?></b></td>
+    <td><b title="<?php echo $myBlk1['no_warna'];?>"><?php echo substr($myBlk1['no_warna'],0,7)."...";?></b></td>
+    <td><b title="<?php echo $myBlk1['warna'];?>"><?php echo substr($myBlk1['warna'],0,7)."...";?></b></td>
+    <td><a href="#" onClick="window.open('pages/detail-persediaan-ganti-status.php?nokk=<?php echo $row['nokk'];?>&ket=<?php echo $row['sisa'];?>&ketstok=<?php echo $row['ket_stok'];?>','MyWindow','height=400,width=500,top=250,left=500');"><?php echo $row['nokk'];?></a></td>
+    <td><?php echo trim($myBlk1['no_lot']);?></td>
+    <td align="right"><?php
+	echo $myro['tot_rol'];
+	?></td>
+    <td align="right"><?php
+	echo $myro['rol_a'];
+	?></td>
+    <td align="right"><?php
+	echo number_format($myro['grd_a'],'2','.',',');?></td>
+    <td align="right"><?php
+	echo $myro['rol_b'];
+	?></td>
+    <td align="right"><?php
+	echo number_format($myro['grd_b'],'2','.',',');?></td>
+    <td align="right"><?php
+	echo $myro['rol_c'];
+	?></td>
+    <td align="right"><?php
+	echo number_format($myro['grd_c'],'2','.',',');
+	?></td>
+    <td><?php if($row['sisa']=="SISA" || $row['sisa']=="FKSI"){echo "SISA";}?></td>
+    <td align="right"><?php
+	if($myro['satuan']=="PCS"){echo number_format($myro['netto'])." ".$myro['satuan'];}else{
+	echo number_format($myro['tot_yard'],'2','.',',')." ".$myro['satuan'];} ?></td>
+    <td><?php
+	if($row['lokasi']!=""){echo $row['lokasi'];}else{echo "N/A";}?></td>
+    <td><?php if($myro['sisa']=="FOC"){echo "FOC";}?></td>
+    <td><?php echo $myBlk1['lebar'];?></td>
+    <td>X</td>
+    <td><?PHP echo $myBlk1['berat']; ?></td>
+    <td><?php if($row['sisa']=="KITE" || $row['sisa']=="FKSI"){echo "Fasilitas KITE";}?></td>
+    <td align="center"><?php if($row['ket_stok']!=""){echo trim($row['ket_stok']);}else if($cBooking>-1 or $cMiniBulk > -1 or $cTrutexPro > -1){echo "Booking";}else if($row['sts_stok']!="" and ($row['sisa']=="FKSI" or $row['sisa']=="SISA")){echo trim($sts_sisa);}else{echo trim($row['sts_stok']);}?></td>
+    <td align="center"><?php if($catat!=""){echo $catat;}else{echo $myBlkC['catatan']; }?>
+      <?php echo $ctt['keterangan']; ?></td>
+    <?php  $i++; ?>
+  </tr>
+
+      <?php
+	}
+	  	 if($myro['sisa']=="SISA" || $myro['sisa']=="FKSI" || $myro['sisa']=="FOC"){$brtoo=0;}else{$brtoo=number_format($row['bruto'],'2','.',',');}
+	   $totbruto=$totbruto+$brtoo;
+	  $totyard=$totyard+$myro['tot_yard'];
+	  $totrol=$totrol+$myro['tot_rol'];
+	  $totrola=$totrola+$myro['rol_a'];
+	  $totrolb=$totrolb+$myro['rol_b'];
+	  $totrolc=$totrolc+$myro['rol_c'];
+	  $totab=$totab+$myro['grd_ab'];
+	  $tota=$tota+$myro['grd_a'];
+	  $totb=$totb+$myro['grd_b'];
+	  $totc=$totc+$myro['grd_c'];
+	  $totpcs=$totpcs +$myro['netto'];
+	  $rolab=$rolab + $myro['jml_ab'];
+	  $rolac=$rolac + $myro['jml_grd_c'];
+	  	if($myro['satuan']=='Meter')
+		{$kartot=$kartot + $myro['tot_yard']; $totrolm = $totrolm + $myro['tot_rol'];}
+		if($myro['satuan']=='Yard')
+		{$pltot=$pltot + $myro['tot_yard'];   $totroly = $totroly + $myro['tot_rol'];}
+		if($myro['satuan']=='PCS')
+		{$totrolp = $totrolp + $myro['tot_rol'];}
+	  $no++;
+	  }
+
+
+  ?>
+      <tr bgcolor="#99FFFF">
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99"></td>
+        <td bgcolor="#CCFF99"></td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99"></td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+      </tr>
+      <tr bgcolor="#99FFFF">
+        <td bgcolor="#CCFF99">&nbsp;</td>
+        <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99"></td>
+    <td bgcolor="#CCFF99"></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">PCS</td>
+    <td align="right" bgcolor="#CCFF99"><?php echo number_format($totrolp); ?></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99"></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+  </tr>
+ <tr bgcolor="#99FFFF">
+   <td bgcolor="#CCFF99">&nbsp;</td>
+   <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">Meter</td>
+    <td align="right" bgcolor="#CCFF99"><?php echo number_format($totrolm); ?></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">Meter</td>
+    <td align="right" bgcolor="#CCFF99"><?php echo number_format($kartot,'2','.',','); ?></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td align="right" bgcolor="#CCFF99"><?php echo number_format($totpcs); ?></td>
+    <td bgcolor="#CCFF99">PCS</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+  </tr>
+  <tr bgcolor="#99FFFF">
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">Yard</td>
+    <td align="right" bgcolor="#CCFF99"><?php echo  number_format($totroly);?></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">Yard</td>
+    <td align="right" bgcolor="#CCFF99"><?php echo  number_format($pltot,'2','.',',');?></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+  </tr>
+  <tr bgcolor="#99FFFF">
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99"><b>Total</b></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td align="right" bgcolor="#CCFF99"><b><?php echo $totrol;?></b></td>
+    <td align="right" bgcolor="#CCFF99"><b><?php echo $totrola;?></b></td>
+    <td align="right" bgcolor="#CCFF99"><b><?php echo number_format($tota,'2','.',',');?></b></td>
+    <td align="right" bgcolor="#CCFF99"><b><?php echo $totrolb;?></b></td>
+    <td align="right" bgcolor="#CCFF99"><b><?php echo number_format($totb,'2','.',',');?></b></td>
+    <td align="right" bgcolor="#CCFF99"><b><?php echo $totrolc;?></b></td>
+    <td align="right" bgcolor="#CCFF99"><b><?php echo number_format($totc,'2','.',',');?></b></td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td align="right" bgcolor="#CCFF99">&nbsp;</td>
+
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+    <td bgcolor="#CCFF99">&nbsp;</td>
+  </tr>
+  <tr bgcolor="#99FFFF">
+    <td colspan="26" bgcolor="#CCFF99"><b>
+      ( Roll : <?php echo  number_format($totrol);  ?> )
+      <font color="Blue">(GRADE A: <?php echo  number_format($tota,'2','.',',');  ?> Kg, Roll: <?php echo  number_format($totrola);  ?>)</font>
+      <font color="Green">(GRADE B: <?php echo  number_format($totb,'2','.',',');  ?> Kg, Roll: <?php echo  number_format($totrolb);  ?>)</font>
+      <font color="Red">(GRADE C: <?php echo  number_format($totc,'2','.',',');  ?> Kg, Roll: <?php echo  number_format($totrolc);  ?>)</font>
+      (TOTAL : <?php echo  number_format($tota+$totb+$totc,'2','.',',');  ?> Kg) </b></td>
+    </tr>
+  <b>
+  ( Roll : <?php echo  number_format($totrol);  ?> )
+  <font color="Blue">(GRADE A: <?php echo  number_format($tota,'2','.',',');  ?> Kg, Roll: <?php echo  number_format($totrola);  ?>)</font>
+  <font color="Green">(GRADE B: <?php echo  number_format($totb,'2','.',',');  ?> Kg, Roll: <?php echo  number_format($totrolb);  ?>)</font>
+  <font color="Red">(GRADE C: <?php echo  number_format($totc,'2','.',',');  ?> Kg, Roll: <?php echo  number_format($totrolc);  ?>)</font>
+  (TOTAL : <?php echo  number_format($tota+$totb+$totc,'2','.',',');  ?> Kg)</b>
+      </table>
+</form>
+</body>
+</html>

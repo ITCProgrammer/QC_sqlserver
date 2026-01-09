@@ -1,0 +1,18 @@
+RewriteEngine on
+
+RewriteRule ^beranda.QC-PACKING$ index.php? [L]
+RewriteRule ^profil-kami$ areta_beranda.php?module=profil&id=$1 [L]
+RewriteRule ^cara-login$ areta_beranda.php?module=carabeli&id=$1 [L]
+RewriteRule ^prod-detail-(.*)$ areta_beranda.php?module=detailberita&id=$1 [L]
+RewriteRule ^kategori-(.*)$ areta_beranda.php?module=detailkategori&id=$1 [L]
+RewriteRule ^kategori-page-([0-9]+)-(.*)$ areta_beranda.php?module=detailkategori&id=$1&halkategori=$2 [L]
+RewriteRule ^search?$ areta_beranda.php?module=search [L]
+RewriteRule ^search-page-([0-9]+)-(.*)$ areta_beranda.php?module=detailvendor&id=$1&halvendor=$2 [L]
+RewriteRule ^kontak-kami$ areta_beranda.php?module=kontak&id=$1 [L]
+RewriteRule ^kontak-aksi$ areta_beranda.php?module=kontakaksi&id=$1 [L]
+RewriteRule ^Berita\.list$ areta_beranda.php?module=semuaproduk&id=$1 [L]
+RewriteRule ^Berita\.list-(.*)$ areta_beranda.php?module=semuaproduk&halproduk=$1 [L]
+RewriteRule ^absensi-mahasiswa-(.*)$ pengajar_beranda.php?module=absensi_mahasiswa&kelas=$1&kode_matkul=$2 [L]
+
+
+Options All -Indexes

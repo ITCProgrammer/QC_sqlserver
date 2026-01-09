@@ -1,0 +1,152 @@
+   <?php 
+   
+	include_once("../koneksi.php");
+	
+	
+	?>
+    
+  <?php
+  
+
+
+  if($_POST['submit']=='SIMPAN'){
+	$cari=mysql_query("Select `id` from `packing_list` where `listno`='$_POST[no_list]' limit 1");
+	$cek=mysql_num_rows($cari);
+	$listno = $_POST['no_list'];
+	
+	if($_POST['dono']!='')
+	{ $cwhere2.= $_POST['dono']; 
+		}else{ $cwhere2.="null"; }
+	if($_POST['nokk4']!='')
+	{ $cwherek4.= " OR `tbl_kite`.`nokk`='$_POST[nokk4]'"; 
+		}else{ $cwherek4.= " "; }
+	if($_POST['nokk3']!='')
+	{ $cwherek3.= " OR `tbl_kite`.`nokk`='$_POST[nokk3]'"; 
+		}else{ $cwherek3.= " "; }
+	if($_POST['nokk2']!='')
+	{ $cwherek2.= " OR `tbl_kite`.`nokk`='$_POST[nokk2]'"; 
+		}else{ $cwherek2.= " "; }	
+   if($_POST['nokk']!='')
+	{ $cwhere.= " AND `tbl_kite`.`nokk`='$_POST[nokk]'"; 
+		}else{ $cwhere.= " "; }
+if($_POST['nopo']!='')
+	{ $cwhere1.= " AND `tbl_kite`.`no_po`='$_POST[nopo]'"; 
+		}else{ $cwhere1.= " "; }
+	$qry=mysql_query("select * from pergerakan_stok 
+			LEFT JOIN detail_pergerakan_stok on pergerakan_stok.id= detail_pergerakan_stok.id_stok
+			LEFT JOIN tbl_kite on detail_pergerakan_stok.nokk=tbl_kite.nokk
+		 where detail_pergerakan_stok.sisa != 'FKTH' AND detail_pergerakan_stok.sisa != 'TH' AND typestatus='1' AND `tbl_kite`.`no_order`='".$cwhere2."'".$cwhere.$cwherek2.$cwherek3.$cwherek4.$cwhere1." order by `tbl_kite`.`nokk`,`detail_pergerakan_stok`.`no_roll` asc");
+  	$n=1;
+	$nom=1;
+	 while($row=mysql_fetch_array($qry))
+  {	  
+  if($_POST['check'][$n]!='')
+		  {
+			 $id_kite=$_POST['check'][$n];
+			 $sdata=mysql_query("select * from detail_pergerakan_stok where id='$id_kite'");
+			 $srow=mysql_fetch_array($sdata);
+			 $cari1=mysql_query("Select `id` from `packing_list` where `listno`='$_POST[no_list]' limit 1");
+			 $cek1=mysql_num_rows($cari1);
+			 if($cek1>0){}else{
+//masuk ke packing_list
+$po=str_replace("'","''",$row[no_po]);
+$datastk=mysql_query("insert into `packing_list` (`no_po`,`no_order`,`listno`,`status`) values('$po','$row[no_order]','$listno','1')")or die("Gagal1  $id_kite");}
+	// ubah data di detail_pergerakan stok
+	mysql_query("UPDATE detail_pergerakan_stok SET refno='$listno' where id='$id_kite'")or die("Gagal1  $id_kite");
+		  $n++;}else{$n++;}
+ }
+  if($datastk)
+  {
+	  echo "<script>alert('Data Tersimpan');window.location.href='../index1.php?p=packing_list&dono=$_POST[dono]';</script>";
+	  }
+/*	
+	  if($cek>0){?>
+	  <script>
+	  var a=confirm('anda ingin menambahkan data di no list ini?');
+	  if(a==false)
+	  	{
+		  window.location.href='../index1.php?p=packing_list&dono=<?php echo $_POST[dono];?>';
+		}else
+		{ 
+	<?php 
+	if($_POST['dono']!='')
+	{ $cwhere2.= $_POST['dono']; 
+		}else{ $cwhere2.="null"; }
+   if($_POST['nokk']!='')
+	{ $cwhere.= " AND `tbl_kite`.`nokk`='$_POST[nokk]'"; 
+		}else{ $cwhere.= " "; }
+if($_POST['nopo']!='')
+	{ $cwhere1.= " AND `tbl_kite`.`no_po`='$_POST[nopo]'"; 
+		}else{ $cwhere1.= " "; }
+	$sql3=mysql_query("Select `id` from `packing_list` where `listno`='$_POST[no_list]' ");
+	$row3=mysql_fetch_array($sql3);
+  	$sql1=mysql_query("select * from pergerakan_stok 
+			LEFT JOIN detail_pergerakan_stok on pergerakan_stok.id= detail_pergerakan_stok.id_stok
+			LEFT JOIN tbl_kite on detail_pergerakan_stok.nokk=tbl_kite.nokk
+		 where  `tbl_kite`.`no_order`='".$cwhere2."'".$cwhere.$cwhere1." order by `tbl_kite`.`nokk`,`detail_pergerakan_stok`.`no_roll` asc");
+  	$n=1;
+ 	 $nom=1;
+	 while($row=mysql_fetch_array($sql1))
+  {	  
+  if($_POST['check'][$n]!='')
+		  {
+			 $id_kite=$_POST['check'][$n];
+			 $sdata=mysql_query("select * from detail_pergerakan_stok where id='$id_kite'");
+			 $srow=mysql_fetch_array($sdata);
+//masuk ke packing_list
+mysql_query("insert into `packing_list` (`nokk`,`no_po`,`no_order`,`listno`,`status`) values('$srow[nokk]','$row[no_po]','$row[no_order]','$listno','1')")or die("Gagal1  $id_kite");
+	// ubah data di detail_pergerakan stok
+	mysql_query("UPDATE detail_pergerakan_stok SET refno='$listno' where id='$id_kite'")or die("Gagal1  $id_kite");
+
+		  $n++;}else{$n++;}
+ }	
+	?>	
+	alert('Data sudah bertambah <?php echo $id_kite ;?>');window.location.href='../index1.php?p=packing_list&dono=<?php echo $_POST['dono'];?>';
+	  	}
+	     </script>
+	  
+  <?php   
+	  }else{
+ if($_POST['dono']!='')
+	{ $cwhere2.= $_POST['dono']; 
+		}else{ $cwhere2.="null"; }
+   if($_POST['nokk']!='')
+	{ $cwhere.= " AND `tbl_kite`.`nokk`='$_POST[nokk]'"; 
+		}else{ $cwhere.= " "; }
+if($_POST['nopo']!='')
+	{ $cwhere1.= " AND `tbl_kite`.`no_po`='$_POST[nopo]'"; 
+		}else{ $cwhere1.= " "; }
+			 $sdata=mysql_query("select * from detail_pergerakan_stok where id='$id_kite'");
+			 $srow=mysql_fetch_array($sdata);
+   $datastk=mysql_query("insert into `packing_list` (`nokk`,`no_po`,`no_order`,`listno`,`status`) values('$srow[nokk]','$row[no_po]','$row[no_order]','$listno','1')")or die("Gagal11");
+   $sql3=mysql_query("Select `id` from `tmp_pergerakan_stok_list` where `listno`='$_POST[no_list]' ");
+$row3=mysql_fetch_array($sql3);
+  $sql1=mysql_query("select * from pergerakan_stok 
+			LEFT JOIN detail_pergerakan_stok on pergerakan_stok.id= detail_pergerakan_stok.id_stok
+			LEFT JOIN tbl_kite on detail_pergerakan_stok.nokk=tbl_kite.nokk
+		 where  `tbl_kite`.`no_order`='".$cwhere2."'".$cwhere.$cwhere1." order by `tbl_kite`.`nokk`,`detail_pergerakan_stok`.`no_roll` asc");
+  $n=1;
+  $nom=1;
+  while($row=mysql_fetch_array($sql1))
+  {	  
+ if($_POST['check'][$n]!='')
+		  {
+			  
+			  $id_kite=$_POST['check'][$n];
+			  $sdata=mysql_query("select * from detail_pergerakan_stok where id='$id_kite'");
+			 $srow=mysql_fetch_array($sdata);
+			 // ubah data di detail_pergerakan stok
+			 mysql_query("UPDATE detail_pergerakan_stok SET refno='$listno' where id='$id_kite'")or die("Gagal u1  $id_kite");
+			    
+	  $n++;
+ }else{$n++;}
+ }
+  if($datastk)
+  {
+	  echo "<script>alert('Data Tersimpan');window.location.href='../index1.php?p=packing_list&dono=$_POST[dono]';</script>";
+	  }
+	  }
+*/	  
+  }
+ ?>
+  
