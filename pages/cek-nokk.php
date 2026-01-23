@@ -45,11 +45,11 @@
           <th width="31%" scope="col">Tgl Kirim</th>
         </tr>
         <?php
-      $sql=mysqli_query($con,"SELECT b.listno,b.no_sj,b.tgl_update,b.tgl_buat_list FROM detail_pergerakan_stok a
+      $sql=sqlsrv_query($con,"SELECT b.listno,b.no_sj,b.tgl_update,b.tgl_buat_list FROM detail_pergerakan_stok a
 INNER JOIN packing_list b ON a.refno=b.listno
 WHERE a.nokk='".$_POST['nokk']."' and (ISNULL(a.transtatus) or not ISNULL(a.transtatus))
 GROUP BY b.listno");
-          while ($r=mysqli_fetch_array($sql)) {
+          while ($r=sqlsrv_fetch_array($sql)) {
               ?>
         <tr align="center" bgcolor="#7EE8AE">
           <td>

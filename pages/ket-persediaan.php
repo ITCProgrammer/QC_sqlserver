@@ -42,23 +42,23 @@ include '../koneksi.php';
 		
 		// Skrip menyimpan data ke tabel transaksi utama
 		//$myQry3 ="UPDATE pergerakan_stok SET blok='".$_POST['tempat']."' WHERE id='".$_GET['id']."'";
-		//$mySql2=mysqli_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
+		//$mySql2=sqlsrv_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
 		$myQrycari	= "SELECT * FROM tbl_ket_ppc
 						WHERE nokk='".$_GET['nokk'] ."' AND ket_sisa='".$_GET['ket'] ."' AND idp='".$_GET['id'] ."' LIMIT 1";
-		$mySqlcari=mysqli_query($con,$myQrycari) or die ("Gagal query  ".mysql_error());
-		$rowcari=mysqli_fetch_row($mySqlcari);
+		$mySqlcari=sqlsrv_query($con,$myQrycari) or die ("Gagal query  ".mysql_error());
+		$rowcari=sqlsrv_fetch_row($mySqlcari);
 		if($rowcari>0){
 		$mySql	= "UPDATE tbl_ket_ppc SET 
 						keterangan='".$TxtKeterangan."'
 						WHERE nokk='".$TxtNokk."' AND ket_sisa='".$TxtKet."' AND idp='".$IdP."'";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
 		}else{
 			$mySql	= "INSERT tbl_ket_ppc SET
 						idp='".$IdP."',
 						keterangan='".$TxtKeterangan."',
 						nokk='".$TxtNokk."',
 						ket_sisa='".$TxtKet."'";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
 			}
 
 		echo "<script>";
@@ -75,8 +75,8 @@ include '../koneksi.php';
     </tr>
     <?php $myQry	= "SELECT * FROM tbl_ket_ppc
 						WHERE nokk='".$_GET['nokk'] ."' AND ket_sisa='".$_GET['ket'] ."' AND idp='".$_GET['id'] ."' ORDER BY id DESC";
-		$mySql1=mysqli_query($con,$myQry) or die ("Gagal query  ".mysql_error());
-		$row1=mysqli_fetch_array($mySql1);
+		$mySql1=sqlsrv_query($con,$myQry) or die ("Gagal query  ".mysql_error());
+		$row1=sqlsrv_fetch_array($mySql1);
 		?>
     <tr>
       <td width="11%">No KK</td>

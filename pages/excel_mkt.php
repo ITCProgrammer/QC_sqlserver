@@ -142,7 +142,7 @@ $style_row_color = array(
       if($_POST['buyer']!=""){
         $buyer= " AND buyer LIKE '%".$_GET['buyer']."%' ";
       }	 
-      $sql=mysqli_query($con,"SELECT
+      $sql=sqlsrv_query($con,"SELECT
       id,tgl_kirim,tgl_buat,no_sj,warna,rol,qty,panjang,buyer,no_po,no_order,no_item,jenis_kain,lot,tujuan,ket,foc,approve_acc
   FROM
       tbl_pengiriman
@@ -152,7 +152,7 @@ $style_row_color = array(
 //$sql->execute(); // Eksekusi querynya
 $no = 1; // Untuk penomoran tabel, di awal set dengan 1
 $numrow = 10; // Set baris pertama untuk isi tabel adalah baris ke 4
-while($data=mysqli_fetch_array($sql)){ // Ambil semua data dari hasil eksekusi $sql
+while($data=sqlsrv_fetch_array($sql)){ // Ambil semua data dari hasil eksekusi $sql
   $excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
   $excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['tgl_buat']);
   $excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['tgl_kirim']);

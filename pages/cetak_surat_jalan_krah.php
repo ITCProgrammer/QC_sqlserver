@@ -126,7 +126,7 @@ window.addEventListener('load', function () {
 	?> 
 <?php
 if($_GET['tgl_kirim']!=""){$tglkirim=" and tgl_update='$_GET[tgl_kirim]' ";}else{$tglkirim=" and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y')";}
-	$sqllist= mysqli_query($con,"SELECT packing_list.*,tbl_kite.pelanggan,tbl_kite.no_po as nopo,detail_pergerakan_stok.satuan from packing_list 
+	$sqllist= sqlsrv_query($con,"SELECT packing_list.*,tbl_kite.pelanggan,tbl_kite.no_po as nopo,detail_pergerakan_stok.satuan from packing_list 
 LEFT JOIN detail_pergerakan_stok ON packing_list.listno=detail_pergerakan_stok.refno
 LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj=tmp_detail_kite.id
 LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
@@ -134,7 +134,7 @@ WHERE  `packing_list`.`no_sj`='$_GET[no_sj]' ".$tglkirim."
 GROUP BY `packing_list`.`no_sj`
 "); 
 	
-     $dr=mysqli_fetch_array($sqllist);
+     $dr=sqlsrv_fetch_array($sqllist);
 	 $order=trim($dr['no_order']);
 	$sqlb=sqlsrv_query($conn,"SELECT 
 *
@@ -195,8 +195,8 @@ $nama3=trim(substr($name,$nama1,50));
 //echo $data['PartnerName']; ?><?php
 $sql2=sqlsrv_query($conn,"select * from partners where partnername like '$nama2%'");
 $data2=sqlsrv_fetch_array($sql2);
-$sqlalamat=mysqli_query($con,"SELECT alamat1 FROM packing_list WHERE no_sj='$dr[no_sj]' and tgl_update='$dr[tgl_update]'  LIMIT 1");
-	$rAlt=mysqli_fetch_array($sqlalamat);
+$sqlalamat=sqlsrv_query($con,"SELECT alamat1 FROM packing_list WHERE no_sj='$dr[no_sj]' and tgl_update='$dr[tgl_update]'  LIMIT 1");
+	$rAlt=sqlsrv_fetch_array($sqlalamat);
 if($data['ID']!=$data2['ID']){
 	if($rAlt['alamat1']!=""){$kirim=" Kirim Ke: ".$rAlt['alamat1']." ";}else{$kirim=" ";} 
 	echo ", "/*.$data2['CompanyTitle']*/." $nama3<br>".$kirim/*.$data['Address']*/." <br>"./*$data['PostalCode'].*/" "/*.$data['City']*/."<br> "."PHONE : "/*.trim($data['PhoneNumber'])*/."<br> FAX : "/*.$data['FaxNumber']*/;
@@ -231,8 +231,8 @@ LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj=tmp_detail_kite
 LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 WHERE  `packing_list`.`no_sj`='$_GET[no_sj]'  ".$tglkirim."
 GROUP BY detail_pergerakan_stok.nokk,ukuran";
-$data1=mysqli_query($con,$sqlr);
-$jrow1= mysqli_num_rows($data1);
+$data1=sqlsrv_query($con,$sqlr);
+$jrow1= sqlsrv_num_rows($data1);
 $rt=ceil($jrow1/4);
 $a=0 + $_GET['a'];
 $sql= "SELECT *,count(detail_pergerakan_stok.no_roll) as roll,sum(detail_pergerakan_stok.weight) as _berat,sum(detail_pergerakan_stok.yard_) as _yard_,sum(tmp_detail_kite.netto) as _netto_ from packing_list 
@@ -242,16 +242,16 @@ LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 WHERE  `packing_list`.`no_sj`='$_GET[no_sj]'  ".$tglkirim."
 GROUP BY detail_pergerakan_stok.nokk,ukuran LIMIT $a,4 "; 
 	}
-		$data=mysqli_query($con,$sql);
-		$jrow= mysqli_num_rows($data);
+		$data=sqlsrv_query($con,$sql);
+		$jrow= sqlsrv_num_rows($data);
 		
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
+	 while($rowd=sqlsrv_fetch_array($data)){
 		 $sql_ = "SELECT * from tbl_kite where nokk='$rowd[nokk]'";
-         $data_=mysqli_query($con,$sql_);
-		 $rowd_=mysqli_fetch_array($data_);
+         $data_=sqlsrv_query($con,$sql_);
+		 $rowd_=sqlsrv_fetch_array($data_);
 		 ?>
   <tr>
     <td height="58"><div align="center"><strong><font size="+1"><?php echo $rowd['roll']; ?></font></strong></div></td>
@@ -343,8 +343,8 @@ $rjns=sqlsrv_fetch_array($sqljns);
   </tr>
 </table>
 <?php 	
-$qryt=mysqli_query($con,"SELECT  now() as tgl");
-$dtgl=mysqli_fetch_array($qryt);
+$qryt=sqlsrv_query($con,"SELECT  now() as tgl");
+$dtgl=sqlsrv_fetch_array($qryt);
 ?>
 <b>PrintDate :
       <?php echo date("d F Y H:i:s", strtotime($dtgl['tgl']));?></b>

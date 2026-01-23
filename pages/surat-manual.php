@@ -26,8 +26,8 @@
       <td><input name="awal" type="text" id="awal" value="<?php echo $_GET['tglkirim'];?>" onchange="window.location='?p=surat-manual&amp;no_sj=<?php echo $_GET['no_sj'];?>&amp;tglkirim='+this.value"  placeholder="0000-00-00" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}$"  required="required" size="10"/>
         *</td>
       <?php 
-			$sql=mysqli_query($con,"select * from tbl_pengiriman where no_sj='".$_GET['no_sj']."' and tgl_kirim='".$_GET['tglkirim']."' and  ISNULL(kategori) order by id asc");
-			$d=mysqli_fetch_array($sql);
+			$sql=sqlsrv_query($con,"select * from tbl_pengiriman where no_sj='".$_GET['no_sj']."' and tgl_kirim='".$_GET['tglkirim']."' and  ISNULL(kategori) order by id asc");
+			$d=sqlsrv_fetch_array($sql);
 			?>
       <td>No. PO</td>
       <td>:</td>
@@ -103,9 +103,9 @@
     <td width="6%">AKSI</td>
   </tr>
   <?php 
-			$qry=mysqli_query($con,"select * from tbl_pengiriman where no_sj='".$_GET['no_sj']."' and tgl_kirim='".$_GET['tglkirim']."' and tmp_hapus='0' and ISNULL(kategori) order by id asc");
+			$qry=sqlsrv_query($con,"select * from tbl_pengiriman where no_sj='".$_GET['no_sj']."' and tgl_kirim='".$_GET['tglkirim']."' and tmp_hapus='0' and ISNULL(kategori) order by id asc");
 			$no=1;
-			while($row=mysqli_fetch_array($qry)){
+			while($row=sqlsrv_fetch_array($qry)){
 	$bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
   ?>
   <tr bgcolor="<?php echo $bgcolor;?>" >
@@ -126,16 +126,16 @@
 if($_POST['SIMPAN']=="SIMPAN"){
 	$jk=addslashes($_POST['jenis_kain']);
 	$po=addslashes($_POST['no_po']);
-	$qrysimpan=mysqli_query($con,"INSERT INTO `tbl_pengiriman` (`no_sj`, `warna`, `rol`, `qty`, `buyer`, `no_po`, `no_order`, `jenis_kain`, `lot`, `tujuan`, `ket`, `tgl_kirim`, `tgl_buat`, `tgl_update`,`tmp_hapus`,`foc`) VALUES ('".$_POST['no_sj']."', '".$_POST['warna']."', '".$_POST['rol']."', '".$_POST['qty']."', '".$_POST['pelanggan']."', '$po', '".$_POST['no_order']."', '$jk', '".$_POST['lot']."', '".$_POST['tujuan']."', '".$_POST['ket']."', '".$_POST['awal']."', '".$_POST['buat']."', now(),'0','".$_POST['foc']."')");
+	$qrysimpan=sqlsrv_query($con,"INSERT INTO `tbl_pengiriman` (`no_sj`, `warna`, `rol`, `qty`, `buyer`, `no_po`, `no_order`, `jenis_kain`, `lot`, `tujuan`, `ket`, `tgl_kirim`, `tgl_buat`, `tgl_update`,`tmp_hapus`,`foc`) VALUES ('".$_POST['no_sj']."', '".$_POST['warna']."', '".$_POST['rol']."', '".$_POST['qty']."', '".$_POST['pelanggan']."', '$po', '".$_POST['no_order']."', '$jk', '".$_POST['lot']."', '".$_POST['tujuan']."', '".$_POST['ket']."', '".$_POST['awal']."', '".$_POST['buat']."', now(),'0','".$_POST['foc']."')");
 	if($qrysimpan){
 		echo "<script> alert('Data Tersimpan');window.location.href='?p=surat-manual&no_sj=".$_POST['no_sj']."'</script>";
 		}
 	}
 if($_GET['h']=="1"){
-	$sqllist=mysqli_query($con,"SELECT * FROM tbl_pengiriman WHERE id=".$_GET['id']." ");
-	$rlist=mysqli_fetch_array($sqllist);
-	$sqlhapus=mysqli_query($con,"UPDATE packing_list SET no_sj=null WHERE id='".$rlist['id_list']."'");
-	$qryhapus=mysqli_query($con,"UPDATE tbl_pengiriman SET id_list=null,`tmp_hapus`='1' WHERE id=".$_GET['id']."");
+	$sqllist=sqlsrv_query($con,"SELECT * FROM tbl_pengiriman WHERE id=".$_GET['id']." ");
+	$rlist=sqlsrv_fetch_array($sqllist);
+	$sqlhapus=sqlsrv_query($con,"UPDATE packing_list SET no_sj=null WHERE id='".$rlist['id_list']."'");
+	$qryhapus=sqlsrv_query($con,"UPDATE tbl_pengiriman SET id_list=null,`tmp_hapus`='1' WHERE id=".$_GET['id']."");
 	if($qryhapus){
 		echo "<script> alert('Data Telah dihapus');window.location.href='?p=surat-manual&no_sj=".$_GET['sj']."&tglkirim=".$_GET['tglkirim']."'</script>";}
 	}	

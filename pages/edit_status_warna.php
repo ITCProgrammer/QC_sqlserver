@@ -10,11 +10,11 @@
     <?php
 	ini_set("error_reporting",1);
     include '../koneksi.php';
-    $sqlGetSttsClr = mysqli_query($con,"SELECT `id`, `note` from tbl_status_warna where id_pergerakan = '".$_GET['id_pergerakan']."' and id_detail = '".$_GET['id_detail']."' and nokk ='".$_GET['nokk']."' LIMIT 1");
-    $dataSttsClr = mysqli_fetch_array($sqlGetSttsClr);
+    $sqlGetSttsClr = sqlsrv_query($con,"SELECT `id`, `note` from tbl_status_warna where id_pergerakan = '".$_GET['id_pergerakan']."' and id_detail = '".$_GET['id_detail']."' and nokk ='".$_GET['nokk']."' LIMIT 1");
+    $dataSttsClr = sqlsrv_fetch_array($sqlGetSttsClr);
     if (isset($_POST['btnSimpan'])) {
         $id_detaiL = $_POST['id_detail'];
-        $sql = mysqli_query($con,"INSERT into tbl_status_warna set 
+        $sql = sqlsrv_query($con,"INSERT into tbl_status_warna set 
                      `id_pergerakan` = '".$_POST['id_pergerakan']."',
                      `id_detail` = '$id_detaiL',
                      `nokk` = '".$_POST['nokk']."',

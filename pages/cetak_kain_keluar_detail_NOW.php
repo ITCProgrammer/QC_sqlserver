@@ -74,7 +74,7 @@ if($_GET['tgl1']!="")
 	  $tran=" AND typetrans='2' AND a.ket LIKE 'REVISI STIKER%'"  ;}
 	else{$tran="";}
 if($_GET['ckKite']=="1"){$kite="AND (b.sisa='KITE' OR b.sisa='FKSI')";}else{$kite="";}	
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
 	b.id_detail_kj,a.no_sj,a.tgl_sj,a.documentno,a.blok,b.weight,b.yard_,b.no_roll,b.SN,
 	b.satuan,b.grade,b.sisa,b.nokk,sum(b.weight) as tot_qty,count(b.yard_) as tot_rol,sum(b.yard_) as tot_yard,
 	SUM(case when b.grade='A' or b.grade='' then b.weight else 0 end) as grd_a,
@@ -95,13 +95,13 @@ if($_GET['ckKite']=="1"){$kite="AND (b.sisa='KITE' OR b.sisa='FKSI')";}else{$kit
 	ORDER BY
 	a.id");
   $c=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
-	  $qry1=mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."' LIMIT 1");
-		  $rowk=mysqli_fetch_array($qry1);
-	  /*$mySql =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='$row[nokk]' AND keterangan='$row[sisa]' AND not tempat='' order by id desc");
-	   $myBlk = mysqli_fetch_array($mySql);
-	  $mySql1=mysqli_query($con,"SELECT
+	  $qry1=sqlsrv_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."' LIMIT 1");
+		  $rowk=sqlsrv_fetch_array($qry1);
+	  /*$mySql =sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='$row[nokk]' AND keterangan='$row[sisa]' AND not tempat='' order by id desc");
+	   $myBlk = sqlsrv_fetch_array($mySql);
+	  $mySql1=sqlsrv_query($con,"SELECT
 	a.blok,
 	b.sisa,b.nokk
 	FROM
@@ -116,17 +116,17 @@ if($_GET['ckKite']=="1"){$kite="AND (b.sisa='KITE' OR b.sisa='FKSI')";}else{$kit
 	b.nokk,b.sisa
 	ORDER BY
 	a.tgl_update,a.id");
-		$myBlk1 = mysqli_fetch_array($mySql1);*/
-	  $mySqlLK =mysqli_query($con,"SELECT GROUP_CONCAT(DISTINCT lokasi) as lokasi FROM detail_pergerakan_stok WHERE nokk='".$row['nokk']."' AND (transtatus='0' or transtatus='1') order by id desc");
-	   $myLK = mysqli_fetch_array($mySqlLK);
+		$myBlk1 = sqlsrv_fetch_array($mySql1);*/
+	  $mySqlLK =sqlsrv_query($con,"SELECT GROUP_CONCAT(DISTINCT lokasi) as lokasi FROM detail_pergerakan_stok WHERE nokk='".$row['nokk']."' AND (transtatus='0' or transtatus='1') order by id desc");
+	   $myLK = sqlsrv_fetch_array($mySqlLK);
 	  ?>
     <tr>
       <td align="left"><?php echo date("d-M-Y", strtotime($row['tgl_sj']));?></td>
-      <td align="left">'<?php $qry=mysqli_query($con," SELECT b.no_sj,a.refno,a.id_detail_kj from detail_pergerakan_stok a
+      <td align="left">'<?php $qry=sqlsrv_query($con," SELECT b.no_sj,a.refno,a.id_detail_kj from detail_pergerakan_stok a
 INNER JOIN pergerakan_stok c ON a.id_stok=c.id
 LEFT JOIN packing_list b ON a.refno=b.listno
 WHERE a.nokk='".$row['nokk']."' and a.id_detail_kj='".$row['id_detail_kj']."' and (ISNULL(a.transtatus) or not ISNULL(a.transtatus)) and NOT ISNULL(a.refno) and NOT ISNULL(b.no_sj) "); 
-	  $rsj=mysqli_fetch_array($qry);
+	  $rsj=sqlsrv_fetch_array($qry);
 	  if($row['no_sj']==""){echo $rsj['no_sj'];}else{echo $row['no_sj'];}?></td>
       <td align="left"><?php echo $row['documentno'];?></td>
     <td align="left"><?php echo $rowk['no_item'];?></td>

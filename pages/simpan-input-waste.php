@@ -18,7 +18,7 @@ if($_POST['submit']=='Save'){
         $tempat_bs = $_POST['tempat_bs'];
         //$id=$_POST['check'];      
             for($l=0; $l < count($kategori_bs); $l++){
-                $u1=mysqli_query($con,"UPDATE mutasi_kain SET 
+                $u1=sqlsrv_query($con,"UPDATE mutasi_kain SET 
                 kategori_bs='$kategori_bs[$l]',
                 p_jawab='$p_jawab[$l]',
                 masalah_bs='$masalah_bs[$l]',

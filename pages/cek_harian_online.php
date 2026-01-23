@@ -31,7 +31,7 @@ function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDe
     $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
   }
 
-  $theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($theValue) : mysqli_escape_string($theValue);
+  $theValue = function_exists("sqlsrv_real_escape_string") ? sqlsrv_real_escape_string($theValue) : sqlsrv_escape_string($theValue);
 
   switch ($theType) {
     case "text":
@@ -64,17 +64,17 @@ if (isset($_GET['pageNum_s'])) {
 }
 $startRow_s = $pageNum_s * $maxRows_s;
 
-mysqli_select_db($db);
+sqlsrv_select_db($db);
 $query_s = "SELECT no_mutasi FROM mutasi_kain where no_mutasi like '%$_POST[no]%' group by no_mutasi order by no_mutasi desc";
 $query_limit_s = sprintf("%s LIMIT %d, %d", $query_s, $startRow_s, $maxRows_s);
-$s = mysqli_query($con,$query_limit_s) or die(mysqli_error());
-$row_s = mysqli_fetch_assoc($s);
+$s = sqlsrv_query($con,$query_limit_s) or die(sqlsrv_error());
+$row_s = sqlsrv_fetch_assoc($s);
 
 if (isset($_GET['totalRows_s'])) {
   $totalRows_s = $_GET['totalRows_s'];
 } else {
-  $all_s = mysqli_query($con,$query_s);
-  $totalRows_s = mysqli_num_rows($all_s);
+  $all_s = sqlsrv_query($con,$query_s);
+  $totalRows_s = sqlsrv_num_rows($all_s);
 }
 $totalPages_s = ceil($totalRows_s/$maxRows_s)-1;
 
@@ -141,7 +141,7 @@ $queryString_s = sprintf("&totalRows_s=%d%s", $totalRows_s, $queryString_s);
     <td><?php echo $row_s['no_mutasi'];?></td>
     <td align="center"> <a href="pages/cetak/cetak_online_mutasi_online.php?mutasi=<?php echo $row_s['no_mutasi']; ?>" target="_blank" >Cetak</a> </td>
   </tr>
-  <?php $no++;} while ($row_s = mysqli_fetch_assoc($s)); ?>
+  <?php $no++;} while ($row_s = sqlsrv_fetch_assoc($s)); ?>
 </table>
 <table border="0">
     <tr>
@@ -162,7 +162,7 @@ $queryString_s = sprintf("&totalRows_s=%d%s", $totalRows_s, $queryString_s);
 </h3>
 <hr />
 <?php
-mysqli_free_result($s);
+sqlsrv_free_result($s);
 ?>
 </body>
 </html>

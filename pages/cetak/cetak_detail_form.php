@@ -15,12 +15,12 @@
 include("../../koneksi.php");
 
 	
-  $sql1=mysqli_query($con,"SELECT *,detail_kite.yard_ as yard_, detail_kite.yard_ as roll, detail_kite.net_wight as bruto
+  $sql1=sqlsrv_query($con,"SELECT *,detail_kite.yard_ as yard_, detail_kite.yard_ as roll, detail_kite.net_wight as bruto
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.nokk='".$_GET['id']."'
 ORDER BY detail_kite.id ASC");
-  $row1=mysqli_fetch_array($sql1);
-  $jumlah=mysqli_num_rows($sql1);
+  $row1=sqlsrv_fetch_array($sql1);
+  $jumlah=sqlsrv_num_rows($sql1);
    ?>
 <script>
    
@@ -49,23 +49,23 @@ if(yrd=="meter"){
 	   if(substr($_GET['user_name'],0,6)=="INSPEK"){
 	  $ket="INSPEK";}else{$ket='';}
 	  
- 	$sql=mysqli_query($con,"SELECT * , detail_kite.yard_ AS yard_, detail_kite.yard_ AS roll, detail_kite.net_wight AS bruto,detail_kite.satuan,sisa
+ 	$sql=sqlsrv_query($con,"SELECT * , detail_kite.yard_ AS yard_, detail_kite.yard_ AS roll, detail_kite.net_wight AS bruto,detail_kite.satuan,sisa
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tbl_kite.nokk = '".$_GET['id']."' and detail_kite.ket='$ket' group by no_roll
 ORDER BY detail_kite.id ASC limit 0,20"); 
-$sql2=mysqli_query($con,"SELECT * , detail_kite.yard_ AS yard_, detail_kite.yard_ AS roll, detail_kite.net_wight AS bruto,detail_kite.satuan,sisa
+$sql2=sqlsrv_query($con,"SELECT * , detail_kite.yard_ AS yard_, detail_kite.yard_ AS roll, detail_kite.net_wight AS bruto,detail_kite.satuan,sisa
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tbl_kite.nokk = '".$_GET['id']."' and detail_kite.ket='$ket' group by no_roll
 ORDER BY detail_kite.id ASC limit 20,20"); 
-$sql3=mysqli_query($con,"SELECT * , detail_kite.yard_ AS yard_, detail_kite.yard_ AS roll, detail_kite.net_wight AS bruto,detail_kite.satuan,sisa
+$sql3=sqlsrv_query($con,"SELECT * , detail_kite.yard_ AS yard_, detail_kite.yard_ AS roll, detail_kite.net_wight AS bruto,detail_kite.satuan,sisa
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tbl_kite.nokk = '".$_GET['id']."' and detail_kite.ket='$ket' group by no_roll
 ORDER BY detail_kite.id ASC limit 40,20");
 	$no=1;
-  $row1=mysqli_fetch_array($sql1)
+  $row1=sqlsrv_fetch_array($sql1)
   ?>
     <table width="20%" align="center" border="0" class="table-list">
   
@@ -82,7 +82,7 @@ ORDER BY detail_kite.id ASC limit 40,20");
     
   </tr>
  <?php
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {	
 	  ?>
       <tr >
@@ -114,7 +114,7 @@ ORDER BY detail_kite.id ASC limit 40,20");
       <td width="54%">Keterangan</td>
     </tr>
     <?php
-  while($row2=mysqli_fetch_array($sql2))
+  while($row2=sqlsrv_fetch_array($sql2))
   {	
 	  ?>
     <tr >
@@ -147,7 +147,7 @@ ORDER BY detail_kite.id ASC limit 40,20");
       <td width="54%">Keterangan</td>
     </tr>
     <?php
-  while($row3=mysqli_fetch_array($sql3))
+  while($row3=sqlsrv_fetch_array($sql3))
   {	
 	  ?>
     <tr >

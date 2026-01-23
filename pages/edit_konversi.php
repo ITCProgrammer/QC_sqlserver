@@ -10,11 +10,11 @@
     <?php
 	ini_set("error_reporting",1);
     include '../koneksi.php';
-    $sqlKonv = mysqli_query($con,"SELECT * from tbl_konversi_accsj LIMIT 1");
-    $dtKonv = mysqli_fetch_array($sqlKonv);
-    $cekKonv=mysqli_num_rows($sqlKonv);
+    $sqlKonv = sqlsrv_query($con,"SELECT * from tbl_konversi_accsj LIMIT 1");
+    $dtKonv = sqlsrv_fetch_array($sqlKonv);
+    $cekKonv=sqlsrv_num_rows($sqlKonv);
     if (isset($_POST['btnSimpan']) AND $cekKonv>0) {
-        $sql = mysqli_query($con,"UPDATE tbl_konversi_accsj SET 
+        $sql = sqlsrv_query($con,"UPDATE tbl_konversi_accsj SET 
                     `konversi`='".$_POST['konversi']."',
                     `ipaddress`='".$_SERVER['REMOTE_ADDR']."',
                     `tgl_update`=now()
@@ -26,7 +26,7 @@
             $msg = "Gagal Diubah, Error !";
         }
     } else if(isset($_POST['btnSimpan']) AND $cekKonv==0){
-        $sqlInsert=mysqli_query($con,"INSERT INTO tbl_konversi_accsj SET
+        $sqlInsert=sqlsrv_query($con,"INSERT INTO tbl_konversi_accsj SET
             `konversi`='".$_POST['konversi']."',
             `ipaddress`='".$_SERVER['REMOTE_ADDR']."',
             `tgl_update`=now()

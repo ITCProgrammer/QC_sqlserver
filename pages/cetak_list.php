@@ -1,6 +1,6 @@
 <?php 
 //include"koneksi.php";
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -68,14 +68,14 @@ $startRow_s = $pageNum_s * $maxRows_s;
 
 $query_s = "SELECT listno,id,ket FROM packing_list where listno like '%".$_POST['no']."%' order by id desc";
 $query_limit_s = sprintf("%s LIMIT %d, %d", $query_s, $startRow_s, $maxRows_s);
-$s = mysqli_query($con,$query_limit_s) or die(mysql_error());
-$row_s = mysqli_fetch_assoc($s);
+$s = sqlsrv_query($con,$query_limit_s) or die(mysql_error());
+$row_s = sqlsrv_fetch_assoc($s);
 
 if (isset($_GET['totalRows_s'])) {
   $totalRows_s = $_GET['totalRows_s'];
 } else {
-  $all_s = mysqli_query($con,$query_s);
-  $totalRows_s = mysqli_num_rows($all_s);
+  $all_s = sqlsrv_query($con,$query_s);
+  $totalRows_s = sqlsrv_num_rows($all_s);
 }
 $totalPages_s = ceil($totalRows_s/$maxRows_s)-1;
 
@@ -141,7 +141,7 @@ $queryString_s = sprintf("&totalRows_s=%d%s", $totalRows_s, $queryString_s);
     
     </td>
   </tr>
-  <?php $no++;} while ($row_s = mysqli_fetch_assoc($s)); ?>
+  <?php $no++;} while ($row_s = sqlsrv_fetch_assoc($s)); ?>
 </table>
 <table border="0">
     <tr>
@@ -162,7 +162,7 @@ $queryString_s = sprintf("&totalRows_s=%d%s", $totalRows_s, $queryString_s);
 </h3>
 <hr />
 <?php
-mysqli_free_result($s);
+sqlsrv_free_result($s);
 ?>
 </body>
 </html>

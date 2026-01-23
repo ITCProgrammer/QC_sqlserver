@@ -77,7 +77,7 @@ body{
     
   <?php
   if($_POST['submit']=='TAMBAH'){
-	   $cari=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list']."' limit 1");
+	   $cari=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list']."' limit 1");
 	  if($cari >0){ 
  	  echo "<script>alert('Data Ditambahkan');window.location.href='../index1.php?p=surat_keluar_krah&dono=".$_POST['dono']."&nosj=".$_POST['ket']."';</script>";
 	 }

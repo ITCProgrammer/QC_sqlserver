@@ -1,6 +1,6 @@
 <?php 
 //include_once("../koneksi.php");
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 ini_set("error_reporting",1);
 ?>
 <html>
@@ -77,16 +77,16 @@ body{
 	<tr>
   <?php
   if($_POST['submit']=='TAMBAH'){
-  $cari=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list']."' limit 1");
-  $cari1=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list2']."' limit 1");
-  $cari2=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list3']."' limit 1");
-  $cari3=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list4']."' limit 1");
-  $cari4=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list5']."' limit 1");
-  $cari5=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list6']."' limit 1");
-  $cari6=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list7']."' limit 1");
-  $cari7=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list8']."' limit 1");
-  $cari8=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list9']."' limit 1");
-  $cari9=mysqli_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list10']."' limit 1");
+  $cari=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list']."' limit 1");
+  $cari1=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list2']."' limit 1");
+  $cari2=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list3']."' limit 1");
+  $cari3=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list4']."' limit 1");
+  $cari4=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list5']."' limit 1");
+  $cari5=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list6']."' limit 1");
+  $cari6=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list7']."' limit 1");
+  $cari7=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list8']."' limit 1");
+  $cari8=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list9']."' limit 1");
+  $cari9=sqlsrv_query($con,"update `packing_list` set `no_sj`='".$_POST['ket']."',tgl_update='".$_POST['tglawal']."',tgl_buat='".$_POST['tglbuat']."' where `listno`='".$_POST['no_list10']."' limit 1");
 	  if($cari >0){ 
  	  echo "<script>alert('Data Ditambahkan');window.location.href='../index1.php?p=surat_keluar&dono=".$_POST['dono']."&nosj=".$_POST['ket']."';</script>";
 	 }
@@ -94,4 +94,4 @@ body{
  ?>
   
 <!--window.open('cetak_surat_jalan.php?dono=$_POST[dono]&no_sj=$_POST[ket]','_blank');window.location.href='../index1.php?p=surat_keluar&dono=$_POST[dono]'; -->
-<?php mysqli_close($con); ?>		
+<?php sqlsrv_close($con); ?>		

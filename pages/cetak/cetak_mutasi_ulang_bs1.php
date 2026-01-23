@@ -51,12 +51,12 @@ border:hidden;
   <table width="100%" border="0" class="table-list1">
   <tr>
    <?php   	
-	$lth=mysqli_query($con,"select pergerakan_stok.tgl_update as tanggal_update ,pergerakan_stok.userid as user_packing ,mutasi_kain.no_mutasi 
+	$lth=sqlsrv_query($con,"select pergerakan_stok.tgl_update as tanggal_update ,pergerakan_stok.userid as user_packing ,mutasi_kain.no_mutasi 
 from mutasi_kain
 inner JOIN pergerakan_stok on pergerakan_stok.id=mutasi_kain.id_stok
 where mutasi_kain.no_mutasi='$_GET[mutasi]'
 GROUP BY no_mutasi");
-	$rowlth=mysqli_fetch_array($lth);	
+	$rowlth=sqlsrv_fetch_array($lth);	
 	?>
    <div align="center"> <h2>MUTASI KAIN BS(WASTE)</h2></div>
    <?php ?>
@@ -107,7 +107,7 @@ GROUP BY no_mutasi");
   <?php
  $usr=substr($rowlth['user_packing'],0,3);
  if($usr=="INS" or $usr=="ins"){$kt="AND detail_pergerakan_stok.ket='INSPEK'"; $ktc="INSPEK"; $usr1="INS";}elseif($usr=="KRA" or $usr=="kra"){$kt=""; $ktc="";$usr1="KRA";}else{$kt=""; $ktc="";$usr1="PAC";}
- $sql=mysqli_query($con,"select pergerakan_stok.id,bruto,satuan,pergerakan_stok.no_mutasi,
+ $sql=sqlsrv_query($con,"select pergerakan_stok.id,bruto,satuan,pergerakan_stok.no_mutasi,
 no_mc,pelanggan,tbl_kite.no_po,tbl_kite.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,tbl_kite.user_packing,
 lebar,berat,detail_pergerakan_stok.nokk,grade,
@@ -128,11 +128,11 @@ $totqty=0;
 $totqty1=0;
 $grab=0;
 $grc=0;	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {	 
-  	$sqlket=mysqli_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='$row[nokk]' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
+  	$sqlket=sqlsrv_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='$row[nokk]' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
 GROUP BY ket_c");
-$rowket=mysqli_fetch_array($sqlket);
+$rowket=sqlsrv_fetch_array($sqlket);
 	
 	?>
     <tr >

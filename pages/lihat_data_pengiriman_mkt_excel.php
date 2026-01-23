@@ -54,7 +54,7 @@ $thn=date("Y", strtotime($_GET['awal'])); ?>
     if($_POST['buyer']!=""){
       $buyer= " AND buyer LIKE '%".$_GET['buyer']."%' ";
     }	 
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
 	id,tgl_kirim,tgl_buat,no_sj,warna,rol,qty,panjang,buyer,no_po,no_order,no_item,jenis_kain,lot,tujuan,ket,foc,approve_acc
 FROM
 	tbl_pengiriman
@@ -64,12 +64,12 @@ ORDER BY no_sj asc");
   $awal=date("Y-m-", strtotime($_GET['awal']));
   $takhir=date("Y-m-d", strtotime($_GET['akhir']));
   $nawal=$awal."01";
- $sql2=mysqli_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
+ $sql2=sqlsrv_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
 WHERE tmp_hapus='0' AND not no_sj='' AND tgl_buat BETWEEN '$nawal' AND '$takhir' AND ISNULL(kategori)");
-$row2=mysqli_fetch_array($sql2);
+$row2=sqlsrv_fetch_array($sql2);
 $no=1;
 $c=0;
-while($row=mysqli_fetch_array($sql)){
+while($row=sqlsrv_fetch_array($sql)){
 	$bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
   ?>
   <tr valign="top" >

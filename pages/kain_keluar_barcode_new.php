@@ -39,16 +39,17 @@ $(function () {
 <body><?php
 function docno(){
 	//include("koneksi.php");
-	$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+	// $con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
+	include(__DIR__ . '../../koneksi.php');
 		date_default_timezone_set("Asia/Jakarta");
 		$format = date("ymd")."3";
-		$sql=mysqli_query($con,"SELECT documentno FROM pergerakan_stok WHERE substr(documentno,1,7) like '%".$format."%'
-		ORDER BY documentno DESC LIMIT 1 ") or die (mysql_error());
-		$d=mysqli_num_rows($sql);
+		$sql=sqlsrv_query($con,"SELECT TOP 1 documentno FROM db_qc.pergerakan_stok WHERE SUBSTRING(documentno,1,7) like '%".$format."%'
+		ORDER BY documentno DESC ") or die (sqlsrv_errors());
+		$d=sqlsrv_num_rows($sql);
 		if($d>0){
-			$r=mysqli_fetch_array($sql);
+			$r=sqlsrv_fetch_array($sql);
 			$d=$r['documentno'];
-			$str=substr($d,7,3);
+			$str=SUBSTRING($d,7,3);
 			$Urut = (int)$str;
 		}else{
 			$Urut = 0;
@@ -85,8 +86,8 @@ $Barcode		= substr($_POST['barcode'],-13);
 //$DataTerima	= isset($_POST['terima']) ? $_POST['terima'] : '';
 if(isset($_POST['btnBatal'])){
 	# Kosongkan Tmp jika datanya sudah dipindah
-		$hapusSql = "DELETE FROM tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
-		mysqli_query($con,$hapusSql) or die ("Gagal kosongkan tmp".mysql_error());
+		$hapusSql = "DELETE FROM db_qc.tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
+		sqlsrv_query($con,$hapusSql) or die ("Gagal kosongkan tmp".sqlsrv_errors());
 
 		// Refresh form
 		//echo "<meta http-equiv='refresh' content='0; url=cetak/transaksi_pembelian_cetak.php?noNota=$noTransaksi'>";
@@ -98,15 +99,15 @@ if(isset($_POST['btnBatal'])){
 if(isset($_POST['btnTambah'])){
 
 			# Jika sudah pernah dipilih
-		$cekSql ="SELECT * FROM tmp_detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='2' AND userid='".$usernm."'";
-		$cekQry = mysqli_query($con,$cekSql) or die ("Gagal Query".mysql_error());
-		$cekSql1 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' AND (transtatus='1' or transtatus='0')";
-		$cekQry1 = mysqli_query($con,$cekSql1) or die ("Gagal Query d".mysql_error());
-		$cekSql0 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' and transtatus=' '";
-		$cekQry0 = mysqli_query($con,$cekSql0) or die ("Gagal Query d".mysql_error());
-		$c0=mysqli_fetch_array($cekQry0);
-		$cekSql2 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='2'";
-		$cekQry2 = mysqli_query($con,$cekSql2) or die ("Gagal Query d".mysql_error());
+		$cekSql ="SELECT * FROM db_qc.tmp_detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='2' AND userid='".$usernm."'";
+		$cekQry = sqlsrv_query($con,$cekSql) or die ("Gagal Query".sqlsrv_errors());
+		$cekSql1 ="SELECT * FROM db_qc.detail_pergerakan_stok WHERE SN='$Barcode' AND (transtatus='1' or transtatus='0')";
+		$cekQry1 = sqlsrv_query($con,$cekSql1) or die ("Gagal Query d".sqlsrv_errors());
+		$cekSql0 ="SELECT * FROM db_qc.detail_pergerakan_stok WHERE SN='$Barcode' and transtatus=' '";
+		$cekQry0 = sqlsrv_query($con,$cekSql0) or die ("Gagal Query d".sqlsrv_errors());
+		$c0=sqlsrv_fetch_array($cekQry0);
+		$cekSql2 ="SELECT * FROM db_qc.detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='2'";
+		$cekQry2 = sqlsrv_query($con,$cekSql2) or die ("Gagal Query d".sqlsrv_errors());
 		if($NoList!=""){$list=" AND refno='$NoList' ";}
 		else if($NoList2!=""){$list=" AND (refno='$NoList' OR refno='$NoList2') ";}
 		else if($NoList3!=""){$list=" AND (refno='$NoList' OR refno='$NoList2' OR refno='$NoList3') ";}
@@ -117,25 +118,25 @@ if(isset($_POST['btnTambah'])){
 		else if($NoList8!=""){$list=" AND (refno='$NoList' OR refno='$NoList2' OR refno='$NoList3' OR refno='$NoList4' OR refno='$NoList5' OR refno='$NoList6' OR refno='$NoList7' OR refno='$NoList8') ";}
 		else if($NoList9!=""){$list=" AND (refno='$NoList' OR refno='$NoList2' OR refno='$NoList3' OR refno='$NoList4' OR refno='$NoList5' OR refno='$NoList6' OR refno='$NoList7' OR refno='$NoList8' OR refno='$NoList9') ";}
 		else if($NoList10!=""){$list=" AND (refno='$NoList' OR refno='$NoList2' OR refno='$NoList3' OR refno='$NoList4' OR refno='$NoList5' OR refno='$NoList6' OR refno='$NoList7' OR refno='$NoList8' OR refno='$NoList9' OR refno='$NoList10') ";}
-		$cekSql3 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='1' $list ";
-		$cekQry3 = mysqli_query($con,$cekSql3) or die ("Gagal Query d".mysql_error());
-		//if ((mysqli_num_rows($cekQry) >= 1)  or (mysqli_num_rows($cekQry0)<=1) or (mysqli_num_rows($cekQry2)>=1)) {
-			if ((mysqli_num_rows($cekQry) >= 1) or (mysqli_num_rows($cekQry2)>=1) or (mysqli_num_rows($cekQry3)==0 AND strpos($_POST['no_list'],"/")==0)) {
+		$cekSql3 ="SELECT * FROM db_qc.detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='1' $list ";
+		$cekQry3 = sqlsrv_query($con,$cekSql3) or die ("Gagal Query d".sqlsrv_errors());
+		//if ((sqlsrv_num_rows($cekQry) >= 1)  or (sqlsrv_num_rows($cekQry0)<=1) or (sqlsrv_num_rows($cekQry2)>=1)) {
+			if ((sqlsrv_num_rows($cekQry) >= 1) or (sqlsrv_num_rows($cekQry2)>=1) or (sqlsrv_num_rows($cekQry3)==0 AND strpos($_POST['no_list'],"/")==0)) {
 
 			$pesanError = array();
-			if(mysqli_num_rows($cekQry)>=1){
+			if(sqlsrv_num_rows($cekQry)>=1){
 			$pesanError[] = "<b>Data BARCODE <font color='#FF0000'>Sudah ADA </font> di Daftar list ini</b> !";
 			}
-			if((mysqli_num_rows($cekQry0)==1)){
+			if((sqlsrv_num_rows($cekQry0)==1)){
 			$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>Belum Masuk atau Belum diSCAN</font> </b> !";
 			}
-			if((mysqli_num_rows($cekQry3)==0 AND strpos($_POST['no_list'],"/")==0)){
+			if((sqlsrv_num_rows($cekQry3)==0 AND strpos($_POST['no_list'],"/")==0)){
 			$pesanError[] = "<b><font color='#FF0000'>No Packing List dan Data BARCODE Tidak Sesuai, Harap Dicek Kembali!</font></b>";
 			}
-			//if((mysqli_num_rows($cekQry0)==0)){
+			//if((sqlsrv_num_rows($cekQry0)==0)){
 			//$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>Tidak ADA</font> </b> !";
 		//	}
-			if(mysqli_num_rows($cekQry2)>=1){
+			if(sqlsrv_num_rows($cekQry2)>=1){
 			$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>SUDAH KELUAR</font> </b> !";
 			}
 			# JIKA ADA PESAN ERROR DARI VALIDASI
@@ -155,21 +156,21 @@ if(isset($_POST['btnTambah'])){
 
 			# Cek data di dalam tabel Kain, mungkin yang diinput dari form adalah Barcode dan mungkin Kode-nya
 			//$mySql ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='1'";
-			//$myQry = mysqli_query($con,$mySql) or die ("Gagal Query Tmp".mysql_error());
-			//$myRow = mysqli_fetch_array($myQry);
-			//$myQty = mysqli_num_rows($myQry); 
-			$mySql1 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='1'";
-			$myQry1 = mysqli_query($con,$mySql1) or die ("Gagal Query d".mysql_error());
-			$myRow1 = mysqli_fetch_array($myQry1);
-			$myQty1 = mysqli_num_rows($myQry1);
+			//$myQry = sqlsrv_query($con,$mySql) or die ("Gagal Query Tmp".sqlsrv_errors());
+			//$myRow = sqlsrv_fetch_array($myQry);
+			//$myQty = sqlsrv_num_rows($myQry); 
+			$mySql1 ="SELECT * FROM db_qc.detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='1'";
+			$myQry1 = sqlsrv_query($con,$mySql1) or die ("Gagal Query d".sqlsrv_errors());
+			$myRow1 = sqlsrv_fetch_array($myQry1);
+			$myQty1 = sqlsrv_num_rows($myQry1);
 			if ($myQty1 >= 1) {
 				$ketc=str_replace("'","''",$myRow1['ket_c']);
 				// Data yang ditemukan dimasukkan ke keranjang transaksi
-				$tmpSql 	= "INSERT INTO tmp_detail_pergerakan_stok
+				$tmpSql 	= "INSERT INTO db_qc.tmp_detail_pergerakan_stok
 				(id_detail_kj,weight,yard_,no_roll,grade,satuan,sisa,SN,ket,nokk,ket_c,transtatus,userid)
 							VALUES ('$myRow1[id_detail_kj]','$myRow1[weight]','$myRow1[yard_]','$myRow1[no_roll]'
 							, '$myRow1[grade]', '$myRow1[satuan]', '$myRow1[sisa]', '$myRow1[SN]', '$myRow1[ket]', '$myRow1[nokk]', '$ketc','2','".$usernm."')";
-				mysqli_query($con,$tmpSql) or die ("Gagal Query tmp : ".mysql_error());
+				sqlsrv_query($con,$tmpSql) or die ("Gagal Query tmp : ".sqlsrv_errors());
 			}}
 	}
 
@@ -201,9 +202,9 @@ if(isset($_POST['btnSimpan'])){
 	}
 	*/
 	# Validasi jika belum ada satupun data item yang dimasukkan
-	$tmpSql ="SELECT COUNT(*) As qty FROM tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
-	$tmpQry = mysqli_query($con,$tmpSql) or die ("Gagal Query Tmp".mysql_error());
-	$tmpData = mysqli_fetch_array($tmpQry);
+	$tmpSql ="SELECT COUNT(*) As qty FROM db_qc.tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
+	$tmpQry = sqlsrv_query($con,$tmpSql) or die ("Gagal Query Tmp".sqlsrv_errors());
+	$tmpData = sqlsrv_fetch_array($tmpQry);
 	if ($tmpData['qty'] < 1) {
 		$pesanError[] = "<b>DAFTAR KAIN JADI KOSONG</b>, Daftar item kain belum ada yang dimasukan, <b>minimal 1 data </b>.";
 	}
@@ -244,7 +245,7 @@ if(isset($_POST['btnSimpan'])){
 		// $noTransaksi = buatKode("benang_masuk", "NP");
 
 		// Skrip menyimpan data ke tabel transaksi utama
-		$mySql	= "INSERT INTO pergerakan_stok SET
+		$mySql	= "INSERT INTO db_qc.pergerakan_stok SET
 						tgl_update='".$_POST['awal']."',
 						documentno='".$nou."',
 						tgl_sj='".$_POST['awal']."',
@@ -256,15 +257,15 @@ if(isset($_POST['btnSimpan'])){
 						no_pl='$txtNoList $txtNoList2 $txtNoList3 $txtNoList4 $txtNoList5 $txtNoList6 $txtNoList7 $txtNoList8 $txtNoList9 $txtNoList10',
 						no_sj ='$txtDok',
 						userid='".$usernm."'";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".sqlsrv_errors());
 		# Ambil semua data benang/benang yang dipilih, berdasarkan user yg login
-		$tmpSql1 ="SELECT id  FROM pergerakan_stok WHERE typestatus='3' and userid='".$usernm."' ORDER BY id DESC" ;
-		$tmpQry1 = mysqli_query($con,$tmpSql1) or die ("Gagal Query stok ".mysql_error());
-		$tmpData1= mysqli_fetch_array($tmpQry1);
+		$tmpSql1 ="SELECT id  FROM db_qc.pergerakan_stok WHERE typestatus='3' and userid='".$usernm."' ORDER BY id DESC" ;
+		$tmpQry1 = sqlsrv_query($con,$tmpSql1) or die ("Gagal Query stok ".sqlsrv_errors());
+		$tmpData1= sqlsrv_fetch_array($tmpQry1);
 		# Ambil semua data benang/benang yang dipilih, berdasarkan user yg login
-		$tmpSql ="SELECT * FROM tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
-		$tmpQry = mysqli_query($con,$tmpSql) or die ("Gagal Query Tmp".mysql_error());
-		while ($tmpData = mysqli_fetch_array($tmpQry)) {
+		$tmpSql ="SELECT * FROM db_qc.tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
+		$tmpQry = sqlsrv_query($con,$tmpSql) or die ("Gagal Query Tmp".sqlsrv_errors());
+		while ($tmpData = sqlsrv_fetch_array($tmpQry)) {
 			$dataBerat 	= $tmpData['weight'];
 			$dataYard 	= $tmpData['yard_'];
 			$dataKJ 	= $tmpData['id_detail_kj'];
@@ -278,32 +279,48 @@ if(isset($_POST['btnSimpan'])){
 			$dataID		= $tmpData1['id'];
 
 			// Masukkan semua benang/benang dari TMP ke tabel benang_masuk detail
-			$itemSql = "INSERT INTO detail_pergerakan_stok SET
-									id_stok='$dataID',
-									id_detail_kj='$dataKJ',
-									weight='$dataBerat',
-									yard_='$dataYard',
-									no_roll='$dataRol',
-									status ='2',
-									ket_c='$dataKetC',
-									nokk ='$dataKK',
-									transtatus='2',
-									satuan='$dataSatuan',
-									grade='$dataGrade',
-									sisa='$dataSisa',
-									SN='$dataSN'";
-			mysqli_query($con,$itemSql) or die ("Gagal Query item".mysql_error());
+			$itemSql = "INSERT INTO detail_pergerakan_stok (
+						id_stok, 
+						id_detail_kj, 
+						weight, 
+						yard_, 
+						no_roll, 
+						status, 
+						ket_c, 
+						nokk, 
+						transtatus, 
+						satuan, 
+						grade, 
+						sisa, 
+						SN
+					) 
+					VALUES (
+						'$dataID', 
+						'$dataKJ', 
+						'$dataBerat', 
+						'$dataYard', 
+						'$dataRol', 
+						'2', 
+						'$dataKetC', 
+						'$dataKK', 
+						'2', 
+						'$dataSatuan', 
+						'$dataGrade', 
+						'$dataSisa', 
+						'$dataSN'
+					)";
+			sqlsrv_query($con,$itemSql) or die ("Gagal Query item".sqlsrv_errors());
 
-			$itemSqlU="UPDATE detail_pergerakan_stok
+			$itemSqlU="UPDATE db_qc.detail_pergerakan_stok
 								SET transtatus='0'
 								where  (transtatus !='2' or transtatus !=NULL)
 								and SN='$dataSN'";
-			mysqli_query($con,$itemSqlU) or die ("Gagal Query Update".mysql_error());
+			sqlsrv_query($con,$itemSqlU) or die ("Gagal Query Update".sqlsrv_errors());
 		}
 
 		# Kosongkan Tmp jika datanya sudah dipindah
-		$hapusSql = "DELETE FROM tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
-		mysqli_query($con,$hapusSql) or die ("Gagal kosongkan tmp".mysql_error());
+		$hapusSql = "DELETE FROM db_qc.tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
+		sqlsrv_query($con,$hapusSql) or die ("Gagal kosongkan tmp".sqlsrv_errors());
 
 		// Refresh form
 		//echo "<meta http-equiv='refresh' content='0; url=cetak/transaksi_pembelian_cetak.php?noNota=$noTransaksi'>";
@@ -315,8 +332,8 @@ if(isset($_POST['btnSimpan'])){
 }
 
 
-$data1=mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$_GET['kkno']."'");
-$rowk=mysqli_fetch_array($data1);
+$data1=sqlsrv_query($con,"SELECT * FROM db_qc.tbl_kite WHERE nokk='".$_GET['kkno']."'");
+$rowk=sqlsrv_fetch_array($data1);
 ?>
 <fieldset>
 <legend>PILIH DATA KAIN KELUAR</legend>
@@ -499,11 +516,11 @@ $rowk=mysqli_fetch_array($data1);
       </tr>
       <?php
 	//tambahan
-	$data=mysqli_query($con,"SELECT a.*,b.no_order,b.no_po,b.pelanggan,b.no_lot,b.warna FROM tmp_detail_pergerakan_stok a
-	INNER JOIN tmp_detail_kite c on c.id=a.id_detail_kj
-INNER JOIN tbl_kite b ON c.id_kite = b.id WHERE a.transtatus='2' and a.userid='".$usernm."' order by a.no_roll ASC");
+	$data=sqlsrv_query($con,"SELECT a.*,b.no_order,b.no_po,b.pelanggan,b.no_lot,b.warna FROM db_qc.tmp_detail_pergerakan_stok a
+	INNER JOIN db_qc.tmp_detail_kite c on c.id=a.id_detail_kj
+INNER JOIN db_qc.tbl_kite b ON c.id_kite = b.id WHERE a.transtatus='2' and a.userid='".$usernm."' order by a.no_roll ASC");
 	$no=1;
-	 while($rowd=mysqli_fetch_array($data)){?>
+	 while($rowd=sqlsrv_fetch_array($data)){?>
       <?php
 	 $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	 ?>

@@ -1,5 +1,5 @@
 <?php
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");
 //include "koneksi.php";
 ini_set("error_reporting",1);
 ?>
@@ -83,11 +83,11 @@ $Akhir	= isset($_POST['akhir']) ? $_POST['akhir'] : '';
 
 	$no = 1+$posisi; */
 	if($_POST['thn']!=""){$thn=$_POST['thn'];}else{ $thn=$thn_skr;}
-  	$sqldt=mysqli_query($con,"SELECT tgl_tutup,ROUND(SUM(qty_ab),2) as berat,
+  	$sqldt=sqlsrv_query($con,"SELECT tgl_tutup,ROUND(SUM(qty_ab),2) as berat,
 	ROUND(SUM(qty_c),2) as berat1,SUM(rol) as rol,DATE_FORMAT(now(),'%Y-%m-%d') as tgl FROM tbl_stok_kj WHERE tgl_tutup BETWEEN '$Awal' AND '$Akhir'
     GROUP BY tgl_tutup DESC ");
 $c=0;$n=1;
-	while($row=mysqli_fetch_array($sqldt)){
+	while($row=sqlsrv_fetch_array($sqldt)){
 	$bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 
   ?>
@@ -107,7 +107,7 @@ $c=0;$n=1;
 </table>
 <?php
 /* //hitung jumlah data
-$jml_data = mysql_num_rows(mysqli_query($con,"SELECT * FROM tbl_stok_kj GROUP BY tgl_tutup"));
+$jml_data = mysql_num_rows(sqlsrv_query($con,"SELECT * FROM tbl_stok_kj GROUP BY tgl_tutup"));
 //Jumlah halaman
 $JmlHalaman = ceil($jml_data/$batas); //ceil digunakan untuk pembulatan keatas
  

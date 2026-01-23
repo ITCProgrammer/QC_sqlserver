@@ -22,7 +22,7 @@ function ganti(){
 <body>
 <?php
 	function docno(){
-	$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+	$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 	date_default_timezone_set("Asia/Jakarta");
 	$format = date("y");
 	$sql=mysql_query("SELECT documentno FROM pergerakan_stok WHERE substr(documentno,1,2) like '%".$format."%'

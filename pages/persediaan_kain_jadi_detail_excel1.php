@@ -123,7 +123,7 @@
     </tr>
   <?php
 
-  $sql=mysqli_query($con," SELECT
+  $sql=sqlsrv_query($con," SELECT
 	a.tgl_update,c.no_po,c.no_order,a.blok,
 	b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
 	c.warna,c.lebar,c.berat,c.no_item,b.id_stok,a.catat,a.id,b.SN,b.no_roll,
@@ -146,16 +146,16 @@
   $cBooking = "";
   $cMiniBulk="";	
   $p0 = "";	 
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-	   $mySql =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc");
-	   $myBlk = mysqli_fetch_array($mySql);
-	  	$mySqlC =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id desc");
-	   	$myBlkC = mysqli_fetch_array($mySqlC);
+	   $mySql =sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc");
+	   $myBlk = sqlsrv_fetch_array($mySql);
+	  	$mySqlC =sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id desc");
+	   	$myBlkC = sqlsrv_fetch_array($mySqlC);
 
 
-	   $mysqlCek=mysqli_query($con," SELECT
+	   $mysqlCek=sqlsrv_query($con," SELECT
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
 	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
 	SUM(if(b.grade='A' or b.grade='', 1, 0)) as rol_a,
@@ -181,15 +181,15 @@
 	b.id
 	ORDER BY
 	a.id ");
-	$myro = mysqli_fetch_array($mysqlCek);
+	$myro = sqlsrv_fetch_array($mysqlCek);
 	if($myro['tot_rol']>0){
-	   $mySql1 =mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
-	   $myBlk1 = mysqli_fetch_array($mySql1);
-	   $mySql2 =mysqli_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
+	   $mySql1 =sqlsrv_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
+	   $myBlk1 = sqlsrv_fetch_array($mySql1);
+	   $mySql2 =sqlsrv_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
 INNER JOIN detail_pergerakan_stok b ON a.id=b.id_stok
 WHERE b.nokk='".$row['nokk']."' and ISNULL(b.transtatus)
 GROUP BY b.nokk");
-	   $myBlk2 = mysqli_fetch_array($mySql2);
+	   $myBlk2 = sqlsrv_fetch_array($mySql2);
 		if ($row['sisa'] == "SISA" || $row['sisa'] == "FKSI") {
             $brt_sisa = $myro['grd_a'] + $myro['grd_b'] + $myro['grd_c'];
             if ($brt_sisa > 10 and substr($row['tgl_update'], 0, 10) >= "2019-01-01") {

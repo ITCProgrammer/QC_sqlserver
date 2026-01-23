@@ -67,7 +67,7 @@ $order = $_GET['order'];
 	$where9.= " AND DATE_FORMAT(a.tgl_update,'%Y-%m-%d') BETWEEN '$awal' AND '$akhir' ";
 	}else{ $where9.= " "; }
 	if($order=="" and $awal=="" and $akhir==""){ $nowhere.=" AND a.id='' "; }else{$nowhere.="";}
-  $sql=mysqli_query($con,"SELECT DATE_FORMAT(tgl_update,'%M') as bulan, 
+  $sql=sqlsrv_query($con,"SELECT DATE_FORMAT(tgl_update,'%M') as bulan, 
 sum(if(y.kets='Sisa Toleransi',y.kg_skirim1,0)) as sisa_toleransi,
 sum(if(y.kets='Sisa Produksi',y.kg_skirim1,0)) as sisa_produksi,
 sum(if(y.kets='Booking',y.kg_skirim1,0)) as booking,
@@ -121,7 +121,7 @@ SELECT
 	");
   $c=1;
   $no=1;	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
   ?>
   <tr>

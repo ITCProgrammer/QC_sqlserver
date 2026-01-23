@@ -77,7 +77,7 @@ function roundToTwo(num) {
 </table>
 No Kartu Kerja : <strong><em><?php echo $_GET["nokk"];?></em></strong>
 <strong>
-<?php $sql1=mysqli_query($con,"SELECT
+<?php $sql1=sqlsrv_query($con,"SELECT
 	COUNT(b.weight) as totrol,
 	SUM(b.weight) as totba,
 	SUM(b.yard_) as totya
@@ -89,7 +89,7 @@ pergerakan_stok a
 	WHERE
 	(a.typestatus = '1' OR a.typestatus = '2') and (b.status = '0' or b.status = '1')
 	AND not ISNULL(b.transtatus) AND b.transtatus='1' AND trim(c.no_order)='".$_GET['order']."'");
- $row1=mysqli_fetch_array($sql1);
+ $row1=sqlsrv_fetch_array($sql1);
  ?>
 <br />
 Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($row1["totba"],'2','.',',');?> ||  Panjang:<?php echo number_format($row1["totya"],'2','.',',');?>
@@ -111,7 +111,7 @@ Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($
     </tr>
   <?php
 	if($_GET['ketstok']!=""){$ktstok=" AND ket_stok='".$_GET['ketstok']."' ";}else{$ktstok=" AND ISNULL(ket_stok) ";}
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
 	b.id,
 	b.no_roll,
 	b.weight,
@@ -137,7 +137,7 @@ Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($
   $c=1;
   $no=1;
   $n=1;	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  
@@ -163,7 +163,7 @@ Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($
 </div>
 </form>	
 <strong>
-<?php $sql2=mysqli_query($con,"SELECT
+<?php $sql2=sqlsrv_query($con,"SELECT
 	COUNT(b.weight) as totrol,
 	SUM(b.weight) as totba,
 	SUM(b.yard_) as totya
@@ -175,7 +175,7 @@ pergerakan_stok a
 	WHERE
 	(a.typestatus = '1' OR a.typestatus = '2') and (b.status = '0' or b.status = '1')
 	AND not ISNULL(b.transtatus) AND b.transtatus='1' AND trim(c.no_order)='".$_GET['order']."'");
- $row2=mysqli_fetch_array($sql2);
+ $row2=sqlsrv_fetch_array($sql2);
  ?>
  <font color="RED">
 SISA Roll : <?php echo $row2["totrol"];?> || Berat : <?php echo number_format($row2["totba"],'2','.',',');?> || Panjang:<?php echo number_format($row2["totya"],'2','.',',');?></font>
@@ -187,7 +187,7 @@ SISA Roll : <?php echo $row2["totrol"];?> || Berat : <?php echo number_format($r
 <?php
 if($_POST['simpan']=="Simpan"){
 $n1=1;	
-$sqlss=mysqli_query($con,"SELECT
+$sqlss=sqlsrv_query($con,"SELECT
 	b.id,
 	b.no_roll,
 	b.weight,
@@ -210,16 +210,16 @@ $sqlss=mysqli_query($con,"SELECT
 	b.id
 	ORDER BY
 	a.tgl_update,a.id,b.no_roll");
-while($rowss=mysqli_fetch_array($sqlss))
+while($rowss=sqlsrv_fetch_array($sqlss))
   {	
 	if($_POST['check'][$n1] !="") 
 		  {
 $id=$_POST['check'][$n1];
 $sts_stk=$_POST['sts'];
 if($sts_stk!=""){		
-mysqli_query($con,"UPDATE detail_pergerakan_stok SET ket_stok='$sts_stk' WHERE id='$id'")or die("Gagal update");
+sqlsrv_query($con,"UPDATE detail_pergerakan_stok SET ket_stok='$sts_stk' WHERE id='$id'")or die("Gagal update");
 }else{
-mysqli_query($con,"UPDATE detail_pergerakan_stok SET ket_stok=null WHERE id='$id'")or die("Gagal update");	
+sqlsrv_query($con,"UPDATE detail_pergerakan_stok SET ket_stok=null WHERE id='$id'")or die("Gagal update");	
 }
 $n1++;}else{$n1++;}	
 }

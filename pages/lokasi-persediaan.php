@@ -40,15 +40,15 @@ include '../koneksi.php';
 		
 		// Skrip menyimpan data ke tabel transaksi utama
 		$myQry3 ="UPDATE detail_pergerakan_stok SET lokasi='".$_POST['lokasi']."' WHERE id_stok='".$_GET['id']."' and nokk='$TxtNokk' and sisa='$TxtKet' ";
-		$mySql2=mysqli_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
+		$mySql2=sqlsrv_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
 		echo "<script>";
 		echo "</script>";
 		echo "<meta http-equiv='refresh' content='0; url=lokasi-persediaan.php?nokk=$TxtNokk&ket=$TxtKet&status=Blok Sudah diUbah'>";
 	}	
 }
 	    $myQry4 = "SELECT * FROM detail_pergerakan_stok WHERE id_stok='".$_GET['id']."' and nokk='".$_GET['nokk']."' and sisa='".$_GET['ket']."' ";
-		$mySql4 = mysqli_query($con,$myQry4) or die ("Gagal query  ".mysql_error());
-		$rowd	= mysqli_fetch_array($mySql4);
+		$mySql4 = sqlsrv_query($con,$myQry4) or die ("Gagal query  ".mysql_error());
+		$rowd	= sqlsrv_fetch_array($mySql4);
 ?>
 <form id="form1" name="form1" method="post" action="">
   <table width="100%" border="0">
@@ -70,8 +70,8 @@ include '../koneksi.php';
       <td>
       <select name="lokasi" id="lokasi">
       <option value="">Pilih</option>
-	  <?php $qryLok=mysqli_query($con,"SELECT lokasi FROM tbl_lokasi ORDER BY lokasi ASC");
-		while($rLok=mysqli_fetch_array($qryLok)){ ?>	
+	  <?php $qryLok=sqlsrv_query($con,"SELECT lokasi FROM tbl_lokasi ORDER BY lokasi ASC");
+		while($rLok=sqlsrv_fetch_array($qryLok)){ ?>	
         <option value="<?php echo $rLok['lokasi']; ?>" <?php if($rowd['lokasi']==$rLok['lokasi']){ echo "SELECTED"; }?>><?php echo $rLok['lokasi']; ?></option>
 		<?php } ?>
     </select>

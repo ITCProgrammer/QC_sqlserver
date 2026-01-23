@@ -93,7 +93,7 @@ $brt = round($rows['bruto'],2);
 	}else{ $where9.= " "; }
 	if($order=="" and $awal=="" and $akhir==""){ $nowhere.=" AND a.id='' "; }else{$nowhere.="";}
 	
-  $sql=mysqli_query($con,"SELECT *, if(ISNULL(sum(y.kg_skirim1)),0,sum(y.kg_skirim1)) as kg_skirim FROM
+  $sql=sqlsrv_query($con,"SELECT *, if(ISNULL(sum(y.kg_skirim1)),0,sum(y.kg_skirim1)) as kg_skirim FROM
 (SELECT x.*,if(ISNULL(x.kg),0,x.kg) as kg_skirim1 ,
 if(NOT ISNULL(x.ket_stok),x.ket_stok,
 if(x.Booking>0 or x.MiniBulk>0,'Booking',
@@ -136,7 +136,7 @@ SELECT
   $n=1;	
   $sts_sisa="";
   $brt_sisa="0";	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  
@@ -146,10 +146,10 @@ SELECT
 			  $ordrK="1".substr($row['no_order'],1,100);
 			  $ordrKS=$row['no_order'];
 		}
-		    $sqlKirim=mysqli_query($con,"SELECT if(ISNULL(sum(weight)),0,sum(weight)) as kg_kirim FROM tbl_kite a 
+		    $sqlKirim=sqlsrv_query($con,"SELECT if(ISNULL(sum(weight)),0,sum(weight)) as kg_kirim FROM tbl_kite a 
 		 		LEFT JOIN detail_pergerakan_stok b ON a.nokk=b.nokk
 				where a.no_order='$ordrKS' and transtatus='0' ");
-		  $rK=mysqli_fetch_array($sqlKirim);
+		  $rK=sqlsrv_fetch_array($sqlKirim);
 		  if($row['kg_skirim']=="0" or tNet($ordrK)=="0"){$pers="0";}else{$pers=round($row['kg_skirim']/tNet($ordrK),4)*100;}
 	      $strp0=strtoupper($row['no_po']);
 	      $cBooking=strpos($strp0,"BOOKING");

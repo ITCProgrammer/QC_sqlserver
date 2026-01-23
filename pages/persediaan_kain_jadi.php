@@ -335,7 +335,7 @@ include '../koneksi.php';
         </tr>
         <?php
 
-        $sql = mysqli_query($con," SELECT
+        $sql = sqlsrv_query($con," SELECT
 	a.tgl_update,c.no_po,c.no_order,a.blok, 
 	b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
 	c.warna,c.lebar,c.berat,c.no_item, b.id as id_detail,b.id_stok,a.catat,a.id,a.sts_stok,b.ket_stok,
@@ -359,13 +359,13 @@ include '../koneksi.php';
         $cBooking = "";
 		$cMiniBulk="";  
         $p0 = "";
-        while ($row = mysqli_fetch_array($sql)) {
+        while ($row = sqlsrv_fetch_array($sql)) {
           $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-          $mySql = mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc LIMIT 1");
-          $myBlk = mysqli_fetch_array($mySql);
-          $mySqlC = mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id desc LIMIT 1");
-          $myBlkC = mysqli_fetch_array($mySqlC);
-          $mySqlC1 = mysqli_query($con,"SELECT GROUP_CONCAT(
+          $mySql = sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc LIMIT 1");
+          $myBlk = sqlsrv_fetch_array($mySql);
+          $mySqlC = sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id desc LIMIT 1");
+          $myBlkC = sqlsrv_fetch_array($mySqlC);
+          $mySqlC1 = sqlsrv_query($con,"SELECT GROUP_CONCAT(
 		CONCAT(
 			'Untuk Order ',
 			no_order,
@@ -383,12 +383,12 @@ WHERE
 AND a.nokk = '".$row['nokk']."'
 AND a.ket = '".$row['sisa']."'
 AND b.tmp_hapus='0' ");
-          $myBlkC1 = mysqli_fetch_array($mySqlC1);
+          $myBlkC1 = sqlsrv_fetch_array($mySqlC1);
           $catat = "";
           if ($myBlkC1['catatan'] != "") {
             $catat = $myBlkC1['catatan'] . $myBlkC1['sisa'];
           } else {
-            $scek = mysqli_query($con,"SELECT COUNT(*)
+            $scek = sqlsrv_query($con,"SELECT COUNT(*)
 FROM
 	tbl_catat_kain a
 INNER JOIN tbl_catat_detail b ON a.id = b.id_catat
@@ -396,7 +396,7 @@ WHERE
 	a.id_kain = '".$row['id_stok']."'
 AND a.nokk = '".$row['nokk']."'
 AND a.ket = '".$row['sisa']."'");
-            $ck = mysqli_num_rows($scek);
+            $ck = sqlsrv_num_rows($scek);
             if ($ck > 0) {
             } else {
               $catat = $myBlkC['catatan'];
@@ -412,7 +412,7 @@ AND a.ket = '".$row['sisa']."'");
           } else {
             $slok = "";
           }
-          $mysqlCek = mysqli_query($con," SELECT
+          $mysqlCek = sqlsrv_query($con," SELECT
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
 	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
 	SUM(if(b.grade='A' or b.grade='', 1, 0)) as rol_a,
@@ -438,15 +438,15 @@ AND a.ket = '".$row['sisa']."'");
 	b.sisa,b.id_stok,b.ket_stok
 	ORDER BY
 	a.id, b.ket_stok LIMIT 1 ");
-          $myro = mysqli_fetch_array($mysqlCek);
-          $mySql1 = mysqli_query($con,"SELECT berat,lebar,no_item,pelanggan,no_po,no_order,
+          $myro = sqlsrv_fetch_array($mysqlCek);
+          $mySql1 = sqlsrv_query($con,"SELECT berat,lebar,no_item,pelanggan,no_po,no_order,
 	   jenis_kain,warna,no_warna,no_lot FROM tbl_kite WHERE nokk='".$row['nokk']."' LIMIT 1");
-          $myBlk1 = mysqli_fetch_array($mySql1);
-          $mySql2 = mysqli_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
+          $myBlk1 = sqlsrv_fetch_array($mySql1);
+          $mySql2 = sqlsrv_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
 INNER JOIN detail_pergerakan_stok b ON a.id=b.id_stok
 WHERE b.nokk='".$row['nokk']."' and ISNULL(b.transtatus)
 GROUP BY b.nokk LIMIT 1");
-          $myBlk2 = mysqli_fetch_array($mySql2);
+          $myBlk2 = sqlsrv_fetch_array($mySql2);
           if ($row['sisa'] == "SISA" || $row['sisa'] == "FKSI") {
             $brt_sisa = $myro['grd_a'] + $myro['grd_b'] + $myro['grd_c'];
             if ($brt_sisa > 10 and substr($row['tgl_update'], 0, 10) >= "2019-01-01") {
@@ -548,8 +548,8 @@ GROUP BY b.nokk LIMIT 1");
             <td align="center">
               <a href="#" onClick="window.open('edit_status_warna.php?id_pergerakan=<?php echo $row['id_stok']; ?>&nokk=<?php echo $row['nokk']; ?>&id_detail=<?php echo $row['id_detail']; ?>','MyWindow','height=200,width=500,top=250,left=500');">
                 <?php
-                $sqlGetSttsClr = mysqli_query($con,"SELECT * from tbl_status_warna where `id_pergerakan`='".$row['id_stok']."' and `id_detail`='".$row['id_detail']."' and `nokk`='".$row['nokk']."' LIMIT 1");
-                $dataSttsClr = mysqli_fetch_array($sqlGetSttsClr);
+                $sqlGetSttsClr = sqlsrv_query($con,"SELECT * from tbl_status_warna where `id_pergerakan`='".$row['id_stok']."' and `id_detail`='".$row['id_detail']."' and `nokk`='".$row['nokk']."' LIMIT 1");
+                $dataSttsClr = sqlsrv_fetch_array($sqlGetSttsClr);
                 if ($dataSttsClr['note'] != '') {
                   echo $dataSttsClr['note'];
                 } else {

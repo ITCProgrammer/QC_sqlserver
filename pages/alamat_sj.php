@@ -14,12 +14,12 @@ ini_set("error_reporting",1);
 <?php 
 if($_POST['SIMPAN']=='SIMPAN'){
 	$alamat=str_replace("'","''", $_POST['alamat']);
-	mysqli_query($con,"UPDATE packing_list SET `alamat1`='".$alamat."' WHERE id=".$_GET['id']."")or die("Gagal simpan");
+	sqlsrv_query($con,"UPDATE packing_list SET `alamat1`='".$alamat."' WHERE id=".$_GET['id']."")or die("Gagal simpan");
 	echo "<script>alert('Data Tersimpan, Harap Refresh Surat Jalan');window.close();</script>";
 }
-$data=mysqli_query($con,"SELECT * FROM packing_list
+$data=sqlsrv_query($con,"SELECT * FROM packing_list
 WHERE id='".$_GET['id']."'");
-$rowd=mysqli_fetch_array($data);
+$rowd=sqlsrv_fetch_array($data);
 
 ?>
 <form id="form1" name="form1" method="post" action="" enctype="multipart/form-data">

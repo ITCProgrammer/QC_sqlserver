@@ -76,7 +76,7 @@ include("koneksi.php");
   	
 
   if($_POST['sift']=="1"){	  
-  $sql=mysqli_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+  $sql=sqlsrv_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tanggal_update
@@ -86,7 +86,7 @@ AND tbl_kite.user_packing = '".$_POST['user_name']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");}else if($_POST['sift']=="2"){
 	  
-	  $sql=mysqli_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+	  $sql=sqlsrv_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tanggal_update
@@ -97,7 +97,7 @@ GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
 	  
 	  }else{
-	$sql=mysqli_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+	$sql=sqlsrv_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tanggal_update
@@ -109,45 +109,45 @@ ORDER BY tbl_kite.id ASC");
 		  
 		 }
   
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
-	  	 $sql1=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
+	  	 $sql1=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade='C'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $row1=mysqli_fetch_array($sql1);
+		 $row1=sqlsrv_fetch_array($sql1);
 		 
-		 $sql2=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
+		 $sql2=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade between 'A' and 'B'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-$row2=mysqli_fetch_array($sql2);
-$sql4=mysqli_query($con,"SELECT *, sum(detail_kite.net_wight) as qty,count(detail_kite.sisa) as jml , grade
+$row2=sqlsrv_fetch_array($sql2);
+$sql4=sqlsrv_query($con,"SELECT *, sum(detail_kite.net_wight) as qty,count(detail_kite.sisa) as jml , grade
 FROM tbl_kite
 LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE sisa = 'SISA'
 AND nokkKite = '".$row['nokk']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $row4=mysqli_fetch_array($sql4);
-		 $sql5=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
+		 $row4=sqlsrv_fetch_array($sql4);
+		 $sql5=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade='C' and
 sisa = 'SISA'
 AND nokkKite = '".$row['nokk']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $row5=mysqli_fetch_array($sql5);
+		 $row5=sqlsrv_fetch_array($sql5);
 		 
-		 $sql6=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
+		 $sql6=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade between 'A' and 'B' and sisa = 'SISA'
 AND nokkKite = '".$row['nokk']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-$row6=mysqli_fetch_array($sql6);		
+$row6=sqlsrv_fetch_array($sql6);		
 	  ?>
     <tr bgcolor="#9999FF">
     <td><?php echo $row['no_mc'];?></td>
@@ -205,7 +205,7 @@ $row6=mysqli_fetch_array($sql6);
   <?php
  if($_POST['sift']=="1"){
   
-   $sql3=mysqli_query($con,"SELECT *
+   $sql3=sqlsrv_query($con,"SELECT *
 FROM tbl_kite
 LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE 
@@ -214,7 +214,7 @@ BETWEEN '$tgl_cetak1 07:00:00'
 AND '$tgl_cetak2 14:59:59'
 AND tbl_kite.user_packing = '".$_POST['user_name']."' AND sisa = 'SISA'
 ORDER BY tbl_kite.id DESC");
- }else  if($_POST['sift']=="2"){$sql3=mysqli_query($con,"SELECT *
+ }else  if($_POST['sift']=="2"){$sql3=sqlsrv_query($con,"SELECT *
 FROM tbl_kite
 LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE
@@ -223,7 +223,7 @@ BETWEEN '$tgl_cetak1 15:00:00'
 AND '$tgl_cetak2 22:59:59'
 AND tbl_kite.user_packing = '".$_POST['user_name']."' AND sisa = 'SISA'
 ORDER BY tbl_kite.id ASC");
- }else{$sql3=mysqli_query($con,"SELECT *
+ }else{$sql3=sqlsrv_query($con,"SELECT *
 FROM tbl_kite
 LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE 
@@ -234,7 +234,7 @@ AND tbl_kite.user_packing = '".$_POST['user_name']."' AND sisa = 'SISA'
 ORDER BY tbl_kite.id ASC");}
 
 
-		 while($row3=mysqli_fetch_array($sql3)){
+		 while($row3=sqlsrv_fetch_array($sql3)){
 			 
   ?>
  <?php

@@ -41,22 +41,22 @@ include '../koneksi.php';
 		
 		// Skrip menyimpan data ke tabel transaksi utama
 		$myQry3 ="UPDATE pergerakan_stok SET blok='".$_POST['tempat']."' WHERE id='".$_GET['id']."'";
-		$mySql2=mysqli_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
+		$mySql2=sqlsrv_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
 		$myQrycari	= "SELECT * FROM mutasi_kain
 						WHERE nokk='".$_GET['nokk'] ."' AND keterangan='".$_GET['ket'] ."' LIMIT 1";
-		$mySqlcari=mysqli_query($con,$myQrycari) or die ("Gagal query  ".mysql_error());
-		$rowcari=mysqli_fetch_row($mySqlcari);
+		$mySqlcari=sqlsrv_query($con,$myQrycari) or die ("Gagal query  ".mysql_error());
+		$rowcari=sqlsrv_fetch_row($mySqlcari);
 		if($rowcari>0){
 		$mySql	= "UPDATE mutasi_kain SET 
 						tempat='".$TxtBlok."'
 						WHERE nokk='".$TxtNokk."' AND keterangan='".$TxtKet."'";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
 		}else{
 			$mySql	= "INSERT mutasi_kain SET 
 						tempat='".$TxtBlok."',
 						nokk='".$TxtNokk."',
 						keterangan='".$TxtKet."'";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
 			}
 
 		echo "<script>";
@@ -73,8 +73,8 @@ include '../koneksi.php';
     </tr>
     <?php $myQry	= "SELECT * FROM mutasi_kain
 						WHERE nokk='".$_GET['nokk'] ."' AND keterangan='".$_GET['ket'] ."' ORDER BY id DESC";
-		$mySql1=mysqli_query($con,$myQry) or die ("Gagal query  ".mysql_error());
-		$row1=mysqli_fetch_array($mySql1);
+		$mySql1=sqlsrv_query($con,$myQry) or die ("Gagal query  ".mysql_error());
+		$row1=sqlsrv_fetch_array($mySql1);
 		?>
     <tr>
       <td width="11%">No KK</td>

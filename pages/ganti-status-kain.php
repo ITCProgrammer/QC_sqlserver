@@ -109,7 +109,7 @@ $KK		= isset($_POST['nokk']) ? $_POST['nokk'] : '';
 	$where8.= " AND trim(c.no_order)='$ordr' ";
 	}else{ $where8.= " "; }
 	if($Order=="" and $Itm=="" and $KK=="" and $Wrn==""){ $nowhere.=" AND a.id='' "; }else{$nowhere.="";}
-  $sql=mysqli_query($con," SELECT
+  $sql=sqlsrv_query($con," SELECT
 	a.tgl_update,c.no_po,c.no_order,a.blok,
 	b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
 	c.warna,c.lebar,c.berat,c.no_item,b.id_stok,a.catat,a.id,a.sts_stok,b.ket_stok,
@@ -131,19 +131,19 @@ $KK		= isset($_POST['nokk']) ? $_POST['nokk'] : '';
   $no=1;
   $n=1;	
   $sts_sisa="";	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-	   $mySql =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc");
-	   $myBlk = mysqli_fetch_array($mySql);
-	   $mySqlC =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id desc");
-	   $myBlkC = mysqli_fetch_array($mySqlC);
-	   $sqlCtt=mysqli_query($con,"SELECT keterangan FROM tbl_ket_ppc
+	   $mySql =sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc");
+	   $myBlk = sqlsrv_fetch_array($mySql);
+	   $mySqlC =sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id desc");
+	   $myBlkC = sqlsrv_fetch_array($mySqlC);
+	   $sqlCtt=sqlsrv_query($con,"SELECT keterangan FROM tbl_ket_ppc
 						WHERE nokk='".$row['nokk'] ."' AND ket_sisa='".$row['sisa'] ."' AND idp='".$row['id_stok']."' ORDER BY id DESC");
-	   $ctt=mysqli_fetch_array($sqlCtt);
-	   //$mySqlC1 =mysqli_query($con,"CALL ketorder('$row[id_stok]','$row[nokk]','$row[sisa]');");
-	   //$mySqlC1 = mysqli_query($con,"CALL `db_qc`.`ketorder`(1710169575,'101801520190001','');",$dbconn12) or die("Query fail: " . mysql_error());;
-	   $mySqlC1 =mysqli_query($con,"SELECT GROUP_CONCAT(
+	   $ctt=sqlsrv_fetch_array($sqlCtt);
+	   //$mySqlC1 =sqlsrv_query($con,"CALL ketorder('$row[id_stok]','$row[nokk]','$row[sisa]');");
+	   //$mySqlC1 = sqlsrv_query($con,"CALL `db_qc`.`ketorder`(1710169575,'101801520190001','');",$dbconn12) or die("Query fail: " . mysql_error());;
+	   $mySqlC1 =sqlsrv_query($con,"SELECT GROUP_CONCAT(
 		CONCAT(
 			'Untuk Order ',
 			no_order,
@@ -161,9 +161,9 @@ WHERE
 AND a.nokk = '".$row['nokk']."'
 AND a.ket = '".$row['sisa']."'
 AND b.tmp_hapus='0'");
-	   $myBlkC1 = mysqli_fetch_array($mySqlC1);	  
+	   $myBlkC1 = sqlsrv_fetch_array($mySqlC1);	  
 	  if($row['ket_stok']!=""){$stks=" and b.ket_stok='".$row['ket_stok']."' ";}else{ $stks="";}
-	   $mysqlCek=mysqli_query($con," SELECT
+	   $mysqlCek=sqlsrv_query($con," SELECT
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
 	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
 	SUM(if(b.grade='A' or b.grade='', 1, 0)) as rol_a,
@@ -189,19 +189,19 @@ AND b.tmp_hapus='0'");
 	b.sisa,b.id_stok,b.ket_stok
 	ORDER BY
 	a.id,b.ket_stok ASC");
-	$myro = mysqli_fetch_array($mysqlCek);
+	$myro = sqlsrv_fetch_array($mysqlCek);
 	if($myBlkC1['sisa'] != number_format($myro['tot_yard'],'2','.','')." ".$myro['satuan']."s"){
 	  if($myBlkC1['catatan']!=""){$catat=$myBlkC1['catatan'].$myBlkC1['sisa'];}else{
 		  $catat= $myBlkC1['catat']; //$myBlkC['catatan'];
 	  }}else{}
 	  if($myro['tot_rol']>0){
-	   $mySql1 =mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
-	   $myBlk1 = mysqli_fetch_array($mySql1);
-	   $mySql2 =mysqli_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
+	   $mySql1 =sqlsrv_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
+	   $myBlk1 = sqlsrv_fetch_array($mySql1);
+	   $mySql2 =sqlsrv_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
 INNER JOIN detail_pergerakan_stok b ON a.id=b.id_stok
 WHERE b.nokk='".$row['nokk']."' and ISNULL(b.transtatus)
 GROUP BY b.nokk");
-	   $myBlk2 = mysqli_fetch_array($mySql2);
+	   $myBlk2 = sqlsrv_fetch_array($mySql2);
 		if($row['sisa']=="SISA" || $row['sisa']=="FKSI"){
 			$brt_sisa=$myro['grd_a']+$myro['grd_b']+$myro['grd_c'];
 			if($brt_sisa>10 and substr($row['tgl_update'],0,10)>="2019-08-07"){$sts_sisa="Sisa Produksi";}

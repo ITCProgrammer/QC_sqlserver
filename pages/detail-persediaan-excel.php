@@ -41,9 +41,9 @@ header("Expires: 0");
     <td width="6%">Lokasi</td>
   </tr>
   <?php
-  $sqlnk=mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$_GET['nokk']."' ORDER BY id DESC LIMIT 1");
-  $r=mysqli_fetch_array($sqlnk);	
-  $sql=mysqli_query($con,"SELECT
+  $sqlnk=sqlsrv_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$_GET['nokk']."' ORDER BY id DESC LIMIT 1");
+  $r=sqlsrv_fetch_array($sqlnk);	
+  $sql=sqlsrv_query($con,"SELECT
 	no_roll,
 	weight,
 	yard_,
@@ -63,7 +63,7 @@ AND (
  Order by no_roll ASC");
   $c=1;
   $no=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	     
   ?>

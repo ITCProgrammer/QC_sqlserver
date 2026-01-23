@@ -7,8 +7,8 @@
 
 <body>
 <?php 
-$sql=mysqli_query($con,"SELECT * FROM tbl_pengiriman WHERE id='".$_GET['id']."'");
-$row=mysqli_fetch_array($sql);
+$sql=sqlsrv_query($con,"SELECT * FROM tbl_pengiriman WHERE id='".$_GET['id']."'");
+$row=sqlsrv_fetch_array($sql);
 ?>
 <form id="form1" name="form1" method="post" action="">
   <table width="100%" border="0">
@@ -50,7 +50,7 @@ $row=mysqli_fetch_array($sql);
 </html>
 <?php 
 if($_POST['SIMPAN']=="SIMPAN"){
-	$qry=mysqli_query($con,"UPDATE tbl_pengiriman SET tujuan='".$_POST['tujuan']."', ket='".$_POST['ket']."' WHERE id='".$_GET['id']."'");
+	$qry=sqlsrv_query($con,"UPDATE tbl_pengiriman SET tujuan='".$_POST['tujuan']."', ket='".$_POST['ket']."' WHERE id='".$_GET['id']."'");
 	if($qry)
 	{ 
 	echo "<script>alert('Data Tersimpan');window.location.href = window.location.href='?p=lihat_data_pengiriman';window.close();</script>";

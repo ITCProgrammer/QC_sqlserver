@@ -77,14 +77,14 @@ GROUP BY 	no_mutasi ORDER BY 	no_mutasi DESC";
 }
 
 $query_limit_s = sprintf("%s LIMIT %d, %d", $query_s, $startRow_s, $maxRows_s);
-$s = mysqli_query($con,$query_limit_s) or die(mysql_error());
-$row_s = mysqli_fetch_assoc($s);
+$s = sqlsrv_query($con,$query_limit_s) or die(mysql_error());
+$row_s = sqlsrv_fetch_assoc($s);
 
 if (isset($_GET['totalRows_s'])) {
     $totalRows_s = $_GET['totalRows_s'];
 } else {
-    $all_s = mysqli_query($con,$query_s);
-    $totalRows_s = mysqli_num_rows($all_s);
+    $all_s = sqlsrv_query($con,$query_s);
+    $totalRows_s = sqlsrv_num_rows($all_s);
 }
 $totalPages_s = ceil($totalRows_s/$maxRows_s)-1;
 
@@ -171,7 +171,7 @@ $queryString_s = sprintf("&totalRows_s=%d%s", $totalRows_s, $queryString_s);
             href="pages/lihat_cek.php?mutasi=<?php echo $row_s['no_mutasi']; ?>" target="_blank">Cek</a> || <a href="pages/input_mutasi_waste.php?mutasi=<?php echo $row_s['no_mutasi']; ?>" target="_blank">Input Waste</a> || <a href="pages/cetak/cetak_mutasi_ulang_stok.php?mutasi=<?php echo $row_s['no_mutasi']; ?>" target="_blank">Stok</a> || <a href="pages/cetak/cetak_mutasi_ulang_stok_masalah.php?mutasi=<?php echo $row_s['no_mutasi']; ?>" target="_blank">Stok Masalah</a></td>
       </tr>
       <?php $no++;
-   } while ($row_s = mysqli_fetch_assoc($s)); ?>
+   } while ($row_s = sqlsrv_fetch_assoc($s)); ?>
     </table>
     <table border="0">
       <tr>
@@ -204,7 +204,7 @@ $queryString_s = sprintf("&totalRows_s=%d%s", $totalRows_s, $queryString_s);
     </h3>
     <hr />
     <?php
-mysqli_free_result($s);
+sqlsrv_free_result($s);
 ?>
   </body>
 

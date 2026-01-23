@@ -124,7 +124,7 @@ include"../koneksi.php";
 	?> 
 <?php
 if($_GET['tgl_kirim']!=""){$tglkirim=" and tgl_update='".$_GET['tgl_kirim']."' ";}else{$tglkirim=" and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y')";}
-$sqllist= mysqli_query($con,"SELECT packing_list.*,tbl_kite.pelanggan,tbl_kite.no_po as nopo,detail_pergerakan_stok.satuan,detail_pergerakan_stok.sisa from packing_list 
+$sqllist= sqlsrv_query($con,"SELECT packing_list.*,tbl_kite.pelanggan,tbl_kite.no_po as nopo,detail_pergerakan_stok.satuan,detail_pergerakan_stok.sisa from packing_list 
 LEFT JOIN detail_pergerakan_stok ON packing_list.listno=detail_pergerakan_stok.refno
 LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj=tmp_detail_kite.id
 LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
@@ -132,7 +132,7 @@ WHERE  `packing_list`.`no_sj`='".$_GET['no_sj']."' ".$tglkirim."
 GROUP BY `packing_list`.`no_sj`
 "); 
 	
-     $dr=mysqli_fetch_array($sqllist);
+     $dr=sqlsrv_fetch_array($sqllist);
 	 $order=trim($dr['no_order']);
 	$sqlb=sqlsrv_query($conn,"SELECT 
 *
@@ -194,8 +194,8 @@ echo $nama2;
 //echo $data['PartnerName']; ?><?php
 $sql2=sqlsrv_query($conn,"select * from partners where partnername like '$nama2%'");
 $data2=sqlsrv_fetch_array($sql2,SQLSRV_FETCH_ASSOC);
-$sqlalamat=mysqli_query($con,"SELECT alamat1 FROM packing_list WHERE no_sj='".$dr['no_sj']."' and tgl_update='".$dr['tgl_update']."'  LIMIT 1");
-	$rAlt=mysqli_fetch_array($sqlalamat);		
+$sqlalamat=sqlsrv_query($con,"SELECT alamat1 FROM packing_list WHERE no_sj='".$dr['no_sj']."' and tgl_update='".$dr['tgl_update']."'  LIMIT 1");
+	$rAlt=sqlsrv_fetch_array($sqlalamat);		
 if($data['ID']!=$data2['ID']){
 	if($rAlt['alamat1']!=""){
 		$kirim=" Kirim Ke: ".$rAlt['alamat1']." ";
@@ -237,8 +237,8 @@ LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj=tmp_detail_kite
 LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 WHERE  `packing_list`.`no_sj`='".$_GET['no_sj']."' ".$tglkirim."
 GROUP BY SUBSTR(detail_pergerakan_stok.nokk,1,11),tbl_kite.no_lot";
-$data1=mysqli_query($con,$sqlr);
-$jrow1= mysqli_num_rows($data1);
+$data1=sqlsrv_query($con,$sqlr);
+$jrow1= sqlsrv_num_rows($data1);
 $rt=ceil($jrow1/4);
 $a=0 + $_GET['a'];
 	
@@ -249,16 +249,16 @@ LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 WHERE  `packing_list`.`no_sj`='".$_GET['no_sj']."' ".$tglkirim."
 GROUP BY SUBSTR(detail_pergerakan_stok.nokk,1,11),tbl_kite.no_lot LIMIT $a,4"; 
 	}
-		$data=mysqli_query($con,$sql);
-		$jrow= mysqli_num_rows($data);
+		$data=sqlsrv_query($con,$sql);
+		$jrow= sqlsrv_num_rows($data);
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
-		 $sqlcr=mysqli_query($con,"SELECT * from tmp_detail_kite a
+	 while($rowd=sqlsrv_fetch_array($data)){
+		 $sqlcr=sqlsrv_query($con,"SELECT * from tmp_detail_kite a
 		 		INNER JOIN tbl_kite b ON a.id_kite=b.id
 				WHERE a.id='".$rowd['id_detail_kj']."'");
-		 $cr=mysqli_num_rows($sqlcr);
+		 $cr=sqlsrv_num_rows($sqlcr);
 		 if($cr>0){
 			 $sql_ = " SELECT * from tmp_detail_kite a
 		 		INNER JOIN tbl_kite b ON a.id_kite=b.id
@@ -269,8 +269,8 @@ GROUP BY SUBSTR(detail_pergerakan_stok.nokk,1,11),tbl_kite.no_lot LIMIT $a,4";
 		 /* $sql_ = "SELECT * from tbl_kite where nokk='$rowd[nokk]'";  */
 		 
 
-         $data_=mysqli_query($con,$sql_);
-		 $rowd_=mysqli_fetch_array($data_);
+         $data_=sqlsrv_query($con,$sql_);
+		 $rowd_=sqlsrv_fetch_array($data_);
 		 ?>
   <tr>
     <td height="58"><div align="center"><strong><font size="+1"><?php echo $rowd['roll']; ?></font></strong></div></td>
@@ -304,13 +304,13 @@ $rjns=sqlsrv_fetch_array($sqljns,SQLSRV_FETCH_ASSOC);
  ?>
        <td><?php
 	   
-	   $sqltb=mysqli_query($con,"Select * from tbl_kite where nokk='$nokk'"); 
-	   $rowtb=mysqli_fetch_array($sqltb);	 
+	   $sqltb=sqlsrv_query($con,"Select * from tbl_kite where nokk='$nokk'"); 
+	   $rowtb=sqlsrv_fetch_array($sqltb);	 
 	   $itemno=$rowtb['no_item'];
 	   $nowarna=$rowtb['no_warna'];
 	   $jenis_kain=$rowtb['jenis_kain'];
-	   $sqlHS=mysqli_query($con,"SELECT hs_code FROM tbl_hs_code WHERE item='$itemno' LIMIT 1");
-	   $rHS=mysqli_fetch_array($sqlHS);	 
+	   $sqlHS=sqlsrv_query($con,"SELECT hs_code FROM tbl_hs_code WHERE item='$itemno' LIMIT 1");
+	   $rHS=sqlsrv_fetch_array($sqlHS);	 
 	   if($rHS['hs_code']!=""){$hscode=" / ".$rHS['hs_code'];}else{ $hscode=" ";}	 
 	   
 	   $sqlitmp=sqlsrv_query($conn,"select top 1 ProductId from productpartner where productcode='$itemno' AND ColorCode='$nowarna' ORDER BY ProductId DESC");
@@ -408,8 +408,8 @@ $sqlitm1=sqlsrv_query($conn,"SELECT description from ProductMaster where Product
   </tr>
 </table>
 <?php 	
-$qryt=mysqli_query($con,"SELECT  now() as tgl");
-$dtgl=mysqli_fetch_array($qryt);
+$qryt=sqlsrv_query($con,"SELECT  now() as tgl");
+$dtgl=sqlsrv_fetch_array($qryt);
 ?>
 <b>PrintDate :
       <?php echo date("d F Y H:i:s", strtotime($dtgl['tgl']));?></b>
@@ -445,4 +445,4 @@ $dtgl=mysqli_fetch_array($qryt);
 <script>
 
 </script> 
-<?php mysqli_close($con); ?>
+<?php sqlsrv_close($con); ?>

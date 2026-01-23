@@ -54,31 +54,37 @@ if($_GET['tgl1']!="" and $_GET['tgl2']!="")
   {$order=" AND c.no_order='$_GET[order]' ";}
    else if($tgl1="" and $order="")
   {$tgll=" AND a.tgl_update='$_GET[tgl1]' ";}
-  $sql=mysqli_query($con,"SELECT
-	a.idmutasi,a.tgl_update,a.documentno,c.no_po,c.no_order,a.blok,b.weight,b.yard_,b.no_roll,b.id_stok,
-	b.satuan,b.grade,b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
-	c.warna,c.lebar,c.berat,c.no_item, sum(b.weight) as tot_qty,count(b.yard_) as tot_rol,sum(b.yard_) as tot_yard,
-	SUM(case when b.grade='A' or b.grade='B' or b.grade='' then b.weight else 0 end) as grd_ab,
-	SUM(case when b.grade='C' then b.weight else 0 end) as grd_c,
-	SUM(if(b.grade='A' or b.grade='B' or b.grade='', 1, 0)) as jml_ab,
-	SUM(if(b.grade = 'C', 1, 0)) as jml_grd_c,a.ket,SUM(d.netto) as netto
-	FROM
-	pergerakan_stok a
-	INNER JOIN detail_pergerakan_stok b ON a.id = b.id_stok
-    INNER JOIN tmp_detail_kite d ON d.id=b.id_detail_kj
-	INNER JOIN tbl_kite c ON c.id = d.id_kite
-	WHERE
-   (b.transtatus='11' or b.transtatus='10')
-	$tgll $order
-	GROUP BY
-	a.id,b.nokk,b.sisa
-	ORDER BY
-	a.id");
+  $sql=sqlsrv_query($con,"SELECT
+    a.idmutasi, a.tgl_update, a.documentno, c.no_po, c.no_order, a.blok, b.weight, b.yard_, b.no_roll, b.id_stok,
+    b.satuan, b.grade, b.sisa, b.nokk, c.jenis_kain, c.pelanggan, c.no_lot, c.no_warna,
+    c.warna, c.lebar, c.berat, c.no_item, a.ket,
+    SUM(b.weight) as tot_qty,
+    COUNT(b.yard_) as tot_rol,
+    SUM(b.yard_) as tot_yard,
+    SUM(CASE WHEN b.grade IN ('A', 'B', '') THEN b.weight ELSE 0 END) as grd_ab,
+    SUM(CASE WHEN b.grade = 'C' THEN b.weight ELSE 0 END) as grd_c,
+    SUM(CASE WHEN b.grade IN ('A', 'B', '') THEN 1 ELSE 0 END) as jml_ab,
+    SUM(CASE WHEN b.grade = 'C' THEN 1 ELSE 0 END) as jml_grd_c,
+    SUM(ISNULL(d.netto, 0)) as netto
+  FROM
+    db_qc.pergerakan_stok a
+    INNER JOIN db_qc.detail_pergerakan_stok b ON a.id = b.id_stok
+    INNER JOIN db_qc.tmp_detail_kite d ON d.id = b.id_detail_kj
+    INNER JOIN db_qc.tbl_kite c ON c.id = d.id_kite
+  WHERE
+    (b.transtatus = '11' or b.transtatus = '10')
+    $tgll $order
+  GROUP BY
+    a.id, a.idmutasi, a.tgl_update, a.documentno, c.no_po, c.no_order, a.blok, b.weight, b.yard_, b.no_roll, b.id_stok,
+    b.satuan, b.grade, b.sisa, b.nokk, c.jenis_kain, c.pelanggan, c.no_lot, c.no_warna,
+    c.warna, c.lebar, c.berat, c.no_item, a.ket
+  ORDER BY
+    a.id");
   $c=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
-	  $mysqli =mysqli_query($con,"SELECT tempat FROM mutasi_kain WHERE nokk='$row[nokk]' and no_mutasi='$row[idmutasi]' order by id asc");
-	   $myBlk = mysqli_fetch_array($mysqli); 
+	  $sqlsrv =sqlsrv_query($con,"SELECT tempat FROM db_qc.mutasi_kain WHERE nokk='$row[nokk]' and no_mutasi='$row[idmutasi]' order by id asc");
+	   $myBlk = sqlsrv_fetch_array($sqlsrv); 
 	  ?>
     <tr>
       <td align="left"><?php echo date("d-M-Y", strtotime($row['tgl_update']));?></td>

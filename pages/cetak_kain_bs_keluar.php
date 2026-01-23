@@ -57,7 +57,7 @@ if($_GET['tgl1']!="")
   if($_GET['jlap']!="semua"){
 	  $tran=" AND typetrans='$_GET[jlap]'";}
 	  else{$tran="";}
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
 	a.tgl_sj,a.documentno,c.no_po,c.no_order,a.blok,b.weight,b.yard_,b.no_roll,
 	b.satuan,b.grade,b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
 	c.warna,c.lebar,c.berat,c.no_item, sum(b.weight) as tot_qty,count(b.yard_) as tot_rol,sum(b.yard_) as tot_yard,
@@ -78,7 +78,7 @@ if($_GET['tgl1']!="")
 	ORDER BY
 	a.tgl_update, a.id ASC");
   $c=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	  
 	  ?>

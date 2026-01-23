@@ -7,8 +7,8 @@
 
 <body>
 <?php 
-$sql=mysqli_query($con,"SELECT * FROM tbl_pengiriman WHERE id='".$_GET['id']."'");
-$row=mysqli_fetch_array($sql);
+$sql=sqlsrv_query($con,"SELECT * FROM tbl_pengiriman WHERE id='".$_GET['id']."'");
+$row=sqlsrv_fetch_array($sql);
 ?>
 <form id="form1" name="form1" method="post" action="">
   <table width="100%" border="0">
@@ -78,7 +78,7 @@ $row=mysqli_fetch_array($sql);
 </html>
 <?php 
 if($_POST['SIMPAN']=="SIMPAN"){
-	$qry=mysqli_query($con,"UPDATE tbl_pengiriman SET 
+	$qry=sqlsrv_query($con,"UPDATE tbl_pengiriman SET 
 	no_order='".$_POST['no_order']."',
 	no_po='".$_POST['no_po']."',
 	buyer='".$_POST['pelanggan']."',

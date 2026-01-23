@@ -19,7 +19,7 @@ include("../koneksi.php");
 <body>
 No Kartu Kerja : <strong><em><?php echo $_GET["nokk"];?></em></strong>
 <strong>
-<?php $sql1=mysqli_query($con,"SELECT
+<?php $sql1=sqlsrv_query($con,"SELECT
 	COUNT(weight) as totrol,
 	SUM(weight) as totba,
 	SUM(yard_) as totya
@@ -32,7 +32,7 @@ AND (
 	OR transtatus = '1'
 ) AND sisa='".$_GET['ket']."'
  Order by no_roll ASC");
- $row1=mysqli_fetch_array($sql1);
+ $row1=sqlsrv_fetch_array($sql1);
  ?>
 <br />
 Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($row1["totba"],'2','.',',');?> ||  Panjang:<?php echo number_format($row1["totya"],'2','.',',');?>
@@ -53,7 +53,7 @@ Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($
     <td width="9%">Status</td>
   </tr>
   <?php
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
 	no_roll,
 	weight,
 	yard_,
@@ -73,7 +73,7 @@ AND (
  Order by no_roll ASC");
   $c=1;
   $no=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  
@@ -96,7 +96,7 @@ AND (
 </table>
 </div>
 <strong>
-<?php $sql2=mysqli_query($con,"SELECT
+<?php $sql2=sqlsrv_query($con,"SELECT
 	COUNT(weight) as totrol,
 	SUM(weight) as totba,
 	SUM(yard_) as totya
@@ -108,7 +108,7 @@ AND (
 	 transtatus = '1'
 ) AND sisa='".$_GET['ket']."'
  Order by no_roll ASC");
- $row2=mysqli_fetch_array($sql2);
+ $row2=sqlsrv_fetch_array($sql2);
  ?>
  <font color="RED">
 SISA Roll : <?php echo $row2["totrol"];?> || Berat : <?php echo number_format($row2["totba"],'2','.',',');?> || Panjang:<?php echo number_format($row2["totya"],'2','.',',');?></font>

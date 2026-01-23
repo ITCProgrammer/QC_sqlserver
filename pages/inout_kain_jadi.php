@@ -50,7 +50,7 @@ include("../koneksi.php");
 	if($_POST['awal']!='')
 	{ $where1.= " AND a.tgl_update ='".$_POST['awal']."' "; 
 		}else{ $where1.= " "; }	
-	$mysqry=mysqli_query($con,"SELECT
+	$mysqry=sqlsrv_query($con,"SELECT
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
 	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.yard_ else 0 end) as tot_yard,
@@ -67,7 +67,7 @@ include("../koneksi.php");
 	b.transtatus='1' ".$where.$where1." 
 	ORDER BY
 	a.id");
-	$myrow=mysqli_fetch_array($mysqry);
+	$myrow=sqlsrv_fetch_array($mysqry);
 	?>
   <input name="tgl" type="hidden" value="<?php echo $tgl_cetak1;?>">  
     <td colspan="30" style="font-size:14px"><b>( Roll : <?php echo  number_format($myrow['tot_rol']);  ?> ) (GRADE A+B: <?php echo  number_format($myrow['grd_ab'],'2');  ?> Kg, Roll: <?php echo  number_format($myrow['jml_ab']);  ?>)  (GRADE C: <?php echo  number_format($myrow['grd_c'],'2');  ?> Kg, Roll: <?php echo  number_format($myrow['jml_grd_c']);  ?>) (TOTAL : <?php echo  number_format($myrow['tot_qty'],'2');  ?> Kg) </b></td>
@@ -116,7 +116,7 @@ include("../koneksi.php");
     </tr>
   <?php 
  
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
 	a.tgl_update,c.no_po,c.no_order,a.blok,b.weight,b.yard_,b.no_roll,
 	b.satuan,b.grade,b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
 	c.warna,c.lebar,c.berat,c.no_item,
@@ -143,12 +143,12 @@ include("../koneksi.php");
 	a.tgl_update,a.id");
   $c=1;
   $i=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-	   $mySql =mysqli_query($con,"SELECT tempat FROM mutasi_kain WHERE nokk='".$row['nokk']."' order by id asc");
-	   $myBlk = mysqli_fetch_array($mySql);
-	   $mySql1=mysqli_query($con,"
+	   $mySql =sqlsrv_query($con,"SELECT tempat FROM mutasi_kain WHERE nokk='".$row['nokk']."' order by id asc");
+	   $myBlk = sqlsrv_fetch_array($mySql);
+	   $mySql1=sqlsrv_query($con,"
 	   SELECT
 a.tgl_sj,
   SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
@@ -170,7 +170,7 @@ a.tgl_sj,
 AND a.typestatus='3' AND b.sisa='".$row['sisa']."'
 	  ".$where.$where1." 
 	   ");
-	   $myOut = mysqli_fetch_array($mySql1);
+	   $myOut = sqlsrv_fetch_array($mySql1);
 	  ?>
     <tr bgcolor="<?php echo $bgcolor; ?>">
       <td><?php echo date("d F Y",strtotime($row['tgl_update']));?></td>

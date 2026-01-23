@@ -1,7 +1,7 @@
 <?php 
 session_start();
 //include("koneksi.php");
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");
 ini_set("error_reporting",1);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -67,13 +67,13 @@ function checkAll(form1){
 <?php
 function listurut(){
 //include("koneksi.php");
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 date_default_timezone_set("Asia/Jakarta");
 $format = date("y");
-$sqlnu=mysqli_query($con,"SELECT no_sj FROM packing_list WHERE substr(no_sj,1,2) like '%".$format."%' ORDER BY no_sj DESC LIMIT 1 ") or die("Query error : " . mysqli_error($con));
-$d=mysqli_num_rows($sqlnu);
+$sqlnu=sqlsrv_query($con,"SELECT no_sj FROM packing_list WHERE substr(no_sj,1,2) like '%".$format."%' ORDER BY no_sj DESC LIMIT 1 ") or die("Query error : " . sqlsrv_error($con));
+$d=sqlsrv_num_rows($sqlnu);
 if($d>0){
-$r=mysqli_fetch_array($sqlnu);
+$r=sqlsrv_fetch_array($sqlnu);
 $d=$r['no_sj'];
 $str=substr($d,2,4);
 $Urut = (int)$str;
@@ -90,23 +90,23 @@ $nipbr =$format.$Nol.$Urut;
 return $nipbr;
 }
 $no=listurut();
-$sqlSkrng=mysqli_query($con,"SELECT DATE_FORMAT(now(),'%Y-%m-%d') AS tgl")or die("Query error : " . mysqli_error($con));
-$rskrng=mysqli_fetch_array($sqlSkrng);	
+$sqlSkrng=sqlsrv_query($con,"SELECT DATE_FORMAT(now(),'%Y-%m-%d') AS tgl")or die("Query error : " . sqlsrv_error($con));
+$rskrng=sqlsrv_fetch_array($sqlSkrng);	
 $tglSkrng=$rskrng['tgl'];	
 ?>
 <?php 
 	  
 if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
-	$sqllist= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con)); 
-	$sqllist1= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
-	$sqllist2= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
-	$sqllist3= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
-	$sqllist4= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
-	$sqllist5= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));	  
-	$sqllist6= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
-	$sqllist7= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
-	$sqllist8= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));
-	$sqllist9= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . mysqli_error($con));   
+	$sqllist= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con)); 
+	$sqllist1= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));
+	$sqllist2= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));
+	$sqllist3= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));
+	$sqllist4= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));
+	$sqllist5= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));	  
+	$sqllist6= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));
+	$sqllist7= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));
+	$sqllist8= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));
+	$sqllist9= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc")or die("Query error : " . sqlsrv_error($con));   
 	
 	  ?>
 <table width="100%" border="0">
@@ -135,8 +135,8 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       *</td>
       <?php if($_GET['nosj']!='')
 	{ 
-	$sqltgl= mysqli_query($con,"SELECT `tgl_update`,`tgl_buat` from packing_list where `no_sj`='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y') GROUP BY no_sj")or die("Query error : " . mysqli_error($con)); 
-	$rtgl=mysqli_fetch_array($sqltgl);
+	$sqltgl= sqlsrv_query($con,"SELECT `tgl_update`,`tgl_buat` from packing_list where `no_sj`='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y') GROUP BY no_sj")or die("Query error : " . sqlsrv_error($con)); 
+	$rtgl=sqlsrv_fetch_array($sqltgl);
 		
 	}
 	  ?>
@@ -151,7 +151,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
     <td><select name="no_list" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist='+this.value" >
       <option value="">-PILIH-</option>
       <?php 
-	while($r=mysqli_fetch_array($sqllist)){
+	while($r=sqlsrv_fetch_array($sqllist)){
 	?>
       <option value="<?php echo $r['listno'];?>" <?php if($r['listno']==$_GET['nolist']){ echo "SELECTED";}?>><?php echo $r['listno'];?></option>
       <?php }?>
@@ -161,7 +161,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list2" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r1=mysqli_fetch_array($sqllist1)){
+	while($r1=sqlsrv_fetch_array($sqllist1)){
 	?>
         <option value="<?php echo $r1['listno'];?>" <?php if($r1['listno']==$_GET['nolist1']){ echo "SELECTED";}?> ><?php echo $r1['listno'];?></option>
         <?php }?>
@@ -171,7 +171,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list3" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r2=mysqli_fetch_array($sqllist2)){
+	while($r2=sqlsrv_fetch_array($sqllist2)){
 	?>
         <option value="<?php echo $r2['listno'];?>" <?php if($r2['listno']==$_GET['nolist2']){ echo "SELECTED";}?> ><?php echo $r2['listno'];?></option>
         <?php }?>
@@ -181,7 +181,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list4" id="no_list4" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r3=mysqli_fetch_array($sqllist3)){
+	while($r3=sqlsrv_fetch_array($sqllist3)){
 	?>
         <option value="<?php echo $r3['listno'];?>" <?php if($r3['listno']==$_GET['nolist3']){ echo "SELECTED";}?> ><?php echo $r3['listno'];?></option>
         <?php }?>
@@ -191,7 +191,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list5" id="no_list5" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r4=mysqli_fetch_array($sqllist4)){
+	while($r4=sqlsrv_fetch_array($sqllist4)){
 	?>
         <option value="<?php echo $r4['listno'];?>" <?php if($r4['listno']==$_GET['nolist4']){ echo "SELECTED";}?> ><?php echo $r4['listno'];?></option>
         <?php }?>
@@ -201,7 +201,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list6" id="no_list6" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r5=mysqli_fetch_array($sqllist5)){
+	while($r5=sqlsrv_fetch_array($sqllist5)){
 	?>
         <option value="<?php echo $r5['listno'];?>" <?php if($r5['listno']==$_GET['nolist5']){ echo "SELECTED";}?> ><?php echo $r5['listno'];?></option>
         <?php }?>
@@ -211,7 +211,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list7" id="no_list7" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r6=mysqli_fetch_array($sqllist6)){
+	while($r6=sqlsrv_fetch_array($sqllist6)){
 	?>
         <option value="<?php echo $r6['listno'];?>" <?php if($r6['listno']==$_GET['nolist6']){ echo "SELECTED";}?> ><?php echo $r6['listno'];?></option>
         <?php }?>
@@ -221,7 +221,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list8" id="no_list8" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6=<?php echo $_GET['nolist6'];?>&amp;nolist7='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r7=mysqli_fetch_array($sqllist7)){
+	while($r7=sqlsrv_fetch_array($sqllist7)){
 	?>
         <option value="<?php echo $r7['listno'];?>" <?php if($r7['listno']==$_GET['nolist7']){ echo "SELECTED";}?> ><?php echo $r7['listno'];?></option>
         <?php }?>
@@ -231,7 +231,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list9" id="no_list9" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6=<?php echo $_GET['nolist6'];?>&amp;nolist7=<?php echo $_GET['nolist7'];?>&amp;nolist8='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r8=mysqli_fetch_array($sqllist8)){
+	while($r8=sqlsrv_fetch_array($sqllist8)){
 	?>
         <option value="<?php echo $r8['listno'];?>" <?php if($r8['listno']==$_GET['nolist8']){ echo "SELECTED";}?> ><?php echo $r8['listno'];?></option>
         <?php }?>
@@ -241,7 +241,7 @@ if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
       <select name="no_list10" id="no_list10" onchange="window.location='index1.php?p=surat_keluar&amp;dono=<?php echo $_GET['dono'];?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist=<?php echo $_GET['nolist'];?>&amp;nolist1=<?php echo $_GET['nolist1'];?>&amp;nolist2=<?php echo $_GET['nolist2'];?>&amp;nolist3=<?php echo $_GET['nolist3'];?>&amp;nolist4=<?php echo $_GET['nolist4'];?>&amp;nolist5=<?php echo $_GET['nolist5'];?>&amp;nolist6=<?php echo $_GET['nolist6'];?>&amp;nolist7=<?php echo $_GET['nolist7'];?>&amp;nolist8=<?php echo $_GET['nolist8'];?>&amp;nolist9='+this.value" >
         <option value="">-PILIH-</option>
         <?php 
-	while($r9=mysqli_fetch_array($sqllist9)){
+	while($r9=sqlsrv_fetch_array($sqllist9)){
 	?>
         <option value="<?php echo $r9['listno'];?>" <?php if($r9['listno']==$_GET['nolist9']){ echo "SELECTED";}?> ><?php echo $r9['listno'];?></option>
         <?php }?>
@@ -303,11 +303,11 @@ or packing_list.listno='".$_GET['nolist6']."' or packing_list.listno='".$_GET['n
 or packing_list.listno='".$_GET['nolist8']."' or packing_list.listno='".$_GET['nolist9']."'
 GROUP BY no_item,no_lot,no_warna,warna,packing_list.listno"; 
 		
-		$data=mysqli_query($con,$sql) or die("Query error : " . mysqli_error($con));
+		$data=sqlsrv_query($con,$sql) or die("Query error : " . sqlsrv_error($con));
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
+	 while($rowd=sqlsrv_fetch_array($data)){
 		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  {
 		 ?>
@@ -367,11 +367,11 @@ LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 where packing_list.no_sj='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y')
 GROUP BY no_item,no_lot,no_warna,warna,packing_list.listno"; 
 		
-		$data=mysqli_query($con,$sql) or die("Query error : " . mysqli_error($con));
+		$data=sqlsrv_query($con,$sql) or die("Query error : " . sqlsrv_error($con));
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
+	 while($rowd=sqlsrv_fetch_array($data)){
 		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  {
 		 ?>
@@ -412,4 +412,4 @@ GROUP BY no_item,no_lot,no_warna,warna,packing_list.listno";
 
 </body>
 </html>
-<?php mysqli_close($con); ?>
+<?php sqlsrv_close($con); ?>

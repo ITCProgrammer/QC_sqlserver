@@ -55,7 +55,7 @@ BULAN <?php echo $bulan[$bln]." ".$thn; ?> </div>
     }else{
 	  $order1= " ";
   }	  	
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
 	id,tgl_kirim,no_sj,warna,rol,qty,buyer,no_po,no_order,jenis_kain,lot,tujuan,ket,foc
 FROM
 	tbl_pengiriman
@@ -67,15 +67,15 @@ ORDER BY no_sj asc");
   $nawal=$awal."01";
   $newdate1 = strtotime( '-1 day' , strtotime ($_GET['awal']) );
   $ttm=date("Y-m-d", $newdate1);
-  $sql1=mysqli_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
+  $sql1=sqlsrv_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
 WHERE tmp_hapus='0' AND not no_sj='' AND tgl_kirim BETWEEN '$nawal' AND '$tt' AND ISNULL(kategori)");
-$row1=mysqli_fetch_array($sql1);
- $sql2=mysqli_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
+$row1=sqlsrv_fetch_array($sql1);
+ $sql2=sqlsrv_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
 WHERE tmp_hapus='0' AND not no_sj='' AND tgl_kirim BETWEEN '$nawal' AND '$ttm' AND ISNULL(kategori)");
-$row2=mysqli_fetch_array($sql2);
+$row2=sqlsrv_fetch_array($sql2);
 $no=1;
 $c=0;
-while($row=mysqli_fetch_array($sql)){
+while($row=sqlsrv_fetch_array($sql)){
 	$bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
   ?>
   <tr valign="top" >

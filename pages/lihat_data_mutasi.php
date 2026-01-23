@@ -85,7 +85,7 @@ else{$sift=" tgl_update BETWEEN '$tgl_cetak1 23:00:00' AND '$tgl_cetak2 06:59:59
 
 	if(substr($_POST['user_name'],0,6)=="INSPEK"){$ket=" and detail_pergerakan_stok.ket!=''";}else{$ket=" and detail_pergerakan_stok.ket=''";}
     if($_POST['bs']=="BS"){$bs=" fromtoid='GUDANG BS' ";}else if($_POST['bs']=="GUDANG GREIGE"){$bs=" fromtoid='GUDANG GREIGE' ";}else{$bs=" fromtoid='GUDANG KAIN JADI' ";}		   
-  $sql=mysqli_query($con,"select pergerakan_stok.id,bruto,detail_pergerakan_stok.satuan,
+  $sql=sqlsrv_query($con,"select pergerakan_stok.id,bruto,detail_pergerakan_stok.satuan,
 no_mc,pelanggan,tbl_kite.no_po,tbl_kite.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,
 lebar,berat,detail_pergerakan_stok.nokk,detail_pergerakan_stok.grade,
@@ -107,17 +107,17 @@ GROUP BY  pergerakan_stok.id, no_dok,sisa
 ORDER BY pergerakan_stok.id ASC");
   $c=0;
   $n=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
-	  $cek=mysqli_query($con,"select * from mutasi_kain
+	  $cek=sqlsrv_query($con,"select * from mutasi_kain
 		where id_stok='".$row['id']."' limit 1 ");
-		   $crow=mysqli_fetch_array($cek);
+		   $crow=sqlsrv_fetch_array($cek);
 	  if($crow>0){}else{ 
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	   
-	   $sqlket=mysqli_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='".$row['nokk']."' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
+	   $sqlket=sqlsrv_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='".$row['nokk']."' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
 GROUP BY ket_c");
-$rowket=mysqli_fetch_array($sqlket);
+$rowket=sqlsrv_fetch_array($sqlket);
 
 	  ?>
     <tr bgcolor="<?php echo $bgcolor; ?>">

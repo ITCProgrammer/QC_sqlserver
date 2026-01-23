@@ -78,7 +78,7 @@ ini_set("error_reporting",1);
     
   <?php
   if($_POST['submit']=='TAMBAH'){
-	   $cari=mysqli_query($con,"update `packing_list` SET 
+	   $cari=sqlsrv_query($con,"update `packing_list` SET 
 	   `no_sj`='".$_POST['ket']."',
 	   `no_order`='".$_POST['dono']."',
 	   `buyer`='".$_POST['buyer']."',

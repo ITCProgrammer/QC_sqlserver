@@ -8,7 +8,7 @@
    	ini_set("error_reporting",1);
      include("koneksi.php"); 
 
-  $sql1=mysqli_query($con,"SELECT *,tmp_detail_kite.yard_ as yard_, tmp_detail_kite.yard_ as roll, tmp_detail_kite.net_wight as bruto
+  $sql1=sqlsrv_query($con,"SELECT *,tmp_detail_kite.yard_ as yard_, tmp_detail_kite.yard_ as roll, tmp_detail_kite.net_wight as bruto
 FROM tbl_kite left join tmp_detail_kite on tmp_detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.nokk='$_GET[id]'
 AND (
@@ -18,8 +18,8 @@ AND (
 	AND sisa != 'BB'
 )
 ORDER BY tbl_kite.id ASC");
-  $row1=mysqli_fetch_array($sql1);
-  $jumlah=mysqli_num_rows($sql1);
+  $row1=sqlsrv_fetch_array($sql1);
+  $jumlah=sqlsrv_num_rows($sql1);
    ?>
     <script>
    
@@ -45,21 +45,21 @@ if(yrd=="meter"){
       <?php 
 	  if(substr($_GET['sift'],0,6)=="INSPEK"){
 	  $ket=" and ket='INSPEK' ";}else if(substr($_GET['sift'],0,7)=="PACKING"){$ket=" and ket='' ";}else{$ket="";}
-$sql=mysqli_query($con,"SELECT * FROM detail_pergerakan_stok 
+$sql=sqlsrv_query($con,"SELECT * FROM detail_pergerakan_stok 
 WHERE  nokk = '$_GET[id]'  
  $ket  AND (sisa!='TH' and sisa!='FKTH' and sisa!='BS' and sisa!='BB') group by no_roll
 ORDER BY no_roll ASC limit 0,20"); 
-$sql2=mysqli_query($con,"SELECT * FROM detail_pergerakan_stok 
+$sql2=sqlsrv_query($con,"SELECT * FROM detail_pergerakan_stok 
 WHERE  nokk = '$_GET[id]'  
  $ket AND (sisa!='TH' and sisa!='FKTH' and sisa!='BS' and sisa!='BB') group by no_roll
 ORDER BY no_roll ASC limit 20,20"); 
-$sql3=mysqli_query($con,"SELECT * FROM detail_pergerakan_stok 
+$sql3=sqlsrv_query($con,"SELECT * FROM detail_pergerakan_stok 
 WHERE  nokk = '$_GET[id]'  
  $ket AND (sisa!='TH' and sisa!='FKTH' and sisa!='BS' and sisa!='BB') group by no_roll
 ORDER BY no_roll ASC limit 40,20");
 	
   $no=1;
-  $row1=mysqli_fetch_array($sql1)
+  $row1=sqlsrv_fetch_array($sql1)
   ?><div>
      <form name="form2">
         Satuan : <select name="yrd_" 
@@ -84,7 +84,7 @@ ORDER BY no_roll ASC limit 40,20");
     
   </tr>
  <?php
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {	
 	  ?>
       <tr bgcolor="#9999FF">
@@ -117,7 +117,7 @@ ORDER BY no_roll ASC limit 40,20");
       <td width="54%">Keterangan</td>
     </tr>
     <?php
-  while($row2=mysqli_fetch_array($sql2))
+  while($row2=sqlsrv_fetch_array($sql2))
   {	
 	  ?>
     <tr bgcolor="#9999FF">
@@ -152,7 +152,7 @@ ORDER BY no_roll ASC limit 40,20");
       <td width="54%">Keterangan</td>
     </tr>
     <?php
-  while($row3=mysqli_fetch_array($sql3))
+  while($row3=sqlsrv_fetch_array($sql3))
   {	
 	  ?>
     <tr bgcolor="#9999FF">

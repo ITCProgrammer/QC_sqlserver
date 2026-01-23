@@ -122,34 +122,34 @@ function roundToTwo(num) {
 		// Skrip menyimpan data ke tabel transaksi utama
 		$myQrycariMK = "SELECT * FROM mutasi_kain
 						WHERE nokk='".$Txtnokk."' AND keterangan='".$Txtket."' LIMIT 1";
-		$mySqlcariMK=mysqli_query($con,$myQrycariMK) or die ("Gagal query  ".mysql_error());
-		$rowcariMK=mysqli_num_rows($mySqlcariMK);
-		$row3=mysqli_fetch_array($mySqlcariMK);
+		$mySqlcariMK=sqlsrv_query($con,$myQrycariMK) or die ("Gagal query  ".mysql_error());
+		$rowcariMK=sqlsrv_num_rows($mySqlcariMK);
+		$row3=sqlsrv_fetch_array($mySqlcariMK);
 		$Tbcatatan=$row3['catatan']." ".$Txtcatat;
 		if($rowcariMK>0){
 		$myQry3 ="	UPDATE mutasi_kain SET 
 					catatan='$Tbcatatan' 
 					WHERE keterangan='$Txtket' AND nokk='$Txtnokk'";
-		mysqli_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
+		sqlsrv_query($con,$myQry3) or die ("Gagal query  ".mysql_error());
 		}else{
 			$mySql3	= "INSERT mutasi_kain SET
 						catatan='".trim($Tbcatatan)."',
 						nokk='".$Txtnokk."',
 						keterangan='".$Txtket."'";
-		mysqli_query($con,$mySql3) or die ("Gagal query ".mysql_error());
+		sqlsrv_query($con,$mySql3) or die ("Gagal query ".mysql_error());
 		}
 		$myQrycari	= "SELECT * FROM tbl_catat_kain
 						WHERE nokk='".$Txtnokk."' AND ket='".$Txtket."' AND id_kain='".$Txtid."' LIMIT 1";
-		$mySqlcari=mysqli_query($con,$myQrycari) or die ("Gagal query  ".mysql_error());
-		$rowc1=mysqli_fetch_array($mySqlcari);
-		$rowcari=mysqli_num_rows($mySqlcari);		
+		$mySqlcari=sqlsrv_query($con,$myQrycari) or die ("Gagal query  ".mysql_error());
+		$rowc1=sqlsrv_fetch_array($mySqlcari);
+		$rowcari=sqlsrv_num_rows($mySqlcari);		
 		if($rowcari>0){
 		$mySqlc1	= "UPDATE tbl_catat_kain SET
 						catat='".$Tbcatatan."',
 						sisa='".$Txtsisa."',
 						tgl_update=now()
 						WHERE nokk='".$Txtnokk."' AND ket='".$Txtket."' AND id_kain='".$Txtid."'";
-		mysqli_query($con,$mySqlc1) or die ("Gagal query 1 ".mysql_error());	
+		sqlsrv_query($con,$mySqlc1) or die ("Gagal query 1 ".mysql_error());	
 		$mySql	= "INSERT tbl_catat_detail SET
 						id_catat='".$rowc1['id']."',
 						no_order='".$_POST['order']."',
@@ -160,7 +160,7 @@ function roundToTwo(num) {
 						tgl_buat=now(),
 						tgl_update=now()
 						";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());	
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());	
 		}else{
 			$mySql	= "INSERT tbl_catat_kain SET
 						nokk='".$Txtnokk."',
@@ -169,12 +169,12 @@ function roundToTwo(num) {
 						ket='".$Txtket."',
 						sisa='".$Txtsisa."',
 						tgl_update=now()";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());
 		$myQryc1	= "SELECT * FROM tbl_catat_kain
 						WHERE nokk='".$Txtnokk."' AND ket='".$Txtket."' AND id_kain='".$Txtid."' LIMIT 1";
-		$mySqlc1=mysqli_query($con,$myQryc1) or die ("Gagal query  ".mysql_error());
-		$rowcr2=mysqli_fetch_array($mySqlc1);
-		$rowcr1=mysqli_num_rows($mySqlc1);		
+		$mySqlc1=sqlsrv_query($con,$myQryc1) or die ("Gagal query  ".mysql_error());
+		$rowcr2=sqlsrv_fetch_array($mySqlc1);
+		$rowcr1=sqlsrv_num_rows($mySqlc1);		
 		if($rowcr1>0){
 		$mySql	= "INSERT tbl_catat_detail SET
 						id_catat='".$rowcr2['id']."',
@@ -186,7 +186,7 @@ function roundToTwo(num) {
 						tgl_buat=now(),
 						tgl_update=now()
 						";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());	
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ".mysql_error());	
 			}
 		}
 		echo "<script>";
@@ -198,7 +198,7 @@ if($_GET['h']=="1"){
 	$Txtid			= $_GET['id'];
 	$Txtket			= $_GET['ket'];
 	$Txtnokk		= $_GET['nokk'];
-	$qryhapus=mysqli_query($con,"UPDATE tbl_catat_detail SET `tmp_hapus`='1' WHERE id=".$_GET['idkd']."");
+	$qryhapus=sqlsrv_query($con,"UPDATE tbl_catat_detail SET `tmp_hapus`='1' WHERE id=".$_GET['idkd']."");
 	if($qryhapus){
 		echo "<meta http-equiv='refresh' content='0; url=tambah-catat-booking.php?id=$Txtid&nokk=$Txtnokk&ket=$Txtket&status=Catatan Sudah diHapus'>";}
 }
@@ -211,13 +211,13 @@ if($_GET['h']=="1"){
     </tr>
     <?php $myQry	= "SELECT * FROM tbl_catat_kain
 						WHERE nokk='".$_GET['nokk'] ."' AND ket='".$_GET['ket'] ."' ORDER BY id DESC";
-		$mySql1=mysqli_query($con,$myQry) or die ("Gagal query  ".mysql_error());
-		$row1=mysqli_fetch_array($mySql1);
+		$mySql1=sqlsrv_query($con,$myQry) or die ("Gagal query  ".mysql_error());
+		$row1=sqlsrv_fetch_array($mySql1);
 	  	$myQry1	= "SELECT sum(b.weight) as kgs,sum(b.yard_) as yds,satuan FROM pergerakan_stok a
 		 				INNER JOIN detail_pergerakan_stok b ON a.id=b.id_stok 
 						WHERE b.transtatus='1' AND a.id='".$_GET['id'] ."' AND b.nokk='".$_GET['nokk'] ."' AND sisa='".$_GET['ket'] ."'";
-	  	$mySql2=mysqli_query($con,$myQry1) or die ("Gagal query  ".mysql_error());
-		$row2=mysqli_fetch_array($mySql2)
+	  	$mySql2=sqlsrv_query($con,$myQry1) or die ("Gagal query  ".mysql_error());
+		$row2=sqlsrv_fetch_array($mySql2)
 		?>
     <tr>
       <td colspan="3"><font size="-2"><table width="100%" border="1">
@@ -241,9 +241,9 @@ if($_GET['h']=="1"){
 		$myQry2	= " SELECT *,b.id as idkd FROM tbl_catat_kain a
 							INNER JOIN tbl_catat_detail b ON a.id=b.id_catat
 						WHERE b.tmp_hapus='0' AND a.id_kain='".$_GET['id'] ."' AND a.nokk='".$_GET['nokk'] ."' AND a.ket='".$_GET['ket'] ."'";
-	  	$mySql4=mysqli_query($con,$myQry2) or die ("Gagal query  ".mysql_error());
-	  	$cek=mysqli_num_rows($mySql4);
-		while($data=mysqli_fetch_array($mySql4)){ ?>
+	  	$mySql4=sqlsrv_query($con,$myQry2) or die ("Gagal query  ".mysql_error());
+	  	$cek=sqlsrv_num_rows($mySql4);
+		while($data=sqlsrv_fetch_array($mySql4)){ ?>
           <tr>
             <td><?php echo $no;?></td>
             <td><?php echo $data['qty_minta'];?></td>

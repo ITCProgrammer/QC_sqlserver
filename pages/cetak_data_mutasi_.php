@@ -45,7 +45,7 @@ ini_set("error_reporting",1);
     <td>Keterangan<br />(Grade C)</td>
     </tr>
   <?php 
-  $sql=mysqli_query($con,"select pergerakan_stok.id,bruto,satuan,
+  $sql=sqlsrv_query($con,"select pergerakan_stok.id,bruto,satuan,
 no_mc,pelanggan,pergerakan_stok.no_po,pergerakan_stok.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,
 lebar,berat,detail_pergerakan_stok.nokk,grade,
@@ -59,49 +59,49 @@ AND fromtoid='GUDANG KAIN JADI'
 GROUP BY  pergerakan_stok.id, no_dok,sisa
 ORDER BY pergerakan_stok.id ASC");
   
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
-	  	 $sql1=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_c
+	  	 $sql1=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_c
 FROM pergerakan_stok left join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and grade='C' and sisa='".$row['sisa']."'
 GROUP BY pergerakan_stok.id
 ORDER BY pergerakan_stok.id ASC");
-		 $row1=mysqli_fetch_array($sql1);
+		 $row1=sqlsrv_fetch_array($sql1);
 		 
-		 $sql2=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_a_b
+		 $sql2=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_a_b
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and ((grade between 'A' and 'B') or grade='') and sisa='".$row['sisa']."'
 GROUP BY pergerakan_stok.id
 ORDER BY pergerakan_stok.id ASC");
-$row2=mysqli_fetch_array($sql2);
-$sql3=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
+$row2=sqlsrv_fetch_array($sql2);
+$sql3=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and grade='C' and (detail_pergerakan_stok.sisa='SISA' or detail_pergerakan_stok.sisa='FKSI') 
 ORDER BY pergerakan_stok.id ASC");
-	$row3=mysqli_fetch_array($sql3);
-	$sql4=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
+	$row3=sqlsrv_fetch_array($sql3);
+	$sql4=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and ((grade between 'A' and 'B') or grade='') and (detail_pergerakan_stok.sisa='SISA' or detail_pergerakan_stok.sisa='FKSI') 
 ORDER BY pergerakan_stok.id ASC");
-	$row4=mysqli_fetch_array($sql4);	
+	$row4=sqlsrv_fetch_array($sql4);	
 	
-	$sql5=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
+	$sql5=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and grade='C' and (detail_pergerakan_stok.sisa='FOC' ) 
 ORDER BY pergerakan_stok.id ASC");
-	$row5=mysqli_fetch_array($sql5);
-	$sql6=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
+	$row5=sqlsrv_fetch_array($sql5);
+	$sql6=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and ((grade between 'A' and 'B') or grade='') and (detail_pergerakan_stok.sisa='FOC') 
 ORDER BY pergerakan_stok.id ASC");
-	$row6=mysqli_fetch_array($sql6);
-	$stmpt=mysqli_query($con,"select mutasi_kain.id as id_kain,mutasi_kain.tempat  
+	$row6=sqlsrv_fetch_array($sql6);
+	$stmpt=sqlsrv_query($con,"select mutasi_kain.id as id_kain,mutasi_kain.tempat  
 from mutasi_kain 
 INNER JOIN pergerakan_stok on pergerakan_stok.id=mutasi_kain.id_stok
 where pergerakan_stok.id='".$row['id']."' and mutasi_kain.keterangan='".$row['sisa']."'
 GROUP BY mutasi_kain.id,mutasi_kain.keterangan
 ORDER BY pergerakan_stok.id ASC");
-$rtmpt=mysqli_fetch_array($stmpt);
+$rtmpt=sqlsrv_fetch_array($stmpt);
 
 	  ?>
     <tr>

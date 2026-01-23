@@ -45,12 +45,12 @@ ini_set("error_reporting",1);
     <td colspan="23"><b>No Mutasi : <?php echo $_GET['mutasi'];?>   
     </b>
      <?php
-	$lth=mysqli_query($con,"select pergerakan_stok.tgl_update as tanggal_update ,pergerakan_stok.userid as user_packing ,mutasi_kain.no_mutasi 
+	$lth=sqlsrv_query($con,"select pergerakan_stok.tgl_update as tanggal_update ,pergerakan_stok.userid as user_packing ,mutasi_kain.no_mutasi 
 from mutasi_kain
 inner JOIN pergerakan_stok on pergerakan_stok.id=mutasi_kain.id_stok
 where mutasi_kain.no_mutasi='".$_GET['mutasi']."'
 GROUP BY no_mutasi");
-	$rowlth=mysqli_fetch_array($lth);	
+	$rowlth=sqlsrv_fetch_array($lth);	
 	?></td>
     </tr>
   <tr align="center" bgcolor="#0099FF">
@@ -88,7 +88,7 @@ GROUP BY no_mutasi");
   <?php 
   $usr=substr($rowlth['user_packing'],0,3);
    if($usr=="INS" or $usr=="ins"){$kt="AND detail_pergerakan_stok.ket='INSPEK'"; $ktc="INSPEK"; $usr1="INS";}elseif($usr=="KRA" or $usr=="kra"){$kt=""; $ktc="";$usr1="KRA";}else{$kt=""; $ktc="";$usr1="PAC";}
-  $sql=mysqli_query($con,"select pergerakan_stok.id,bruto,satuan,
+  $sql=sqlsrv_query($con,"select pergerakan_stok.id,bruto,satuan,
 no_mc,pelanggan,tbl_kite.no_po,tbl_kite.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,
 lebar,berat,detail_pergerakan_stok.nokk,grade,
@@ -107,52 +107,52 @@ AND (fromtoid='GUDANG KAIN JADI' or fromtoid='GUDANG BS')
 GROUP BY  pergerakan_stok.id, no_dok,sisa
 ORDER BY pergerakan_stok.id ASC");
   $c=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-	  	  $sql1=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_c
+	  	  $sql1=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_c
 FROM pergerakan_stok left join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and grade='C' and sisa='".$row['sisa']."'
 GROUP BY pergerakan_stok.id
 ORDER BY pergerakan_stok.id ASC");
-		 $row1=mysqli_fetch_array($sql1);
+		 $row1=sqlsrv_fetch_array($sql1);
 		 
-		 $sql2=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_a_b
+		 $sql2=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as grd_a_b
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and ((grade between 'A' and 'B') or grade='') and sisa='".$row['sisa']."' GROUP BY pergerakan_stok.id
 ORDER BY pergerakan_stok.id ASC");
-$row2=mysqli_fetch_array($sql2);
-$sql3=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
+$row2=sqlsrv_fetch_array($sql2);
+$sql3=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and grade='C' and (detail_pergerakan_stok.sisa='SISA' or detail_pergerakan_stok.sisa='FKSI') 
 ORDER BY pergerakan_stok.id ASC");
-	$row3=mysqli_fetch_array($sql3);
-	$sql4=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
+	$row3=sqlsrv_fetch_array($sql3);
+	$sql4=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and ((grade between 'A' and 'B') or grade='') and (detail_pergerakan_stok.sisa='SISA' or detail_pergerakan_stok.sisa='FKSI') 
 ORDER BY pergerakan_stok.id ASC");
-	$row4=mysqli_fetch_array($sql4);	
+	$row4=sqlsrv_fetch_array($sql4);	
 	
-	$sql5=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
+	$sql5=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_c
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and grade='C' and (detail_pergerakan_stok.sisa='FOC' ) 
 ORDER BY pergerakan_stok.id ASC");
-	$row5=mysqli_fetch_array($sql5);
-	$sql6=mysqli_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
+	$row5=sqlsrv_fetch_array($sql5);
+	$sql6=sqlsrv_query($con,"SELECT sum(detail_pergerakan_stok.weight) as sisa_ab
 FROM pergerakan_stok inner join detail_pergerakan_stok on detail_pergerakan_stok.id_stok=pergerakan_stok.id
 WHERE pergerakan_stok.id='".$row['id']."' and ((grade between 'A' and 'B') or grade='') and (detail_pergerakan_stok.sisa='FOC') 
 ORDER BY pergerakan_stok.id ASC");
-	$row6=mysqli_fetch_array($sql6);
-	$stmpt=mysqli_query($con,"select mutasi_kain.id as id_kain,mutasi_kain.tempat  
+	$row6=sqlsrv_fetch_array($sql6);
+	$stmpt=sqlsrv_query($con,"select mutasi_kain.id as id_kain,mutasi_kain.tempat  
 from mutasi_kain 
 INNER JOIN pergerakan_stok on pergerakan_stok.id=mutasi_kain.id_stok
 where pergerakan_stok.id='".$row['id']."' and mutasi_kain.keterangan='".$row['sisa']."'
 GROUP BY mutasi_kain.id,mutasi_kain.keterangan
 ORDER BY pergerakan_stok.id ASC");
-$rtmpt=mysqli_fetch_array($stmpt);
-	$sqlket=mysqli_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='".$row['nokk']."' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
+$rtmpt=sqlsrv_fetch_array($stmpt);
+	$sqlket=sqlsrv_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='".$row['nokk']."' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
 GROUP BY ket_c");
-$rowket=mysqli_fetch_array($sqlket);
+$rowket=sqlsrv_fetch_array($sqlket);
 	  ?>
     <tr bgcolor="">
     <td><?php echo $row['no_item'];?></td>

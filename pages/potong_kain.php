@@ -28,15 +28,15 @@ function jumlah()
 <body>
 <?php 
 if($_POST['SIMPAN']=='SIMPAN'){
-	mysqli_query($con,"UPDATE detail_pergerakan_stok SET `weight`='".$_POST['netto2']."',`yard_`='".$_POST['yard2']."'  where id=".$_GET['id']."")or die("Gagal");
-		mysqli_query($con,"UPDATE tmp_detail_kite SET `net_wight`='".$_POST['netto2']."',`yard_`='".$_POST['yard2']."'  where SN=".$_GET['sn']."")or die("Gagal1");
+	sqlsrv_query($con,"UPDATE detail_pergerakan_stok SET `weight`='".$_POST['netto2']."',`yard_`='".$_POST['yard2']."'  where id=".$_GET['id']."")or die("Gagal");
+		sqlsrv_query($con,"UPDATE tmp_detail_kite SET `net_wight`='".$_POST['netto2']."',`yard_`='".$_POST['yard2']."'  where SN=".$_GET['sn']."")or die("Gagal1");
 	echo "<script>alert('Data Tersimpan, Harap Refresh Packing list');window.close();</script>";
 }
-$data=mysqli_query($con,"SELECT *,a.`yard_` as `yard2` from detail_pergerakan_stok a
+$data=sqlsrv_query($con,"SELECT *,a.`yard_` as `yard2` from detail_pergerakan_stok a
 LEFT JOIN tmp_detail_kite b ON a.id_detail_kj=b.id
 LEFT JOIN tbl_kite c ON b.id_kite=c.id
 WHERE a.id='".$_GET['id']."'");
-$rowd=mysqli_fetch_array($data);
+$rowd=sqlsrv_fetch_array($data);
 
 ?>
 <form id="form1" name="form1" method="post" action="" enctype="multipart/form-data">
@@ -87,4 +87,4 @@ $rowd=mysqli_fetch_array($data);
 </form>
 </body>
 </html>
-<?php mysqli_close($con); ?>
+<?php sqlsrv_close($con); ?>

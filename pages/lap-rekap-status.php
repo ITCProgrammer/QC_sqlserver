@@ -1,6 +1,6 @@
 <?php 
 ini_set('error_reporting',1);
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 //include "koneksi.php";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -95,7 +95,7 @@ $Akhir	= isset($_POST['akhir']) ? $_POST['akhir'] : '';
 	}else{ $where9.= " "; }
 	if($Order=="" and $Awal=="" and $Akhir==""){ $nowhere.=" AND a.id='' "; }else{$nowhere.="";}
 	
-  $sql=mysqli_query($con,"SELECT DATE_FORMAT(tgl_update,'%M') as bulan, 
+  $sql=sqlsrv_query($con,"SELECT DATE_FORMAT(tgl_update,'%M') as bulan, 
 sum(if(y.kets='Sisa Toleransi',y.kg_skirim1,0)) as sisa_toleransi,
 sum(if(y.kets='Sisa Produksi',y.kg_skirim1,0)) as sisa_produksi,
 sum(if(y.kets='Booking',y.kg_skirim1,0)) as booking,
@@ -149,7 +149,7 @@ SELECT
 	");
   $c=1;
   $no=1;	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	   

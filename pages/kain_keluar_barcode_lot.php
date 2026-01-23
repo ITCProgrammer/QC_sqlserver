@@ -45,14 +45,14 @@ $(function () {
 <body><?php
 function docno(){
 	//include("koneksi.php");
-	$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");
+	$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");
 		date_default_timezone_set("Asia/Jakarta");
 		$format = date("y");
-		$sql=mysqli_query($con,"SELECT documentno FROM pergerakan_stok WHERE substr(documentno,1,2) like '%".$format."%'
+		$sql=sqlsrv_query($con,"SELECT documentno FROM pergerakan_stok WHERE substr(documentno,1,2) like '%".$format."%'
 		ORDER BY documentno DESC LIMIT 1 ") or die ("Gagal");
-		$d=mysqli_num_rows($sql);
+		$d=sqlsrv_num_rows($sql);
 		if($d>0){
-			$r=mysqli_fetch_array($sql);
+			$r=sqlsrv_fetch_array($sql);
 			$d=$r['documentno'];
 			$str=substr($d,2,5);
 			$Urut = (int)$str;
@@ -82,7 +82,7 @@ $Barcode		= $_POST['barcode'];
 if(isset($_POST['btnBatal'])){
 	# Kosongkan Tmp jika datanya sudah dipindah
 		$hapusSql = "DELETE FROM tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
-		mysqli_query($con,$hapusSql) or die ("Gagal kosongkan tmp");
+		sqlsrv_query($con,$hapusSql) or die ("Gagal kosongkan tmp");
 		
 		// Refresh form
 		//echo "<meta http-equiv='refresh' content='0; url=cetak/transaksi_pembelian_cetak.php?noNota=$noTransaksi'>";
@@ -95,29 +95,29 @@ if(isset($_POST['btnTambah'])){
 	
 			# Jika sudah pernah dipilih		
 		$cekSql ="SELECT * FROM tmp_detail_pergerakan_stok WHERE nokk='$Barcode' AND transtatus='2' AND userid='".$usernm."'"; 
-		$cekQry = mysqli_query($con,$cekSql) or die ("Gagal Query");
+		$cekQry = sqlsrv_query($con,$cekSql) or die ("Gagal Query");
 		$cekSql1 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' AND (transtatus='1' or transtatus='0')"; 
-		$cekQry1 = mysqli_query($con,$cekSql1) or die ("Gagal Query d");
+		$cekQry1 = sqlsrv_query($con,$cekSql1) or die ("Gagal Query d");
 		$cekSql0 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' and transtatus=' '"; 
-		$cekQry0 = mysqli_query($con,$cekSql0) or die ("Gagal Query d");
-		$c0=mysqli_fetch_array($cekQry0);
+		$cekQry0 = sqlsrv_query($con,$cekSql0) or die ("Gagal Query d");
+		$c0=sqlsrv_fetch_array($cekQry0);
 		$cekSql2 ="SELECT * FROM detail_pergerakan_stok WHERE SN='$Barcode' AND transtatus='2'"; 
-		$cekQry2 = mysqli_query($con,$cekSql2) or die ("Gagal Query d");
+		$cekQry2 = sqlsrv_query($con,$cekSql2) or die ("Gagal Query d");
 		
-		//if ((mysqli_num_rows($cekQry) >= 1)  or (mysqli_num_rows($cekQry0)<=1) or (mysqli_num_rows($cekQry2)>=1)) {
-			if ((mysqli_num_rows($cekQry) >= 1) or (mysqli_num_rows($cekQry2)>=1)) {
+		//if ((sqlsrv_num_rows($cekQry) >= 1)  or (sqlsrv_num_rows($cekQry0)<=1) or (sqlsrv_num_rows($cekQry2)>=1)) {
+			if ((sqlsrv_num_rows($cekQry) >= 1) or (sqlsrv_num_rows($cekQry2)>=1)) {
 			
 			$pesanError = array();
-			if(mysqli_num_rows($cekQry)>=1){
+			if(sqlsrv_num_rows($cekQry)>=1){
 			$pesanError[] = "<b>Data Nokk <font color='#FF0000'>Sudah ADA </font> di Daftar list ini</b> !";		
 			}
-			if((mysqli_num_rows($cekQry0)==1)){
+			if((sqlsrv_num_rows($cekQry0)==1)){
 			$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>Belum Masuk atau Belum diSCAN</font> </b> !";		
 			}
-			//if((mysqli_num_rows($cekQry0)==0)){
+			//if((sqlsrv_num_rows($cekQry0)==0)){
 			//$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>Tidak ADA</font> </b> !";		
 		//	}
-			if(mysqli_num_rows($cekQry2)>=1){
+			if(sqlsrv_num_rows($cekQry2)>=1){
 			$pesanError[] = "<b>Data BARCODE ini <font color='#FF0000'>SUDAH KELUAR</font> </b> !";		
 			}
 			# JIKA ADA PESAN ERROR DARI VALIDASI
@@ -137,14 +137,14 @@ if(isset($_POST['btnTambah'])){
 
 			# Cek data di dalam tabel Kain, mungkin yang diinput dari form adalah Barcode dan mungkin Kode-nya
 			$mySql ="SELECT * FROM detail_pergerakan_stok WHERE nokk='$Barcode' AND transtatus='1' AND `status`='1'";
-			$myQry = mysqli_query($con,$mySql) or die ("Gagal Query Tmp");
-			while($myRow = mysqli_fetch_array($myQry)){
+			$myQry = sqlsrv_query($con,$mySql) or die ("Gagal Query Tmp");
+			while($myRow = sqlsrv_fetch_array($myQry)){
 				// Data yang ditemukan dimasukkan ke keranjang transaksi
 				$tmpSql 	= "INSERT INTO tmp_detail_pergerakan_stok
 				(id_detail_kj,weight,yard_,no_roll,grade,satuan,sisa,SN,ket,nokk,ket_c,transtatus,userid) 
 							VALUES ('".$myRow['id_detail_kj']."','".$myRow['weight']."','".$myRow['yard_']."','".$myRow['no_roll']."'
 							, '".$myRow['grade']."', '".$myRow['satuan']."', '".$myRow['sisa']."', '".$myRow['SN']."', '".$myRow['ket']."', '".$myRow['nokk']."', '".$myRow['ket_c']."','2','".$usernm."')";
-				mysqli_query($con,$tmpSql) or die ("Gagal Query tmp ");
+				sqlsrv_query($con,$tmpSql) or die ("Gagal Query tmp ");
 			}
 			}
 	}
@@ -172,8 +172,8 @@ if(isset($_POST['btnSimpan'])){
 	*/
 	# Validasi jika belum ada satupun data item yang dimasukkan
 	$tmpSql ="SELECT COUNT(*) As qty FROM tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
-	$tmpQry = mysqli_query($con,$tmpSql) or die ("Gagal Query Tmp");
-	$tmpData = mysqli_fetch_array($tmpQry);
+	$tmpQry = sqlsrv_query($con,$tmpSql) or die ("Gagal Query Tmp");
+	$tmpData = sqlsrv_fetch_array($tmpQry);
 	if ($tmpData['qty'] < 1) {
 		$pesanError[] = "<b>DAFTAR KAIN JADI KOSONG</b>, Daftar item kain belum ada yang dimasukan, <b>minimal 1 data </b>.";
 	}
@@ -214,15 +214,15 @@ if(isset($_POST['btnSimpan'])){
 						fromtoid='OUT',
 						no_sj ='$txtDok',
 						userid='".$usernm."'";
-		mysqli_query($con,$mySql) or die ("Gagal query 1 ");
+		sqlsrv_query($con,$mySql) or die ("Gagal query 1 ");
 		# Ambil semua data benang/benang yang dipilih, berdasarkan user yg login
 		$tmpSql1 ="SELECT id  FROM pergerakan_stok WHERE typestatus='3' and userid='".$usernm."' ORDER BY id DESC" ;
-		$tmpQry1 = mysqli_query($con,$tmpSql1) or die ("Gagal Query stok ");
-		$tmpData1= mysqli_fetch_array($tmpQry1);
+		$tmpQry1 = sqlsrv_query($con,$tmpSql1) or die ("Gagal Query stok ");
+		$tmpData1= sqlsrv_fetch_array($tmpQry1);
 		# Ambil semua data benang/benang yang dipilih, berdasarkan user yg login
 		$tmpSql ="SELECT * FROM tmp_detail_pergerakan_stok WHERE userid='".$usernm."' AND transtatus='2'";
-		$tmpQry = mysqli_query($con,$tmpSql) or die ("Gagal Query Tmp");
-		while ($tmpData = mysqli_fetch_array($tmpQry)) {
+		$tmpQry = sqlsrv_query($con,$tmpSql) or die ("Gagal Query Tmp");
+		while ($tmpData = sqlsrv_fetch_array($tmpQry)) {
 			$dataBerat 	= $tmpData['weight'];
 			$dataYard 	= $tmpData['yard_'];
 			$dataKJ 	= $tmpData['id_detail_kj'];
@@ -250,18 +250,18 @@ if(isset($_POST['btnSimpan'])){
 									grade='$dataGrade',
 									sisa='$dataSisa',
 									SN='$dataSN'";
-			mysqli_query($con,$itemSql) or die ("Gagal Query item");
+			sqlsrv_query($con,$itemSql) or die ("Gagal Query item");
 			
 			$itemSqlU="UPDATE detail_pergerakan_stok 
 								SET transtatus='0' 
 								where  (transtatus !='2' or transtatus !=NULL)  
 								and SN='$dataSN'";
-			mysqli_query($con,$itemSqlU) or die ("Gagal Query UPdate");					
+			sqlsrv_query($con,$itemSqlU) or die ("Gagal Query UPdate");					
 		}
 		
 		# Kosongkan Tmp jika datanya sudah dipindah
 		$hapusSql = "DELETE FROM tmp_detail_pergerakan_stok WHERE transtatus='2' AND userid='".$usernm."'";
-		mysqli_query($con,$hapusSql) or die ("Gagal kosongkan tmp");
+		sqlsrv_query($con,$hapusSql) or die ("Gagal kosongkan tmp");
 		
 		// Refresh form
 		//echo "<meta http-equiv='refresh' content='0; url=cetak/transaksi_pembelian_cetak.php?noNota=$noTransaksi'>";
@@ -273,8 +273,8 @@ if(isset($_POST['btnSimpan'])){
 }
 
 
-$data1=mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$_GET['kkno']."'");
-$rowk=mysqli_fetch_array($data1);
+$data1=sqlsrv_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$_GET['kkno']."'");
+$rowk=sqlsrv_fetch_array($data1);
 ?>
 <fieldset>
 <legend>PILIH DATA KAIN KELUAR</legend>
@@ -370,11 +370,11 @@ $rowk=mysqli_fetch_array($data1);
       </tr>
       <?php
 	//tambahan
-	$data=mysqli_query($con,"SELECT a.*,b.no_order,b.no_po,b.warna FROM tmp_detail_pergerakan_stok a
+	$data=sqlsrv_query($con,"SELECT a.*,b.no_order,b.no_po,b.warna FROM tmp_detail_pergerakan_stok a
 	INNER JOIN tmp_detail_kite c on c.id=a.id_detail_kj
 INNER JOIN tbl_kite b ON c.id_kite = b.id WHERE a.transtatus='2' and a.userid='".$usernm."' order by a.no_roll ASC");
 	$no=1;
-	 while($rowd=mysqli_fetch_array($data)){?>
+	 while($rowd=sqlsrv_fetch_array($data)){?>
       <?php  
 	 $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	 ?>

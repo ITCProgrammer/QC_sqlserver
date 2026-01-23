@@ -64,10 +64,10 @@ function listurut(){
 include"koneksi.php";	
 date_default_timezone_set("Asia/Jakarta");
 $format = date("y");
-$sqlnu=mysqli_query($con,"SELECT no_sj FROM packing_list WHERE substr(no_sj,1,2) like '%".$format."%' ORDER BY no_sj DESC LIMIT 1 ") or die (mysql_error());
-$d=mysqli_num_rows($sqlnu);
+$sqlnu=sqlsrv_query($con,"SELECT no_sj FROM packing_list WHERE substr(no_sj,1,2) like '%".$format."%' ORDER BY no_sj DESC LIMIT 1 ") or die (mysql_error());
+$d=sqlsrv_num_rows($sqlnu);
 if($d>0){
-$r=mysqli_fetch_array($sqlnu);
+$r=sqlsrv_fetch_array($sqlnu);
 $d=$r['no_sj'];
 $str=substr($d,2,4);
 $Urut = (int)$str;
@@ -90,7 +90,7 @@ $no=listurut();
 	  
 	  if($_GET['dono']!='')
 	{ 
-	$sqllist= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$_GET['dono']."' GROUP BY listno order by listno asc"); 
+	$sqllist= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$_GET['dono']."' GROUP BY listno order by listno asc"); 
 		
 	}
 	  ?>
@@ -119,7 +119,7 @@ $no=listurut();
     <td><input name="buyer" type="text" id="buyer" size="30" /></td>
       <?php if($_GET['nosj']!='')
 	{ 
-	$sqltgl= mysqli_query($con,"SELECT `tgl_update` from packing_list where `no_sj`='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y') GROUP BY no_sj"); $rtgl=mysqli_fetch_array($sqltgl);
+	$sqltgl= sqlsrv_query($con,"SELECT `tgl_update` from packing_list where `no_sj`='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y') GROUP BY no_sj"); $rtgl=sqlsrv_fetch_array($sqltgl);
 		
 	}
 	  ?>
@@ -202,11 +202,11 @@ LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 where packing_list.listno='".$_GET['nolist']."'
 GROUP BY no_item,no_lot,no_warna,warna"; 
 		
-		$data=mysqli_query($con,$sql);
+		$data=sqlsrv_query($con,$sql);
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
+	 while($rowd=sqlsrv_fetch_array($data)){
 		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  {
 		 ?>
@@ -266,11 +266,11 @@ LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 where packing_list.no_sj='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y')
 GROUP BY no_item,no_lot,no_warna,warna"; 
 		
-		$data=mysqli_query($con,$sql);
+		$data=sqlsrv_query($con,$sql);
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
+	 while($rowd=sqlsrv_fetch_array($data)){
 		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  {
 		 ?>
@@ -311,4 +311,4 @@ GROUP BY no_item,no_lot,no_warna,warna";
 
 </body>
 </html>
-<?php mysqli_close($con); ?>
+<?php sqlsrv_close($con); ?>

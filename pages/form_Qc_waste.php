@@ -45,25 +45,25 @@ if(isset($_POST['btnsimpan'])){
 		echo "</div> <br>"; 
 	}
 	else {
-	$sqlcek1=mysqli_query($con,"select count(*) as nokk from tbl_kite where nokk='".$_POST['nokk2']."'");
-	$r=mysqli_fetch_array($sqlcek1);
+	$sqlcek1=sqlsrv_query($con,"select count(*) as nokk from tbl_kite where nokk='".$_POST['nokk2']."'");
+	$r=sqlsrv_fetch_array($sqlcek1);
 	if($r['nokk']>0){}else{
 	$jns=addslashes($_POST['txt_jenis_kain']);
 	$stl=addslashes($_POST['txt_style']);
-	$sqlsimpan=mysqli_query($con,"INSERT into tbl_kite values('','".$_POST['txt_pelanggan']."','.".$_POST['txt_item']."','".$_POST['txt_warna']."','".$_POST['txt_no_warna']."','".$_POST['txt_lebar']."','".$_POST['txt_berat']."',now(),'".$_POST['txt_nopo']."','$jns','".$_POST['txt_order']."','$stl','".$_POST['txt_lot']."',DATE_SUB(NOW(), INTERVAL 1 hour),'".$_POST['no_mc']."','".$_POST['nokk2']."','".$_POST['bruto']."','".$_SESSION['username']."','','')") or die("gagal");
+	$sqlsimpan=sqlsrv_query($con,"INSERT into tbl_kite values('','".$_POST['txt_pelanggan']."','.".$_POST['txt_item']."','".$_POST['txt_warna']."','".$_POST['txt_no_warna']."','".$_POST['txt_lebar']."','".$_POST['txt_berat']."',now(),'".$_POST['txt_nopo']."','$jns','".$_POST['txt_order']."','$stl','".$_POST['txt_lot']."',DATE_SUB(NOW(), INTERVAL 1 hour),'".$_POST['no_mc']."','".$_POST['nokk2']."','".$_POST['bruto']."','".$_SESSION['username']."','','')") or die("gagal");
 	}
 	
-	$sql1=mysqli_query($con,"select * from tbl_kite left join
+	$sql1=sqlsrv_query($con,"select * from tbl_kite left join
 			tmp_detail_kite on nokk=nokkKite
 			where nokk='".$_POST['nokk']."'");
 	
   $n=1;
   $nom=1;
-  while($row=mysqli_fetch_array($sql1))
+  while($row=sqlsrv_fetch_array($sql1))
   {
 	  if($_POST['check'][$n]!=''){
 			$id_kite=$_POST['check'][$n];
-			$simpan=mysqli_query($con,"UPDATE `db_qc`.`tmp_detail_kite` SET `nokkKite` = '".$_POST['nokk2']."' WHERE `tmp_detail_kite`.`id`='$id_kite'") or die("Gagal");
+			$simpan=sqlsrv_query($con,"UPDATE `db_qc`.`tmp_detail_kite` SET `nokkKite` = '".$_POST['nokk2']."' WHERE `tmp_detail_kite`.`id`='$id_kite'") or die("Gagal");
 			$n++;}else{$n++;}
   }
 	echo "<script>";
@@ -88,12 +88,12 @@ if(isset($_POST['btnsimpan'])){
                 <td width="234"><input name="nokk" type="text"  onchange="window.location='?p=form_Qc_waste&kkno='+this.value"  value="<?php echo $_GET['kkno'];?>"tabindex="1"/>
 				<?php 
 				if($_GET['kkno']!=""){
-			$sql=mysqli_query($con,"select * from tbl_kite left join
+			$sql=sqlsrv_query($con,"select * from tbl_kite left join
 			tmp_detail_kite on nokk=nokkKite
 			where nokk='".$_GET['kkno']."'");
-			$r=mysqli_fetch_array($sql);
-			$sql_d=mysqli_query($con,"select satuan from tmp_detail_kite where nokkKite='".$_GET['kkno']."'");
-			$rd=mysqli_fetch_array($sql_d);
+			$r=sqlsrv_fetch_array($sql);
+			$sql_d=sqlsrv_query($con,"select satuan from tmp_detail_kite where nokkKite='".$_GET['kkno']."'");
+			$rd=sqlsrv_fetch_array($sql_d);
 				}
 			?></td>
                  </tr>
@@ -189,8 +189,8 @@ if(isset($_POST['btnsimpan'])){
         <?php
 		if($_GET['kkno']!=""){
 		$no=1;$c=1;$n=1;
-$data=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' ORDER BY no_roll");
-        while($rowd=mysqli_fetch_array($data)){
+$data=sqlsrv_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' ORDER BY no_roll");
+        while($rowd=sqlsrv_fetch_array($data)){
 			$bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 			?>
      <tr bgcolor="<?php echo $bgcolor;?>">
@@ -239,11 +239,11 @@ $data=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['
         </tr>
         <?php
 		$no1=1;$c1=1;$n1=1;
-		$dt=mysqli_query($con,"select nokkKite from tmp_detail_kite where nokkKite='".$_GET['kkno2']."'");
-		$r1=mysqli_fetch_array($dt);
+		$dt=sqlsrv_query($con,"select nokkKite from tmp_detail_kite where nokkKite='".$_GET['kkno2']."'");
+		$r1=sqlsrv_fetch_array($dt);
 		if($r1['nokkKite']!=""){
-$data1=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno2']."' ORDER BY no_roll");
-        while($rowd1=mysqli_fetch_array($data1)){
+$data1=sqlsrv_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno2']."' ORDER BY no_roll");
+        while($rowd1=sqlsrv_fetch_array($data1)){
 			$bgcolor1 = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 			?>
      <tr bgcolor="<?php echo $bgcolor1;?>">

@@ -10,10 +10,10 @@
     <?php
     include '../koneksi.php';
 	ini_set("error_reporting",1);
-    $sqlAppr = mysqli_query($con,"SELECT `id`, `approve_acc`, `tgl_approve_acc` from tbl_pengiriman where id = '".$_GET['id']."' LIMIT 1");
-    $dtAppr = mysqli_fetch_array($sqlAppr);
+    $sqlAppr = sqlsrv_query($con,"SELECT `id`, `approve_acc`, `tgl_approve_acc` from tbl_pengiriman where id = '".$_GET['id']."' LIMIT 1");
+    $dtAppr = sqlsrv_fetch_array($sqlAppr);
     if (isset($_POST['btnSimpan'])) {
-        $sql = mysqli_query($con,"UPDATE tbl_pengiriman SET 
+        $sql = sqlsrv_query($con,"UPDATE tbl_pengiriman SET 
                      `approve_acc` = '".$_POST['approve_acc']."',
                      `ipaddress_acc` = '".$_SERVER['REMOTE_ADDR']."',
                      `tgl_approve_acc` = now()

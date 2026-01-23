@@ -110,7 +110,7 @@ function checkAll(form){
   </tr>
 </table>
 <?php
-$sql=mysqli_query($con,"select a.id,bruto,satuan,a.no_mutasi,
+$sql=sqlsrv_query($con,"select a.id,bruto,satuan,a.no_mutasi,
 no_mc,pelanggan,d.no_po,d.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,d.user_packing,
 lebar,berat,c.nokk,grade,
@@ -152,7 +152,7 @@ ORDER BY pergerakan_stok.id ASC");
     <!-- <td width="50" bgcolor="#F5F5F5">Test</td> -->
   </tr>
   <?php
- $sql=mysqli_query($con,"SELECT a.id,b.id AS idb,bruto,satuan,a.no_mutasi,
+ $sql=sqlsrv_query($con,"SELECT a.id,b.id AS idb,bruto,satuan,a.no_mutasi,
  no_mc,pelanggan,d.no_po,d.no_order,tgl_update,
  jenis_kain,no_warna,warna,no_item,no_lot,d.user_packing,
  lebar,berat,c.nokk,grade,
@@ -175,11 +175,11 @@ $totqty1=0;
 $grab=0;
 $grc=0;
 $n=1;	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {	 
-  	$sqlket=mysqli_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='".$row['nokk']."' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
+  	$sqlket=sqlsrv_query($con,"select nokk,ket_c,sisa from detail_pergerakan_stok where nokk ='".$row['nokk']."' and ket_c !='' and sisa !='TH' and sisa !='FKTH' and grade='C'
 GROUP BY ket_c");
-$rowket=mysqli_fetch_array($sqlket);
+$rowket=sqlsrv_fetch_array($sqlket);
 	
 	?>
     <tr >

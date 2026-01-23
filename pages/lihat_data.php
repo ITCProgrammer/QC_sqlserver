@@ -67,7 +67,7 @@ include("../koneksi.php");
   <?php 
 if(substr($_POST['user_name'],0,6)=="INSPEK"){$ket=" and ket!=''";}else{$ket=" and ket=''";}
 if($_POST['sift']=="1"){	  
-  $sql=mysqli_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+  $sql=sqlsrv_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tanggal_update
@@ -78,7 +78,7 @@ AND tbl_kite.user_packing = '".$_POST['user_name']."' ".$ket."
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");}else if($_POST['sift']=="2"){
 	  
-	  $sql=mysqli_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+	  $sql=sqlsrv_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tanggal_update
@@ -89,7 +89,7 @@ GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
 	  
 	  }else{
-	$sql=mysqli_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+	$sql=sqlsrv_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE tanggal_update
@@ -102,69 +102,69 @@ ORDER BY tbl_kite.id ASC");
 		  
 		 }
   
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
-	  	 $sql1=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
+	  	 $sql1=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade='C' and ket=''
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $row1=mysqli_fetch_array($sql1);
+		 $row1=sqlsrv_fetch_array($sql1);
 		 
-		 $sql2=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
+		 $sql2=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade between 'A' and 'B' and ket=''
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-$row2=mysqli_fetch_array($sql2);
-$sql4=mysqli_query($con,"SELECT *, sum(detail_kite.net_wight) as qty,count(detail_kite.sisa) as jml 
+$row2=sqlsrv_fetch_array($sql2);
+$sql4=sqlsrv_query($con,"SELECT *, sum(detail_kite.net_wight) as qty,count(detail_kite.sisa) as jml 
 FROM tbl_kite
 LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE (sisa = 'SISA' or sisa = 'FKSI') and ket=''
 AND nokkKite = '".$row['nokk']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $row4=mysqli_fetch_array($sql4);
-		 $sql5=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
+		 $row4=sqlsrv_fetch_array($sql4);
+		 $sql5=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade='C' and
 (sisa = 'SISA' or sisa = 'FKSI') and ket=''
 AND nokkKite = '".$row['nokk']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $row5=mysqli_fetch_array($sql5);
+		 $row5=sqlsrv_fetch_array($sql5);
 		 
-		 $sql6=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
+		 $sql6=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_a_b
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade between 'A' and 'B' and (sisa = 'SISA' or sisa = 'FKSI') and ket =''
 AND nokkKite = '".$row['nokk']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-$row6=mysqli_fetch_array($sql6);	
-$sql8=mysqli_query($con,"SELECT *, sum(detail_kite.net_wight) as qty, sum(detail_kite.yard_) as yrd12,count(detail_kite.ket) as jml , grade
+$row6=sqlsrv_fetch_array($sql6);	
+$sql8=sqlsrv_query($con,"SELECT *, sum(detail_kite.net_wight) as qty, sum(detail_kite.yard_) as yrd12,count(detail_kite.ket) as jml , grade
 FROM tbl_kite
 LEFT JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE ket !=''
 AND nokkKite = '".$row['nokk']."'
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
- $row8=mysqli_fetch_array($sql8);
+ $row8=sqlsrv_fetch_array($sql8);
  
-  $sql9=mysqli_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
+  $sql9=sqlsrv_query($con,"SELECT sum(detail_kite.net_wight) as grd_c
 FROM tbl_kite left join detail_kite on detail_kite.nokkKite=tbl_kite.nokk
 WHERE tbl_kite.id='".$row['id']."' and grade='C' and ket !=''
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $row9=mysqli_fetch_array($sql9);
+		 $row9=sqlsrv_fetch_array($sql9);
 		 
- $sqlextra=mysqli_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
+ $sqlextra=sqlsrv_query($con,"SELECT * , tbl_kite.id, sum( detail_kite.yard_ ) AS yard_, count( detail_kite.yard_ ) AS roll, sum( detail_kite.net_wight ) AS bruto1
 FROM tbl_kite
 INNER JOIN detail_kite ON detail_kite.nokkKite = tbl_kite.nokk
 WHERE sisa='FOC' and nokk='".$row['nokk']."' ".$ket."
 
 GROUP BY tbl_kite.id
 ORDER BY tbl_kite.id ASC");
-		 $rowextra=mysqli_fetch_array($sqlextra);		 
+		 $rowextra=sqlsrv_fetch_array($sqlextra);		 
  	
 	  ?>
     <tr bgcolor="#9999FF">

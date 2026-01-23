@@ -45,13 +45,13 @@ function checkAll(form){
 
 function mutasiurut(){
 //include("koneksi.php");
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");		
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");		
 		date_default_timezone_set("Asia/Jakarta");
 $format = date("ym");
-$sql=mysqli_query($con,"SELECT no_dok FROM pergerakan_stok WHERE substr(no_dok,1,4) like '%".$format."%' ORDER BY no_dok DESC LIMIT 1 ") or die (mysql_error());
-$d=mysqli_num_rows($sql);
+$sql=sqlsrv_query($con,"SELECT no_dok FROM pergerakan_stok WHERE substr(no_dok,1,4) like '%".$format."%' ORDER BY no_dok DESC LIMIT 1 ") or die (mysql_error());
+$d=sqlsrv_num_rows($sql);
 if($d>0){
-$r=mysqli_fetch_array($sql);
+$r=sqlsrv_fetch_array($sql);
 $d=$r['no_dok'];
 $str=substr($d,4,6);
 $Urut = (int)$str;
@@ -98,14 +98,14 @@ $nou=mutasiurut();
             <td width="132">NO KK</td>
             <td width="10">:</td>
             <td width="468"><input name="nokk" type="text"  onchange="window.location='?p=transfer-out-gkj&kkno='+this.value"  value="<?php echo $_GET['kkno'];?>"  tabindex="1"/></td>
-           <?php $cari2=mysqli_query($con,"Select * from `db_qc`.`tbl_kite` 
+           <?php $cari2=sqlsrv_query($con,"Select * from `db_qc`.`tbl_kite` 
 inner join `db_qc`.`tmp_detail_kite` on `db_qc`.`tmp_detail_kite`.`id_kite`= `db_qc`.`tbl_kite`.`id`		    
 where `db_qc`.`tbl_kite`.`nokk`='".$_GET['kkno']."'")or die("Gagal");
-	$jr2=mysqli_num_rows($cari2);
-	$r2=mysqli_fetch_array($cari2); 
-	$cari3=mysqli_query($con,"select * from detail_pergerakan_stok 
+	$jr2=sqlsrv_num_rows($cari2);
+	$r2=sqlsrv_fetch_array($cari2); 
+	$cari3=sqlsrv_query($con,"select * from detail_pergerakan_stok 
 where nokk='".$_GET['kkno']."' and ket='INSPEK'")or die("Gagal");
-	$r3=mysqli_num_rows($cari3);
+	$r3=sqlsrv_num_rows($cari3);
 	if($jr2=='0'){
 	if(substr($_SESSION['username'],0,6)=="GUDANG"){$bgn="not";}else{$bgn=" ";}
 	/*$ssql=mssql_query("select stockmovement.dated,stockmovementdetails.weight,stockmovement.pono as dono,
@@ -191,23 +191,23 @@ and productprop.BatchNo='$_GET[kkno]' and   CAST(TM.dbo.stockmovement.[note] AS 
   <?php 
    ini_set('display_errors',0);
   if($_GET['ke']=="INSPEK MEJA"){
-$qry=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and (sisa='TH' or sisa='FKTH' or sisa='BB') order by no_roll asc");}
+$qry=sqlsrv_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and (sisa='TH' or sisa='FKTH' or sisa='BB') order by no_roll asc");}
  if($_GET['ke']=="GUDANG BS"){
 	 if(substr($_SESSION['username'],0,6)=='INSPEK')
 	{
-		    	$qry=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and sisa='BS' and ket='INSPEK' order by no_roll asc");
+		    	$qry=sqlsrv_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and sisa='BS' and ket='INSPEK' order by no_roll asc");
 			}else{
-				$qry=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and sisa='BS' order by no_roll asc");}
+				$qry=sqlsrv_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and sisa='BS' order by no_roll asc");}
  }
  
 if($_GET['ke']=="GUDANG KAIN JADI"){
 	if(substr($_SESSION['username'],0,6)=='INSPEK')
 	{
 		
-		$qry=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and (sisa!='TH' and sisa!='FKTH' and sisa!='BS' and sisa!='BB') and ket='INSPEK' order by no_roll asc");}
+		$qry=sqlsrv_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and (sisa!='TH' and sisa!='FKTH' and sisa!='BS' and sisa!='BB') and ket='INSPEK' order by no_roll asc");}
 		
 	else{
-		$qry=mysqli_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and (sisa!='TH' and sisa!='FKTH' and sisa!='BS' and sisa!='BB')  order by no_roll asc");}
+		$qry=sqlsrv_query($con,"select * from tmp_detail_kite where nokkKite='".$_GET['kkno']."' and (sisa!='TH' and sisa!='FKTH' and sisa!='BS' and sisa!='BB')  order by no_roll asc");}
 	
 }	
 
@@ -228,12 +228,12 @@ if($_GET['ke']=="GUDANG KAIN JADI"){
     <td width="21%"><strong>KET</strong></td>
     </tr>
   <?php 
-    $c=1;$n=1;$no=1;while($row=mysqli_fetch_array($qry)){
+    $c=1;$n=1;$no=1;while($row=sqlsrv_fetch_array($qry)){
 	  $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-	     $cek=mysqli_query($con,"select * from pergerakan_stok 
+	     $cek=sqlsrv_query($con,"select * from pergerakan_stok 
 		 left join detail_pergerakan_stok on pergerakan_stok.id= detail_pergerakan_stok.id_stok
 		 where ISNULL(transtatus) and SN='".$row['SN']."' and nokk='".$_GET['kkno']."' and fromtoid !='HAPUS' ");
-		   $crow=mysqli_fetch_array($cek);
+		   $crow=sqlsrv_fetch_array($cek);
 	  if($crow>0){}else{ 
 	  ?>
   

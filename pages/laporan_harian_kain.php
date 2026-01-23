@@ -100,7 +100,7 @@ else if(lprn=="In-Out"){
     <tr>
       <td><input type="submit" name="button" id="button" value="Cari Data" /></td>
       <td>&nbsp;</td>
-      <td><input type="hidden" name="user_name" id="user_name" value="<?php echo $_SESSION['username']; ?>" /></td>
+      <td><input type="hidden" name="user_name" id="user_name" value="<?php //echo $_SESSION['username']; ?>" /></td>
     </tr>
   </table>
 </form>

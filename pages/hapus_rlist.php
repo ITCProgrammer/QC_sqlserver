@@ -25,7 +25,7 @@
         <th width="8%">Ket</th>
         <th width="40%"><a href="?p=hapus_smlist&dono=<?php echo $_GET['dono'];?>&nolist=<?php echo $_GET['nolist']; ?>&nokk=<?php echo $_GET['nokk']; ?>&nosj=<?php echo $_GET['nosj'];?>">Hapus-Semua</a></th>
       </tr>
-      <?php $myqry=mysqli_query($con,"SELECT
+      <?php $myqry=sqlsrv_query($con,"SELECT
 	detail_pergerakan_stok.id,weight,yard_,no_roll,satuan,grade,sisa
 FROM
 	packing_list
@@ -35,7 +35,7 @@ WHERE
 ORDER BY no_roll ASC");
 $c=1;
 $n=1;
-while($rl=mysqli_fetch_array($myqry)){ $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';?>
+while($rl=sqlsrv_fetch_array($myqry)){ $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';?>
       <tr bgcolor="<?Php echo $bgcolor;?>"> 
         <th scope="row"><?php echo $n;?></th>
         <td><?php echo $rl['weight'];?></td>

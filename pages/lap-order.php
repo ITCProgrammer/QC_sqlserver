@@ -1,7 +1,7 @@
 <?php 
 ini_set("error_reporting",1);
 //include "koneksi.php";
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 function tNet($orderK){
 	include("koneksi.php");
 	$sql00 = "SELECT ID from SalesOrders WHERE SONumber='$orderK'";
@@ -131,7 +131,7 @@ $Akhir	= isset($_POST['akhir']) ? $_POST['akhir'] : '';
 	}else{ $where9.= " "; }
 	if($Order=="" and $Awal=="" and $Akhir==""){ $nowhere.=" AND a.id='' "; }else{$nowhere.="";}
 	
-  $sql=mysqli_query($con,"SELECT *, if(ISNULL(sum(y.kg_skirim1)),0,sum(y.kg_skirim1)) as kg_skirim FROM
+  $sql=sqlsrv_query($con,"SELECT *, if(ISNULL(sum(y.kg_skirim1)),0,sum(y.kg_skirim1)) as kg_skirim FROM
 (SELECT x.*,if(ISNULL(x.kg),0,x.kg) as kg_skirim1 ,
 if(NOT ISNULL(x.ket_stok),x.ket_stok,
 if(x.Booking>0 or x.MiniBulk>0,'Booking',
@@ -171,7 +171,7 @@ SELECT
 	",$konn);
   $c=1;
   $no=1;	
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	   
@@ -182,10 +182,10 @@ SELECT
 			  $ordrK="1".substr($row['no_order'],1,100);
 			  $ordrKS=$row['no_order'];
 		}
-		    $sqlKirim=mysqli_query($con,"SELECT if(ISNULL(sum(weight)),0,sum(weight)) as kg_kirim FROM tbl_kite a 
+		    $sqlKirim=sqlsrv_query($con,"SELECT if(ISNULL(sum(weight)),0,sum(weight)) as kg_kirim FROM tbl_kite a 
 		 		LEFT JOIN detail_pergerakan_stok b ON a.nokk=b.nokk
 				where a.no_order='$ordrKS' and transtatus='0' ");
-		  $rK=mysqli_fetch_array($sqlKirim);
+		  $rK=sqlsrv_fetch_array($sqlKirim);
 		  if($row['kg_skirim']=="0" or tNet($ordrK)=="0"){$pers="0";}else{$pers=round($row['kg_skirim']/tNet($ordrK),4)*100;}
 		  $strp0=strtoupper($row['no_po']);
 	      $cBooking=strpos($strp0,"BOOKING");

@@ -9,10 +9,10 @@ include "../koneksi.php";
 function mutasiurut(){
 include "../koneksi.php";		
 $format = date("Ymd");
-$sql=mysqli_query($con,"SELECT no_mutasi FROM mutasi_kain WHERE substr(no_mutasi,1,8) like '%".$format."%' ORDER BY no_mutasi DESC LIMIT 1 ") or die (mysql_error());
-$d=mysqli_num_rows($sql);
+$sql=sqlsrv_query($con,"SELECT no_mutasi FROM mutasi_kain WHERE substr(no_mutasi,1,8) like '%".$format."%' ORDER BY no_mutasi DESC LIMIT 1 ") or die (mysql_error());
+$d=sqlsrv_num_rows($sql);
 if($d>0){
-$r=mysqli_fetch_array($sql);
+$r=sqlsrv_fetch_array($sql);
 $d=$r['no_mutasi'];
 $str=substr($d,8,2);
 $Urut = (int)$str;
@@ -32,7 +32,7 @@ $no=mutasiurut();
 if($_POST['bs']=="BS"){$bs=" fromtoid='GUDANG BS' ";$kbs="BS";}else if($_POST['bs']=="GUDANG GREIGE"){$bs=" fromtoid='GUDANG GREIGE' ";$kbs="";}else{$bs=" fromtoid='GUDANG KAIN JADI' ";$kbs="";}
 if(substr($_POST['user_name'],0,6)=="INSPEK"){$ket=" and detail_pergerakan_stok.ket!=''";}else{$ket=" and detail_pergerakan_stok.ket=''";}
 if($_POST['sift']=="1"){	  
-  $sql=mysqli_query($con,"select pergerakan_stok.id,bruto,satuan,
+  $sql=sqlsrv_query($con,"select pergerakan_stok.id,bruto,satuan,
 no_mc,pelanggan,pergerakan_stok.no_po,pergerakan_stok.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,
 lebar,berat,detail_pergerakan_stok.nokk,grade,
@@ -49,7 +49,7 @@ AND userid = '".$_POST['user_name']."' ".$ket."
 GROUP BY  pergerakan_stok.id, no_dok,sisa
 ORDER BY pergerakan_stok.id ASC");}else if($_POST['sift']=="2"){
 	  
-	  $sql=mysqli_query($con,"select pergerakan_stok.id,bruto,satuan,
+	  $sql=sqlsrv_query($con,"select pergerakan_stok.id,bruto,satuan,
 no_mc,pelanggan,pergerakan_stok.no_po,pergerakan_stok.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,
 lebar,berat,detail_pergerakan_stok.nokk,grade,
@@ -67,7 +67,7 @@ GROUP BY  pergerakan_stok.id, no_dok,sisa
 ORDER BY pergerakan_stok.id ASC");
 	  
 	  }else{
-	$sql=mysqli_query($con,"select pergerakan_stok.id,bruto,satuan,
+	$sql=sqlsrv_query($con,"select pergerakan_stok.id,bruto,satuan,
 no_mc,pelanggan,pergerakan_stok.no_po,pergerakan_stok.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,
 lebar,berat,detail_pergerakan_stok.nokk,grade,
@@ -87,7 +87,7 @@ ORDER BY pergerakan_stok.id ASC");
 		 }
 	
 	$n=1;
- while($row=mysqli_fetch_array($sql))
+ while($row=sqlsrv_fetch_array($sql))
   {
  if($_POST['check'][$n] !='')
 		  { 
@@ -95,7 +95,7 @@ $id_stk=$_POST['check'][$n];
 $pos1=strpos($id_stk,"/");
 $id=substr($id_stk,0,$pos1);
 $sisa1=substr($id_stk,$pos1+1,20);
-$a=mysqli_query($con,"select pergerakan_stok.id,bruto,satuan,
+$a=sqlsrv_query($con,"select pergerakan_stok.id,bruto,satuan,
 no_mc,pelanggan,pergerakan_stok.no_po,pergerakan_stok.no_order,tgl_update,
 jenis_kain,no_warna,warna,no_item,no_lot,
 lebar,berat,detail_pergerakan_stok.nokk,grade,
@@ -108,8 +108,8 @@ WHERE  pergerakan_stok.id='$id' AND detail_pergerakan_stok.sisa='$sisa1'
 AND ".$bs."
 GROUP BY  pergerakan_stok.id, no_dok,sisa
 ORDER BY pergerakan_stok.id ASC");
-$rb=mysqli_fetch_array($a);
-mysqli_query($con,"Insert into mutasi_kain(nokk,no_mutasi,tempat,userid,keterangan,id_stok) values('".$rb['nokk']."','$no','','".$_POST['user_name']."','".$rb['sisa']."','$id')")or die("Gagal");  mysqli_query($con,"update pergerakan_stok 
+$rb=sqlsrv_fetch_array($a);
+sqlsrv_query($con,"Insert into mutasi_kain(nokk,no_mutasi,tempat,userid,keterangan,id_stok) values('".$rb['nokk']."','$no','','".$_POST['user_name']."','".$rb['sisa']."','$id')")or die("Gagal");  sqlsrv_query($con,"update pergerakan_stok 
 		set no_mutasi='$no' where id='$id'")or die("Gagal update");
 	  $n++;}else{$n++;}	
   }

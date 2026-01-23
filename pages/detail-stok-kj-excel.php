@@ -43,11 +43,11 @@ ini_set("error_reporting",1);
     <th>Keterangan</th>
   </tr>
   <?php   
-  $sql=mysqli_query($con,"SELECT * FROM tbl_stok_kj WHERE tgl_tutup='$_GET[tgl]' ORDER BY id ASC");
+  $sql=sqlsrv_query($con,"SELECT * FROM tbl_stok_kj WHERE tgl_tutup='$_GET[tgl]' ORDER BY id ASC");
   $c=1;
   $i=1;
   $no=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {  ?>
   <tr >
     <td><?php echo $row['tgl_in'];?></td>

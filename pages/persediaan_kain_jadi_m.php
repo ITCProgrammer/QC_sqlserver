@@ -76,7 +76,7 @@ ini_set("error_reporting",1);
     </tr>
   <?php 
  
-  $sql=mysqli_query($con," SELECT
+  $sql=sqlsrv_query($con," SELECT
 	a.tgl_update,c.no_po,c.no_order,a.blok,
 	b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
 	c.warna,c.lebar,c.berat,c.no_item
@@ -94,13 +94,13 @@ ini_set("error_reporting",1);
 	a.tgl_update,a.id ");
   $c=1;
   $i=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-	   $mySql =mysqli_query($con,"SELECT tempat FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id asc");
-	   $myBlk = mysqli_fetch_array($mySql);
+	   $mySql =sqlsrv_query($con,"SELECT tempat FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' order by id asc");
+	   $myBlk = sqlsrv_fetch_array($mySql);
 	   
-	   $mysqlCek=mysqli_query($con," SELECT
+	   $mysqlCek=sqlsrv_query($con," SELECT
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
 	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.yard_ else 0 end) as tot_yard,
@@ -119,9 +119,9 @@ ini_set("error_reporting",1);
 	b.sisa
 	ORDER BY
 	a.id ");
-	$myro = mysqli_fetch_array($mysqlCek);
-	$mySql1 =mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
-	$myBlk1 = mysqli_fetch_array($mySql1);
+	$myro = sqlsrv_fetch_array($mysqlCek);
+	$mySql1 =sqlsrv_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
+	$myBlk1 = sqlsrv_fetch_array($mySql1);
 	if($myro['tot_rol']>0 and $myBlk1['no_order'] == ""){
 			  ?>
     <tr bgcolor="<?php echo $bgcolor; ?>">

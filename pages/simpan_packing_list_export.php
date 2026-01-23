@@ -6,8 +6,8 @@
   <?php
   
   if($_POST['submit']=='SIMPAN' and $_POST['pack']!=""){
-	$cari=mysqli_query($con,"Select `id` from `packing_list` where `listno`='$_POST[no_list]' limit 1");
-	$cek=mysqli_num_rows($cari);
+	$cari=sqlsrv_query($con,"Select `id` from `packing_list` where `listno`='$_POST[no_list]' limit 1");
+	$cek=sqlsrv_num_rows($cari);
 	$listno = $_POST['no_list'];
 	$ket = $_POST['lprn'];
 if($_POST['dono']!='')
@@ -23,7 +23,7 @@ if($_POST['warna']!='')
 	{ $cwhere11.= " AND `tbl_kite`.`warna`='$_POST[warna]'"; 		}else{ $cwhere11.= " "; }
 if($_POST['lot']!='')
 	{ $cwhere12.= " AND `tbl_kite`.`no_lot`='$_POST[lot]'"; 		}else{ $cwhere12.= " "; }
-	$qry=mysqli_query($con,"SELECT
+	$qry=sqlsrv_query($con,"SELECT
 	*, detail_pergerakan_stok.id AS kd
 FROM
 	pergerakan_stok
@@ -39,17 +39,17 @@ AND `tbl_kite`.`no_order`='".$cwhere2."'
 	`detail_pergerakan_stok`.`no_roll` ASC");
   	$n=1;
 	$nom=1;
-	 while($row=mysqli_fetch_array($qry))
+	 while($row=sqlsrv_fetch_array($qry))
   {	  
   if($_POST['check'][$n]!='')
 		  {
 			 $id_kite=$_POST['check'][$n];
-			 $sdata=mysqli_query($con,"select * from detail_pergerakan_stok where id='$id_kite'");
-			 $srow=mysqli_fetch_array($sdata);
-			 $cari1=mysqli_query($con,"Select `id` from `packing_list` where `listno`='$listno' limit 1");
+			 $sdata=sqlsrv_query($con,"select * from detail_pergerakan_stok where id='$id_kite'");
+			 $srow=sqlsrv_fetch_array($sdata);
+			 $cari1=sqlsrv_query($con,"Select `id` from `packing_list` where `listno`='$listno' limit 1");
 			 $cek1=mysql_num_rows($cari1);
 			 if($cek1>0){// ubah data di detail_pergerakan stok
-	$datastk1=mysqli_query($con,"UPDATE detail_pergerakan_stok SET refno='$listno',pack='$_POST[pack]' where id='$id_kite'")or die("Gagal1  $id_kite");
+	$datastk1=sqlsrv_query($con,"UPDATE detail_pergerakan_stok SET refno='$listno',pack='$_POST[pack]' where id='$id_kite'")or die("Gagal1  $id_kite");
 	if($datastk1)
   {
 	  echo "<script>alert('Data Tersimpan');window.location.href='../index1.php?p=packing_list_export&dono=$_POST[dono]';</script>";
@@ -59,9 +59,9 @@ AND `tbl_kite`.`no_order`='".$cwhere2."'
 $ip_num = $_SERVER['REMOTE_ADDR']; //untuk mendeteksi alamat IP
 $host_name = gethostbyaddr($_SERVER['REMOTE_ADDR']); //untuk mendeteksi computer name
 $userid	=$_SESSION['username'];
-$datastk=mysqli_query($con,"insert into `packing_list` (`listno`,`status`,ket,`ipaddress`,`userid`,`tgl_buat_list`) values('$listno','1','$ket','$ip_num','$userid',now())")or die("Gagal1  $id_kite");}
+$datastk=sqlsrv_query($con,"insert into `packing_list` (`listno`,`status`,ket,`ipaddress`,`userid`,`tgl_buat_list`) values('$listno','1','$ket','$ip_num','$userid',now())")or die("Gagal1  $id_kite");}
 	// ubah data di detail_pergerakan stok
-	mysqli_query($con,"UPDATE detail_pergerakan_stok SET refno='$listno',pack='$_POST[pack]' where id='$id_kite'")or die("Gagal1  $id_kite");
+	sqlsrv_query($con,"UPDATE detail_pergerakan_stok SET refno='$listno',pack='$_POST[pack]' where id='$id_kite'")or die("Gagal1  $id_kite");
 		  $n++;}else{$n++;}
  }
   if($datastk)
@@ -73,4 +73,4 @@ $datastk=mysqli_query($con,"insert into `packing_list` (`listno`,`status`,ket,`i
 	  }
  ?>
   
-<?php mysqli_close($con); ?>
+<?php sqlsrv_close($con); ?>

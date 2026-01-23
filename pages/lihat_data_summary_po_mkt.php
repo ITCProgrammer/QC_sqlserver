@@ -65,7 +65,7 @@ $thn=date("Y", strtotime($_POST['awal'])); ?>
   if($_POST['po']!=""){
     $po= " AND no_po LIKE '%".$_POST['po']."%' ";
   }	 
-	$sqlbr=mysqli_query($con,"SELECT
+	$sqlbr=sqlsrv_query($con,"SELECT
 	id,tgl_kirim,tgl_buat,no_sj,warna,rol,qty,panjang,netto,buyer,no_po,no_order,no_item,jenis_kain,lot,tujuan,ket,foc,satuan_mkt,currency,price,approve_acc
 FROM
 	tbl_pengiriman
@@ -74,7 +74,7 @@ WHERE
 ORDER BY no_sj asc");
 $no=1;
 $c=0;
-while($row3=mysqli_fetch_array($sqlbr)){
+while($row3=sqlsrv_fetch_array($sqlbr)){
     $sqlmkt=sqlsrv_query($conn,"SELECT TOP 1 SUM(b.Quantity) AS qty_po from JobOrders a
     INNER JOIN SODetails b ON a.SOID=b.SOID
     INNER JOIN ProductMaster c ON b.ProductID=c.ID
@@ -86,14 +86,14 @@ while($row3=mysqli_fetch_array($sqlbr)){
     GROUP BY a.DocumentNo");
     $rowmkt=sqlsrv_fetch_array($sqlmkt,SQLSRV_FETCH_ASSOC);
 
-    $sqljml=mysqli_query($con,"SELECT
+    $sqljml=sqlsrv_query($con,"SELECT
     SUM(qty) AS qty, SUM(panjang) AS panjang, SUM(netto) AS netto
     FROM
       tbl_pengiriman
     WHERE
       NOT no_sj='' AND ISNULL(kategori) AND no_po='".$row3['no_po']."' 
     GROUP BY no_order LIMIT 1");
-    $rowdt=mysqli_fetch_array($sqljml);
+    $rowdt=sqlsrv_fetch_array($sqljml);
 
   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
   ?>

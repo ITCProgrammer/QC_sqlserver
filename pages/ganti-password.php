@@ -17,8 +17,8 @@ if($_POST){ //login user
 	    $pass = $_POST['pass'];    
 		$passNew = $_POST['passNew'];
 		$passRe	  =	$_POST['passRe'];
-	$sql=mysqli_query($con,"SELECT count(*) jml,id FROM user_login WHERE `user`='".$_SESSION['username']."' AND `password`='$pass' AND `level`='".$_SESSION['level']."' LIMIT 1");
-	$dt=mysqli_fetch_array($sql);
+	$sql=sqlsrv_query($con,"SELECT count(*) jml,id FROM user_login WHERE `user`='".$_SESSION['username']."' AND `password`='$pass' AND `level`='".$_SESSION['level']."' LIMIT 1");
+	$dt=sqlsrv_fetch_array($sql);
 	if($dt['jml']>0){
 		if($passNew!=$passRe)
 		{
@@ -26,8 +26,8 @@ if($_POST){ //login user
 			}else
 			{
 				$ip_num = $_SERVER['REMOTE_ADDR']; //untuk mendeteksi alamat IP
-				$sqlupdate=mysqli_query($con,"UPDATE user_login SET `password`='$passNew' WHERE `user`='".$_SESSION['username']."' AND `password`='$pass' AND `level`='".$_SESSION['level']."' LIMIT 1");
-				$sqllog=mysqli_query($con,"INSERT INTO tbl_log_user SET
+				$sqlupdate=sqlsrv_query($con,"UPDATE user_login SET `password`='$passNew' WHERE `user`='".$_SESSION['username']."' AND `password`='$pass' AND `level`='".$_SESSION['level']."' LIMIT 1");
+				$sqllog=sqlsrv_query($con,"INSERT INTO tbl_log_user SET
 				id_user='".$dt['id']."',
 				password_lama='$pass',
 				password_baru='$passNew',

@@ -37,8 +37,8 @@
                             <tbody>								
 <?php
 $no=1;								
-$sql=mysqli_query($con,"SELECT * FROM tbl_salesorder WHERE status_knt='terima' and status_rmp_knt='kirim ke rmp' ORDER BY tgl_buat_po DESC");
-while($r=mysqli_fetch_array($sql)){
+$sql=sqlsrv_query($con,"SELECT * FROM tbl_salesorder WHERE status_knt='terima' and status_rmp_knt='kirim ke rmp' ORDER BY tgl_buat_po DESC");
+while($r=sqlsrv_fetch_array($sql)){
 ?>
                                     <tr>
                                         <td align="center"><?php echo $no; ?></td>

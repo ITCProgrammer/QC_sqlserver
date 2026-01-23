@@ -19,7 +19,7 @@ include '../koneksi.php';
 <body>
 No Kartu Kerja : <strong><em><?php echo $_GET["nokk"];?></em></strong>
 <strong>
-<?php $sql1=mysqli_query($con,"SELECT
+<?php $sql1=sqlsrv_query($con,"SELECT
 	COUNT(weight) as totrol,
 	SUM(weight) as totba,
 	SUM(yard_) as totya
@@ -31,7 +31,7 @@ AND (
 	status = '0'
 ) AND sisa='".$_GET['ket']."'
  Order by no_roll ASC");
- $row1=mysqli_fetch_array($sql1);	
+ $row1=sqlsrv_fetch_array($sql1);	
  ?>
 <br />
 Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($row1["totba"],'2','.',',');?> ||  Panjang:<?php echo number_format($row1["totya"],'2','.',',');?>
@@ -55,7 +55,7 @@ Total Roll : <?php echo $row1["totrol"];?> || Berat : <?php echo number_format($
       <td width="9%"><font color="white">Lokasi</font></td>
     </tr>
     <?php
-  $sql=mysqli_query($con,"SELECT
+  $sql=sqlsrv_query($con,"SELECT
   	id,
 	no_roll,
 	weight,
@@ -77,7 +77,7 @@ AND (
  Order by no_roll ASC");
   $c=1;
   $no=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  
@@ -98,8 +98,8 @@ AND (
       <td bgcolor="<?php echo $rn;?>"> <?php echo $kt;?></td>
       <td align="center" bgcolor="<?php echo $rn;?>"><select name="lokasi[<?php echo $row['id']; ?>]">
         <option value="">Pilih</option>
-        <?php $qryLok=mysqli_query($con,"SELECT lokasi FROM tbl_lokasi ORDER BY lokasi ASC");
-		while($rLok=mysqli_fetch_array($qryLok)){ ?>
+        <?php $qryLok=sqlsrv_query($con,"SELECT lokasi FROM tbl_lokasi ORDER BY lokasi ASC");
+		while($rLok=sqlsrv_fetch_array($qryLok)){ ?>
         <option value="<?php echo $rLok['lokasi']; ?>" <?php if($row['lokasi']==$rLok['lokasi']){ echo "SELECTED"; }?>><?php echo $rLok['lokasi']; ?></option>
         <?php } ?>
       </select></td>
@@ -110,7 +110,7 @@ AND (
 <button name="ubah" type="submit">Update</button>	
 </form>	
 <strong>
-<?php $sql2=mysqli_query($con,"SELECT
+<?php $sql2=sqlsrv_query($con,"SELECT
 	COUNT(weight) as totrol,
 	SUM(weight) as totba,
 	SUM(yard_) as totya
@@ -122,13 +122,13 @@ AND (
 	 status = '1' and transtatus='1'
 ) AND sisa='".$_GET['ket']."'
  Order by no_roll ASC");
- $row2=mysqli_fetch_array($sql2);
+ $row2=sqlsrv_fetch_array($sql2);
  ?>
  <font color="RED">
 SISA Roll : <?php echo $row2["totrol"];?> || Berat : <?php echo number_format($row2["totba"],'2','.',',');?> || Panjang:<?php echo number_format($row2["totya"],'2','.',',');?></font>
 </strong><br>
 <?php
-	$sql3=mysqli_query($con,"SELECT
+	$sql3=sqlsrv_query($con,"SELECT
 	lokasi,
 	COUNT(weight) as totrol,
 	SUM(weight) as totba,
@@ -141,7 +141,7 @@ AND (
 	(status = '0' or status = '1') and transtatus='1'
 ) AND sisa='".$_GET['ket']."'
 GROUP BY lokasi");
-while($row3=mysqli_fetch_array($sql3)){
+while($row3=sqlsrv_fetch_array($sql3)){
 	 echo $row3['lokasi']." Rol: ".$row3['totrol']." Berat: ".$row3['totba']." Panjang: ".$row3['totya']."<br>";
 	 }
 	?>
@@ -157,7 +157,7 @@ if($_POST){
     $query = "UPDATE `detail_pergerakan_stok` SET 
 	`lokasi` =  '$lokasi_value'
     WHERE `id` = '$lokasi_key' LIMIT 1 ;";
-    $result = mysqli_query($con,$query);
+    $result = sqlsrv_query($con,$query);
     }
     if (!$result) {
         die ('cant update:' .mysql_error());

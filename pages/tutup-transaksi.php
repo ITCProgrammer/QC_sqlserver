@@ -18,8 +18,8 @@ if(lprn=="Online"){
 <body>
 <?php 
 	if(isset($_POST['CekData'])){
-$cektgl=mysqli_query($con,"SELECT DATE_FORMAT(NOW(),'%Y-%m-%d') as tgl,COUNT(tgl_tutup) as ck ,DATE_FORMAT(NOW(),'%H') as jam,DATE_FORMAT(NOW(),'%H:%i') as jam1 FROM tbl_stok_kj WHERE tgl_tutup='".$_POST['tglrpt']."' LIMIT 1");
-$dcek=mysqli_fetch_array($cektgl);
+$cektgl=sqlsrv_query($con,"SELECT DATE_FORMAT(NOW(),'%Y-%m-%d') as tgl,COUNT(tgl_tutup) as ck ,DATE_FORMAT(NOW(),'%H') as jam,DATE_FORMAT(NOW(),'%H:%i') as jam1 FROM tbl_stok_kj WHERE tgl_tutup='".$_POST['tglrpt']."' LIMIT 1");
+$dcek=sqlsrv_fetch_array($cektgl);
 $t1=strtotime($_POST['tglrpt']);
 $t2=strtotime($dcek['tgl']);
 $selh=round(abs($t2-$t1)/(60*60*45));
@@ -52,7 +52,7 @@ if($dcek['ck']>0){
 			else{
 				
 						
-		$qry=mysqli_query($con," SELECT
+		$qry=sqlsrv_query($con," SELECT
 	a.tgl_update,a.blok,
 	b.sisa,b.nokk,b.id_stok,a.sts_stok,b.ket_stok,
 	GROUP_CONCAT(DISTINCT lokasi) as lokasi
@@ -69,13 +69,13 @@ if($dcek['ck']>0){
 	b.nokk,b.sisa,b.id_stok,b.ket_stok
 	ORDER BY
 	a.tgl_update,a.id ");
-				while($row=mysqli_fetch_array($qry)){
+				while($row=sqlsrv_fetch_array($qry)){
 	if($row['ket_stok']!=""){$stks=" and b.ket_stok='".$row['ket_stok']."' ";}else{ $stks="";}				
 					
-	$mySql =mysqli_query($con,"SELECT tempat FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND NOT tempat='' ORDER BY id DESC");
-	   $myBlk = mysqli_fetch_array($mySql);
+	$mySql =sqlsrv_query($con,"SELECT tempat FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND NOT tempat='' ORDER BY id DESC");
+	   $myBlk = sqlsrv_fetch_array($mySql);
 	   
-	   $mysqlCek=mysqli_query($con," SELECT
+	   $mysqlCek=sqlsrv_query($con," SELECT
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
 	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.yard_ else 0 end) as tot_yard,
@@ -96,15 +96,15 @@ if($dcek['ck']>0){
 	b.sisa,b.id_stok,b.ket_stok
 	ORDER BY
 	a.id, b.ket_stok ");
-	$myro = mysqli_fetch_array($mysqlCek);
+	$myro = sqlsrv_fetch_array($mysqlCek);
 	if($myro['tot_rol']>0){
-	   $mySql1 =mysqli_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
-	   $myBlk1 = mysqli_fetch_array($mySql1);
-	   $mySql2 =mysqli_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
+	   $mySql1 =sqlsrv_query($con,"SELECT * FROM tbl_kite WHERE nokk='".$row['nokk']."'");
+	   $myBlk1 = sqlsrv_fetch_array($mySql1);
+	   $mySql2 =sqlsrv_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
 INNER JOIN detail_pergerakan_stok b ON a.id=b.id_stok
 WHERE b.nokk='".$row['nokk']."' and ISNULL(b.transtatus)
 GROUP BY b.nokk");
-	   $myBlk2 = mysqli_fetch_array($mySql2); 
+	   $myBlk2 = sqlsrv_fetch_array($mySql2); 
 	if($myro['satuan']=="PCS"){$pjng=$myro['netto']; $st=$myro['satuan'];}else{ $pjng=$myro['tot_yard'];$st=$myro['satuan'];}
 	//if($myBlk['tempat']!=""){$blk=$myBlk['tempat'];}else if($row['blok']!=""){$blk=$row['blok'];}else{$blk="N/A";}
 	if($row['lokasi']!=""){$blk=$row['lokasi'];}else{$blk="N/A";}	
@@ -116,7 +116,7 @@ GROUP BY b.nokk");
 	if($row['sisa']=="SISA" || $row['sisa']=="FKSI"){$sisa="SISA";}else{$sisa="";}
 	$warna=str_replace("'","''",$myBlk1['warna']);
 	$nowarna=str_replace("'","''",$myBlk1['no_warna']);	
-					$simpan=mysqli_query($con,"INSERT INTO `tbl_stok_kj` SET 
+					$simpan=sqlsrv_query($con,"INSERT INTO `tbl_stok_kj` SET 
 					`tgl_in`='".$row['tgl_update']."',
 					`no_item`='".$myBlk1['no_item']."',
 					`langganan`='$langganan',

@@ -1,7 +1,7 @@
 <?php 
 //ini_set('display_errors',0);
 //include "koneksi.php";
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 function tNetto($nokk){
 	$sql0="select
 			x.*, 

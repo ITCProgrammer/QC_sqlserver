@@ -76,7 +76,7 @@ include("../koneksi.php");
 	$where8.= " AND trim(c.no_order)='$order' ";
 	}else{ $where8.= " "; }
 	if($_GET['wrn']==""){ $nowhere.=" AND a.id='' "; }
-  $sql=mysqli_query($con," SELECT
+  $sql=sqlsrv_query($con," SELECT
 	a.tgl_update,c.no_po,c.no_order,a.blok,
 	b.sisa,b.nokk,c.jenis_kain,c.pelanggan,c.no_lot,c.no_warna,
 	c.warna,c.lebar,c.berat,c.no_item,b.id as id_detail,b.id_stok,a.catat,a.id,a.sts_stok,b.ket_stok,
@@ -96,13 +96,13 @@ include("../koneksi.php");
   $c=1;
   $i=1;
   $no=1;
-  while($row=mysqli_fetch_array($sql))
+  while($row=sqlsrv_fetch_array($sql))
   {
 	   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
-	   $mySql =mysqli_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc");
-	   $myBlk = mysqli_fetch_array($mySql);
+	   $mySql =sqlsrv_query($con,"SELECT tempat,catatan FROM mutasi_kain WHERE nokk='".$row['nokk']."' AND keterangan='".$row['sisa']."' AND not tempat='' order by id desc");
+	   $myBlk = sqlsrv_fetch_array($mySql);
 	   
-	   $mySqlC1 =mysqli_query($con,"SELECT GROUP_CONCAT(
+	   $mySqlC1 =sqlsrv_query($con,"SELECT GROUP_CONCAT(
 		CONCAT(
 			'Untuk Order ',
 			no_order,
@@ -120,9 +120,9 @@ WHERE
 AND a.nokk = '".$row['nokk']."'
 AND a.ket = '".$row['sisa']."'
 AND b.tmp_hapus='0'");
-	   $myBlkC1 = mysqli_fetch_array($mySqlC1);
+	   $myBlkC1 = sqlsrv_fetch_array($mySqlC1);
 	if($row['ket_stok']!=""){$stks=" and b.ket_stok='".$row['ket_stok']."' ";}else{ $stks="";} 
-	   $mysqlCek=mysqli_query($con," SELECT
+	   $mysqlCek=sqlsrv_query($con," SELECT
 	SUM(case when b.grade='A' or b.grade='B' or b.grade='C' or b.grade='' then b.weight else 0 end) as tot_qty,
 	SUM(if(b.grade='A' or b.grade='B' or b.grade='C' or b.grade='', 1, 0)) as tot_rol,
 	SUM(if(b.grade='A' or b.grade='', 1, 0)) as rol_a,
@@ -148,20 +148,20 @@ AND b.tmp_hapus='0'");
 	b.sisa,b.id_stok,b.ket_stok
 	ORDER BY
 	a.id ");
-	$myro = mysqli_fetch_array($mysqlCek);
+	$myro = sqlsrv_fetch_array($mysqlCek);
 	if($myBlkC1['sisa'] != number_format($myro['tot_yard'],'2','.','')." ".$myro['satuan']."s"){
 	  if($myBlkC1['catatan']!=""){$catat=$myBlkC1['catatan'].$myBlkC1['sisa'];}else{
 		  $catat= $myBlkC1['catat']; //$myBlkC['catatan'];
 	  }}else{}
 	  if($myro['tot_rol']>0){
-	   $mySql1 =mysqli_query($con,"SELECT berat,lebar,no_item,pelanggan,no_po,no_order,
+	   $mySql1 =sqlsrv_query($con,"SELECT berat,lebar,no_item,pelanggan,no_po,no_order,
 	   jenis_kain,warna,no_warna,no_lot FROM tbl_kite WHERE nokk='".$row['nokk']."' LIMIT 1");
-	   $myBlk1 = mysqli_fetch_array($mySql1);
-	   $mySql2 =mysqli_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
+	   $myBlk1 = sqlsrv_fetch_array($mySql1);
+	   $mySql2 =sqlsrv_query($con,"SELECT a.no_po,a.no_order FROM pergerakan_stok a
 INNER JOIN detail_pergerakan_stok b ON a.id=b.id_stok
 WHERE b.nokk='".$row['nokk']."' and ISNULL(b.transtatus)
 GROUP BY b.nokk LIMIT 1");
-	   $myBlk2 = mysqli_fetch_array($mySql2);
+	   $myBlk2 = sqlsrv_fetch_array($mySql2);
 	  if($row['sisa']=="SISA" || $row['sisa']=="FKSI"){
 			$brt_sisa=$myro['grd_a']+$myro['grd_b']+$myro['grd_c'];
 			if($brt_sisa>10 and substr($row['tgl_update'],0,10)>="2019-01-01"){$sts_sisa="Sisa Produksi";}
@@ -219,8 +219,8 @@ GROUP BY b.nokk LIMIT 1");
     <td align="center"><?php if($row['ket_stok']!=""){echo trim($row['ket_stok']);}else if($cBooking>-1 or $cMiniBulk > -1 or $cTrutexPro > -1){echo "Booking";}else if(($row['sisa']=="FKSI" or $row['sisa']=="SISA")){echo trim($sts_sisa);}else{echo trim($row['sts_stok']);}?></td>
     <td align="center"><?php if($catat!=""){echo $catat;}?></td>
     <td align="center"><?php
-                $sqlGetSttsClr = mysqli_query($con,"SELECT * from tbl_status_warna where `id_pergerakan`='".$row['id_stok']."' and `id_detail`='".$row['id_detail']."' and `nokk`='".$row['nokk']."' LIMIT 1");
-                $dataSttsClr = mysqli_fetch_array($sqlGetSttsClr);
+                $sqlGetSttsClr = sqlsrv_query($con,"SELECT * from tbl_status_warna where `id_pergerakan`='".$row['id_stok']."' and `id_detail`='".$row['id_detail']."' and `nokk`='".$row['nokk']."' LIMIT 1");
+                $dataSttsClr = sqlsrv_fetch_array($sqlGetSttsClr);
                 if ($dataSttsClr['note'] != '') {
                   echo $dataSttsClr['note'];
                 } else {

@@ -74,7 +74,7 @@ BULAN <?php echo $bulan[$bln]." ".$thn; ?> </div>
     if($_POST['no_sj']!=""){
         $sj= " AND a.no_sj='".$_POST['no_sj']."' ";
         }	 
-  $sql=mysqli_query($con,"SELECT c.id as idtmp,a.id,a.tgl_update,a.tgl_buat,a.no_sj,a.tujuan,a.ket1,d.warna,d.no_warna,d.no_item,count(b.weight) as roll,sum(b.weight) as qty,sum(b.yard_) as panjang,d.pelanggan,d.no_po,d.no_order,d.jenis_kain,d.no_lot,d.nokk,b.sisa,b.satuan,c.ukuran,sum(c.netto) as netto from packing_list a
+  $sql=sqlsrv_query($con,"SELECT c.id as idtmp,a.id,a.tgl_update,a.tgl_buat,a.no_sj,a.tujuan,a.ket1,d.warna,d.no_warna,d.no_item,count(b.weight) as roll,sum(b.weight) as qty,sum(b.yard_) as panjang,d.pelanggan,d.no_po,d.no_order,d.jenis_kain,d.no_lot,d.nokk,b.sisa,b.satuan,c.ukuran,sum(c.netto) as netto from packing_list a
 LEFT JOIN detail_pergerakan_stok b on a.listno=b.refno
 LEFT JOIN tmp_detail_kite c on b.id_detail_kj=c.id
 LEFT JOIN tbl_kite d on d.id=c.id_kite 
@@ -82,14 +82,14 @@ WHERE  not a.no_sj='' AND $tgll $sj
 GROUP BY SUBSTR(d.nokk,1,11),d.no_lot,c.ukuran,a.no_sj
 ORDER BY a.no_sj asc ,b.id desc");
   
-while($row=mysqli_fetch_array($sql)){
+while($row=sqlsrv_fetch_array($sql)){
 	$ukuran=str_replace("'","''",$row['ukuran']);
-	$cek=mysqli_query($con,"SELECT id_list from tbl_pengiriman where id_list='".$row['id']."' and nokk='".$row['nokk']."' and (ukuran='$ukuran'or idtmp='".$row['idtmp']."') limit 1");
-	$rcek=mysqli_num_rows($cek);
+	$cek=sqlsrv_query($con,"SELECT id_list from tbl_pengiriman where id_list='".$row['id']."' and nokk='".$row['nokk']."' and (ukuran='$ukuran'or idtmp='".$row['idtmp']."') limit 1");
+	$rcek=sqlsrv_num_rows($cek);
 	if($rcek>0){
 		
-	   /* $sqltb=mysqli_query($con,"Select * from tbl_kite where nokk='$row[nokk]'"); 
-	   $rowtb=mysqli_fetch_array($sqltb);
+	   /* $sqltb=sqlsrv_query($con,"Select * from tbl_kite where nokk='$row[nokk]'"); 
+	   $rowtb=sqlsrv_fetch_array($sqltb);
 	   $itemno=$rowtb['no_item'];
 	   $nowarna=$rowtb['no_warna'];
 	   $jenis_kain=$rowtb['jenis_kain'];
@@ -132,13 +132,13 @@ $rowitmp=sqlsrv_fetch_array($sqlitmp);
 			   }
 		
 		$desc2=addslashes($desc1);
-		$udata=mysqli_query($con,"
+		$udata=sqlsrv_query($con,"
 	UPDATE `tbl_pengiriman` SET `panjang`='$row[panjang]',`no_item`='$itemno',`desc1`='$desc2',`no_warna`='$row[no_warna]',`foc`='$row[sisa]' WHERE id_list='$row[id]' and nokk='$row[nokk]'
 		"); */		
 		}else{
 		
-	   $sqltb=mysqli_query($con,"Select * from tbl_kite where nokk='".$row['nokk']."'"); 
-	   $rowtb=mysqli_fetch_array($sqltb);
+	   $sqltb=sqlsrv_query($con,"Select * from tbl_kite where nokk='".$row['nokk']."'"); 
+	   $rowtb=sqlsrv_fetch_array($sqltb);
 	   $itemno=$rowtb['no_item'];
 	   $nowarna=$rowtb['no_warna'];
 	   $jenis_kain=$rowtb['jenis_kain'];
@@ -187,7 +187,7 @@ $rowitmp=sqlsrv_fetch_array($sqlitmp,SQLSRV_FETCH_ASSOC);
 	$nowarna=str_replace("'","''",$row['no_warna']);
 	$warna=str_replace("'","''",$row['warna']);
 	$ukuran=str_replace("'","''",$row['ukuran']);
-	$sdata=mysqli_query($con,"
+	$sdata=sqlsrv_query($con,"
 	INSERT INTO `tbl_pengiriman`(`id_list`,`no_sj`, `warna`, `rol`, `qty`, `buyer`, `no_po`, `no_order`, `jenis_kain`, `lot`, `tujuan`, `ket`, `tgl_kirim`, `tgl_buat`,`tgl_update`,`nokk`,`tmp_hapus`,`foc`,`panjang`,`no_item`,`no_warna`,`desc1`,`satuan`,`netto`,`ukuran`,`idtmp`) VALUES ('".$row['id']."','".$row['no_sj']."', '$warna', '".$row['roll']."', '".$row['qty']."', '".$row['pelanggan']."', '$po', '".$row['no_order']."', '$jk', '".$row['no_lot']."', '".$row['tujuan']."', '".$row['ket1']."', '".$row['tgl_update']."','".$row['tgl_buat']."', now(),'".$row['nokk']."','0','".$row['sisa']."','".$row['panjang']."','$itemno','$nowarna','$desc2','".$row['satuan']."','".$row['netto']."','$ukuran','".$row['idtmp']."')
 		");		
 	}}
@@ -197,12 +197,12 @@ $tt=date("Y-m-d", strtotime($_POST['awal']));
   $nawal=$awal."01";
   $newdate1 = strtotime( '-1 day' , strtotime ($_POST['awal']) );
   $ttm=date("Y-m-d", $newdate1);
-  $sql1=mysqli_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
+  $sql1=sqlsrv_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
 WHERE tmp_hapus='0' AND not no_sj='' AND tgl_buat BETWEEN '$nawal' AND '$tt' AND ISNULL(kategori)");
-$row1=mysqli_fetch_array($sql1);
- $sql2=mysqli_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
+$row1=sqlsrv_fetch_array($sql1);
+ $sql2=sqlsrv_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
 WHERE tmp_hapus='0' AND not no_sj='' AND tgl_buat BETWEEN '$nawal' AND '$ttm' AND ISNULL(kategori)");
-$row2=mysqli_fetch_array($sql2);	
+$row2=sqlsrv_fetch_array($sql2);	
 	if($_POST['awal']!="" AND $_POST['buyer']!=""){
 	  $tgl2l= " tmp_hapus='0' AND tgl_buat BETWEEN '".$_POST['awal']."' AND '".$_POST['akhir']."' AND buyer LIKE '%".$_POST['buyer']."%' ";
 	  }else if($_POST['awal']!=""){
@@ -214,7 +214,7 @@ $row2=mysqli_fetch_array($sql2);
   if($_POST['buyer']!=""){
     $buyer2= " AND buyer LIKE '%".$_POST['buyer']."%' ";
   }	 
-	$sqlbr=mysqli_query($con,"SELECT
+	$sqlbr=sqlsrv_query($con,"SELECT
 	id,tgl_kirim,tgl_buat,no_sj,warna,rol,qty,buyer,no_po,no_order,no_item,jenis_kain,lot,tujuan,ket,foc,satuan_mkt,currency,price,approve_acc
 FROM
 	tbl_pengiriman
@@ -223,7 +223,7 @@ WHERE
 ORDER BY no_sj asc");
 $no=1;
 $c=0;
-while($row3=mysqli_fetch_array($sqlbr)){
+while($row3=sqlsrv_fetch_array($sqlbr)){
     $sqlmkt=sqlsrv_query($conn,"SELECT a.DocumentNo,c.Color,d.PONumber,e.ProductCode,b.UnitPrice,f.UnitName,g.Symbol from JobOrders a
     INNER JOIN SODetails b ON a.SOID=b.SOID
     INNER JOIN ProductMaster c ON b.ProductID=c.ID
@@ -235,7 +235,7 @@ while($row3=mysqli_fetch_array($sqlbr)){
     $rowmkt=sqlsrv_fetch_array($sqlmkt,SQLSRV_FETCH_ASSOC);
 
     if($_POST['awal']!="" AND $row3['satuan_mkt']==''){
-        $sqlupdate=mysqli_query($con,"UPDATE tbl_pengiriman SET 
+        $sqlupdate=sqlsrv_query($con,"UPDATE tbl_pengiriman SET 
             `satuan_mkt`='".$rowmkt['UnitName']."',
             `currency`='".$rowmkt['Symbol']."',
             `price`='".$rowmkt['UnitPrice']."'
@@ -243,7 +243,7 @@ while($row3=mysqli_fetch_array($sqlbr)){
         ");
     }
     if($_POST['no_sj']!="" AND $row3['satuan_mkt']==''){
-        $sqlupdate=mysqli_query($con,"UPDATE tbl_pengiriman SET 
+        $sqlupdate=sqlsrv_query($con,"UPDATE tbl_pengiriman SET 
             `satuan_mkt`='".$rowmkt['UnitName']."',
             `currency`='".$rowmkt['Symbol']."',
             `price`='".$rowmkt['UnitPrice']."'

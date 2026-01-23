@@ -27,8 +27,8 @@ include '../koneksi.php';
     $c=0;
     for ($no=$nosj1; $no<=$nosj2 ; $no++){
     $Urut=sprintf("%05s",$no);
-    $sql=mysqli_query($con,"SELECT buyer, no_sj, approve_acc, ipaddress_acc, tgl_approve_acc FROM tbl_pengiriman WHERE no_sj='$Urut' AND ISNULL(kategori) AND YEAR(tgl_buat) = YEAR(CURRENT_DATE) GROUP BY no_sj");
-    $row=mysqli_fetch_array($sql);
+    $sql=sqlsrv_query($con,"SELECT buyer, no_sj, approve_acc, ipaddress_acc, tgl_approve_acc FROM tbl_pengiriman WHERE no_sj='$Urut' AND ISNULL(kategori) AND YEAR(tgl_buat) = YEAR(CURRENT_DATE) GROUP BY no_sj");
+    $row=sqlsrv_fetch_array($sql);
     $pos=strpos($row['buyer'], "/");
 	$posbuyer=substr($row['buyer'],0,$pos);
     $cust=str_replace("'","''",$posbuyer);

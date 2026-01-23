@@ -99,11 +99,11 @@
       <td>:</td>
       <td><?php
           include "../koneksi.php";
-          $blk = mysqli_query($con," SELECT blok FROM pergerakan_stok WHERE blok !='' GROUP BY blok ");
+          $blk = sqlsrv_query($con," SELECT blok FROM pergerakan_stok WHERE blok !='' GROUP BY blok ");
           ?>
         <select name="blok" id="blok">
           <option value="">Pilih</option>
-          <?php while ($rblk = mysqli_fetch_array($blk)) { ?>
+          <?php while ($rblk = sqlsrv_fetch_array($blk)) { ?>
           <option value="<?php echo $rblk['blok']; ?>"><?php echo $rblk['blok']; ?></option>
           <?php } ?>
       </select></td>
@@ -113,11 +113,11 @@
         <td>Lokasi</td>
         <td>:</td>
         <td><?php
-            $lokasi = mysqli_query($con," SELECT lokasi FROM tbl_lokasi ORDER BY lokasi ASC ");
+            $lokasi = sqlsrv_query($con," SELECT lokasi FROM tbl_lokasi ORDER BY lokasi ASC ");
             ?>
           <select name="lokasi" id="lokasi" autocomplete="off">
             <option value="">Pilih</option>
-            <?php while ($rlks = mysqli_fetch_array($lokasi)) { ?>
+            <?php while ($rlks = sqlsrv_fetch_array($lokasi)) { ?>
               <option value="<?php echo $rlks['lokasi']; ?>"><?php echo $rlks['lokasi']; ?></option>
             <?php } ?>
           </select>

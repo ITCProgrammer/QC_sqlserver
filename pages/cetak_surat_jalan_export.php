@@ -121,7 +121,7 @@ ini_set('display_errors',0);
 	?> 
 <?php
 if($_GET['tgl_kirim']!=""){$tglkirim=" and tgl_update='$_GET[tgl_kirim]' ";}else{$tglkirim=" and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y')";}
-	$sqllist= mysqli_query($con,"SELECT packing_list.*,tbl_kite.pelanggan,tbl_kite.no_po as nopo,detail_pergerakan_stok.satuan,detail_pergerakan_stok.sisa from packing_list 
+	$sqllist= sqlsrv_query($con,"SELECT packing_list.*,tbl_kite.pelanggan,tbl_kite.no_po as nopo,detail_pergerakan_stok.satuan,detail_pergerakan_stok.sisa from packing_list 
 LEFT JOIN detail_pergerakan_stok ON packing_list.listno=detail_pergerakan_stok.refno
 LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj=tmp_detail_kite.id
 LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
@@ -129,7 +129,7 @@ WHERE  `packing_list`.`no_sj`='$_GET[no_sj]' ".$tglkirim."
 GROUP BY `packing_list`.`no_sj`
 "); 
 	
-     $dr=mysqli_fetch_array($sqllist);
+     $dr=sqlsrv_fetch_array($sqllist);
 	 $order=trim($dr['no_order']);
 	$sqlb=sqlsrv_query($conn,"SELECT 
 *
@@ -203,7 +203,7 @@ $rbuyer=sqlsrv_fetch_array($sqlb);
    <tr>
    
     <td height="58">&nbsp;</td>
-    <td><?php $sqlqty= mysqli_query("SELECT
+    <td><?php $sqlqty= sqlsrv_query("SELECT
 	sum(IF(pack = 'BALES', 1, 0)) AS BALES,
 	sum(IF(pack = 'ROLLS', 1, 0)) AS ROLLS,
 	sum(weight) AS berat
@@ -212,7 +212,7 @@ FROM
 WHERE
 	refno = '$dr[listno]'"); 
 	
-     $dr1=mysqli_fetch_array($sqlqty);?></td>
+     $dr1=sqlsrv_fetch_array($sqlqty);?></td>
     <td colspan="2"><strong><font align="left" size="+1">
       <?php if($dr1['BALES']>0 and $dr1['ROLLS']>0){echo $dr1['BALES']." BALES+".$dr1['ROLLS']." ROLLS=".number_format($dr1['berat'],'2','.',',')." KGS";}else if($dr1['BALES']>0){echo $dr1['BALES']." BALES=".number_format($dr1['berat'],'2','.',',')." KGS";}else if($dr1['ROLLS']>0){echo $dr1['ROLLS']." ROLLS=".number_format($dr1['berat'],'2','.',',')." KGS";}?></font>
     </strong></td>

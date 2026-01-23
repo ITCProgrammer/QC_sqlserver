@@ -129,9 +129,9 @@ window.addEventListener('load', function () {
 	$tanggal ="$tgl ".$namaBln[$bln]." $thn";
 	return $tanggal;
 }
-	$qryt=mysqli_query($con,"SELECT  now() as tgl");
-	$dtgl=mysqli_fetch_array($qryt);
-	$slq= mysqli_query($con,"SELECT
+	$qryt=sqlsrv_query($con,"SELECT  now() as tgl");
+	$dtgl=sqlsrv_fetch_array($qryt);
+	$slq= sqlsrv_query($con,"SELECT
 	*
 FROM
 	packing_list
@@ -140,7 +140,7 @@ LEFT JOIN tmp_detail_kite ON detail_pergerakan_stok.id_detail_kj = tmp_detail_ki
 LEFT JOIN tbl_kite ON tbl_kite.id=tmp_detail_kite.id_kite
 WHERE  `packing_list`.`listno`='$_GET[no_sj]'
 GROUP BY detail_pergerakan_stok.nokk");
-	$rslq=mysqli_fetch_array($slq);
+	$rslq=sqlsrv_fetch_array($slq);
 	?> 
     
                        
@@ -203,12 +203,12 @@ LEFT JOIN tbl_kite ON tbl_kite.id=tmp_detail_kite.id_kite
 WHERE  `packing_list`.`listno`='$_GET[no_sj]'
 GROUP BY detail_pergerakan_stok.nokk"; 
 	}
-		$data=mysqli_query($con,$sql);
-		$jrow= mysqli_num_rows($data);
+		$data=sqlsrv_query($con,$sql);
+		$jrow= sqlsrv_num_rows($data);
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){ ?>
+	 while($rowd=sqlsrv_fetch_array($data)){ ?>
      <?php
 	$po=str_replace("'","''",$rowd['no_po']);
 	$sqljns=sqlsrv_query("SELECT 
@@ -231,16 +231,16 @@ where  productcode='$rowd[no_item]'
 WHERE Row = 2");
 $rjns=sqlsrv_fetch_array($conn,$sqljns);
 	
-	$sqla=mysqli_query($con,"SELECT count(no_lot)as roll,sum(detail_pergerakan_stok.weight) as berat,sum(detail_pergerakan_stok.yard_) as panjang,detail_pergerakan_stok.satuan FROM packing_list 
+	$sqla=sqlsrv_query($con,"SELECT count(no_lot)as roll,sum(detail_pergerakan_stok.weight) as berat,sum(detail_pergerakan_stok.yard_) as panjang,detail_pergerakan_stok.satuan FROM packing_list 
 LEFT JOIN detail_pergerakan_stok ON detail_pergerakan_stok.refno = packing_list.listno
 LEFT JOIN tmp_detail_kite ON tmp_detail_kite.id = detail_pergerakan_stok.id_detail_kj
 LEFT JOIN tbl_kite ON tbl_kite.id = tmp_detail_kite.id_kite
 WHERE tbl_kite.no_lot='$rowd[no_lot]' and tbl_kite.no_warna='$rowd[no_warna]' and tbl_kite.no_po='$po' and tbl_kite.nokk='$rowd[nokk]'
 AND detail_pergerakan_stok.refno='$rowd[listno]'
 GROUP BY detail_pergerakan_stok.satuan ");
- $jmldata=mysqli_fetch_array($sqla);
+ $jmldata=sqlsrv_fetch_array($sqla);
 	
-$sqlb=mysqli_query($con,"SELECT * FROM packing_list 
+$sqlb=sqlsrv_query($con,"SELECT * FROM packing_list 
 LEFT JOIN detail_pergerakan_stok ON detail_pergerakan_stok.refno = packing_list.listno
 LEFT JOIN tmp_detail_kite ON tmp_detail_kite.id = detail_pergerakan_stok.id_detail_kj
 LEFT JOIN tbl_kite ON tbl_kite.id = tmp_detail_kite.id_kite
@@ -248,14 +248,14 @@ WHERE tbl_kite.no_lot='$rowd[no_lot]' and tbl_kite.no_warna='$rowd[no_warna]' an
 AND detail_pergerakan_stok.refno='$rowd[listno]'
 ");
 
-$jml=mysqli_num_rows($sqlb);
+$jml=sqlsrv_num_rows($sqlb);
 $batas=ceil($jml/3);
 $lawal=$batas*1-$batas;
 $ltgh=$batas*2-$batas;
 $lakhr=$batas*3-$batas;
 
 //kolom 1
- $sql1=mysqli_query($con,"SELECT * FROM packing_list 
+ $sql1=sqlsrv_query($con,"SELECT * FROM packing_list 
 LEFT JOIN detail_pergerakan_stok ON detail_pergerakan_stok.refno = packing_list.listno
 LEFT JOIN tmp_detail_kite ON tmp_detail_kite.id = detail_pergerakan_stok.id_detail_kj
 LEFT JOIN tbl_kite ON tbl_kite.id = tmp_detail_kite.id_kite
@@ -264,16 +264,16 @@ AND detail_pergerakan_stok.refno='$rowd[listno]'
 order by detail_pergerakan_stok.id asc LIMIT $lawal,$batas");
 
 //kolom 2
- $sql2=mysqli_query($con,"SELECT * FROM packing_list 
+ $sql2=sqlsrv_query($con,"SELECT * FROM packing_list 
 LEFT JOIN detail_pergerakan_stok ON detail_pergerakan_stok.refno = packing_list.listno
 LEFT JOIN tmp_detail_kite ON tmp_detail_kite.id = detail_pergerakan_stok.id_detail_kj
 LEFT JOIN tbl_kite ON tbl_kite.id = tmp_detail_kite.id_kite
 WHERE tbl_kite.no_lot='$rowd[no_lot]' and tbl_kite.no_warna='$rowd[no_warna]' and tbl_kite.no_po='$po' and tbl_kite.nokk='$rowd[nokk]'
 AND detail_pergerakan_stok.refno='$rowd[listno]'
 order by detail_pergerakan_stok.id asc LIMIT $ltgh,$batas");
-$row2=mysqli_num_rows($sql2);
+$row2=sqlsrv_num_rows($sql2);
 //kolom 3
- $sql3=mysqli_query($con,"SELECT * FROM packing_list 
+ $sql3=sqlsrv_query($con,"SELECT * FROM packing_list 
 LEFT JOIN detail_pergerakan_stok ON detail_pergerakan_stok.refno = packing_list.listno
 LEFT JOIN tmp_detail_kite ON tmp_detail_kite.id = detail_pergerakan_stok.id_detail_kj
 LEFT JOIN tbl_kite ON tbl_kite.id = tmp_detail_kite.id_kite
@@ -311,7 +311,7 @@ LOT  &nbsp; &nbsp; &nbsp;:
         <td><?php echo $rowd['satuan']; ?></td>
       </tr>
       <?php 
-      while($row1=mysqli_fetch_array($sql1))
+      while($row1=sqlsrv_fetch_array($sql1))
   {
 	  
 	   
@@ -336,7 +336,7 @@ LOT  &nbsp; &nbsp; &nbsp;:
         <td><?php echo $rowd['satuan']; ?></td>
       </tr>
       <?php 
-      while($row2=mysqli_fetch_array($sql2))
+      while($row2=sqlsrv_fetch_array($sql2))
   {
 	 
 	  
@@ -362,7 +362,7 @@ LOT  &nbsp; &nbsp; &nbsp;:
         <td><?php echo $rowd['satuan']; ?></td>
       </tr>
       <?php 
-      while($row3=mysqli_fetch_array($sql3))
+      while($row3=sqlsrv_fetch_array($sql3))
   {
 	  
 	  

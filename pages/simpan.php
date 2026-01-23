@@ -2,14 +2,14 @@
 <?php
 include_once("../koneksi.php");
 ini_set("error_reporting",1);
-$ql=mysqli_query($con,"select id,no_roll from detail_kite where nokkKite='".$_POST['nokk']."' and no_roll='".$_POST['txt_roll']."'");
-$ql2=mysqli_query($con,"select id,no_roll from tmp_detail_kite where nokkKite='".$_POST['nokk']."' and no_roll='".$_POST['txt_roll']."'");
-$ql3=mysqli_query($con,"select id from tbl_kite where nokk='".$_POST['nokk']."'");
-$rr=mysqli_num_rows($ql);
-$rr1=mysqli_fetch_array($ql);
-$rr2=mysqli_fetch_array($ql2);
-$rr3=mysqli_fetch_array($ql3);
-$cekdata1=mysqli_query($con,"select * from tbl_kite left join tmp_detail_kite on nokk=nokkkite  where nokk='".$_POST['nokk']."' order by tbl_kite.id desc");
+$ql=sqlsrv_query($con,"select id,no_roll from detail_kite where nokkKite='".$_POST['nokk']."' and no_roll='".$_POST['txt_roll']."'");
+$ql2=sqlsrv_query($con,"select id,no_roll from tmp_detail_kite where nokkKite='".$_POST['nokk']."' and no_roll='".$_POST['txt_roll']."'");
+$ql3=sqlsrv_query($con,"select id from tbl_kite where nokk='".$_POST['nokk']."'");
+$rr=sqlsrv_num_rows($ql);
+$rr1=sqlsrv_fetch_array($ql);
+$rr2=sqlsrv_fetch_array($ql2);
+$rr3=sqlsrv_fetch_array($ql3);
+$cekdata1=sqlsrv_query($con,"select * from tbl_kite left join tmp_detail_kite on nokk=nokkkite  where nokk='".$_POST['nokk']."' order by tbl_kite.id desc");
 $jns=addslashes($_POST['txt_jenis_kain']);
 $stl=addslashes($_POST['txt_style']);
 if ($rr!=0)
@@ -20,7 +20,7 @@ if ($rr!=0)
 			var agree=confirm(msg); 
 			if(agree==true){
 				<?php
-				$ubah=mysqli_query($con,"UPDATE `db_qc`.`tbl_kite` SET `pelanggan` = '$_POST[txt_pelanggan]',
+				$ubah=sqlsrv_query($con,"UPDATE `db_qc`.`tbl_kite` SET `pelanggan` = '$_POST[txt_pelanggan]',
 `no_item` = '$_POST[txt_item]',
 `warna` = '$_POST[txt_warna]',
 `no_warna` = '$_POST[txt_no_warna]',
@@ -34,15 +34,15 @@ if ($rr!=0)
 `bruto` = '$_POST[bruto]' WHERE `tbl_kite`.`id` ='$rr3[id]' ");
 	
 	
-						$cekdt1=mysqli_fetch_array($cekdata1);
+						$cekdt1=sqlsrv_fetch_array($cekdata1);
 	if(substr($cekdt1['user_packing'],0,7)=='PACKING')
 	{ 	
 	
-	$simpan1=mysqli_query($con,"INSERT into tbl_kite values('','$_POST[txt_pelanggan]','$_POST[txt_item]','$_POST[txt_warna]','$_POST[txt_no_warna]','$_POST[txt_lebar]','$_POST[txt_berat]','$_POST[txt_paket]','$_POST[txt_nopo]',																																												  '$jns','$_POST[txt_order]','$stl','$_POST[txt_lot]',DATE_SUB(NOW(), INTERVAL 1 hour),'$_POST[no_mc]','$_POST[nokk]','$_POST[bruto]','$_SESSION[username]','','')") or die("gagal");
+	$simpan1=sqlsrv_query($con,"INSERT into tbl_kite values('','$_POST[txt_pelanggan]','$_POST[txt_item]','$_POST[txt_warna]','$_POST[txt_no_warna]','$_POST[txt_lebar]','$_POST[txt_berat]','$_POST[txt_paket]','$_POST[txt_nopo]',																																												  '$jns','$_POST[txt_order]','$stl','$_POST[txt_lot]',DATE_SUB(NOW(), INTERVAL 1 hour),'$_POST[no_mc]','$_POST[nokk]','$_POST[bruto]','$_SESSION[username]','','')") or die("gagal");
 	}
-	$simpan=mysqli_query($con,"UPDATE `db_qc`.`detail_kite` SET `net_wight` = '$_POST[txt_net_weight]',
+	$simpan=sqlsrv_query($con,"UPDATE `db_qc`.`detail_kite` SET `net_wight` = '$_POST[txt_net_weight]',
 `yard_` = '$_POST[txt_yard]' WHERE `detail_kite`.`id` ='$rr1[id]'") or die("Gagal");
-			$simpantmp=mysqli_query($con,"UPDATE `db_qc`.`tmp_detail_kite` SET `net_wight` = '$_POST[txt_net_weight]',
+			$simpantmp=sqlsrv_query($con,"UPDATE `db_qc`.`tmp_detail_kite` SET `net_wight` = '$_POST[txt_net_weight]',
 `yard_` = '$_POST[txt_yard]',`grade` = '$_POST[txt_grade]' WHERE `tmp_detail_kite`.`id` ='$rr2[id]'") or die("Gagal");
 		?>
 		document.location.href='?kkno=<?php echo $_POST['nokk']; ?>&roll=<?php echo $_POST['txt_roll']; ?>&status=No Roll <?php echo $_POST['txt_roll']; ?> dengan No KK <?php echo $_POST['nokk']; ?> Sudah ADA!!';
@@ -53,19 +53,19 @@ if ($rr!=0)
 			<?php
 
 		}else{
-			$cari=mysqli_query($con,"Select * from tbl_kite where nokk='$_POST[nokk]'");
-			$row=mysqli_num_rows($cari);
+			$cari=sqlsrv_query($con,"Select * from tbl_kite where nokk='$_POST[nokk]'");
+			$row=sqlsrv_num_rows($cari);
 			if($_POST['fasilitas']=='SISA')
 			{$sisa='SISA';}else if($_POST['fasilitas']=='FOC'){$sisa='FOC';}else if($_POST['fasilitas']=='FASILITAS KITE'){$sisa='KITE';}else if($_POST['fasilitas']=='TH'){$sisa='TH';}else if($_POST['fasilitas']=='BS'){$sisa='BS';}else if($_POST['fasilitas']=='BB'){$sisa='BB';}else if($_POST['fasilitas']=='FASILITAS KITE TH'){$sisa='FKTH';}else if($_POST['fasilitas']=='FASILITAS KITE SISA'){$sisa='FKSI';}
 			if($row>0){
-				if($_POST['tdkm']==""){$simpan=mysqli_query($con,"insert into detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");}
-				$simpantmp=mysqli_query($con,"insert into tmp_detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");
+				if($_POST['tdkm']==""){$simpan=sqlsrv_query($con,"insert into detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");}
+				$simpantmp=sqlsrv_query($con,"insert into tmp_detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");
 				}else{
 
 $tgl=date("Y-m-d H:i:s");
-$simpan=mysqli_query($con,"INSERT INTO tbl_kite values('','$_POST[txt_pelanggan]','$_POST[txt_item]','$_POST[txt_warna]','$_POST[txt_no_warna]','$_POST[txt_lebar]','$_POST[txt_berat]','$_POST[txt_paket]','$_POST[txt_nopo]',																																												  '$jns','$_POST[txt_order]','$stl','$_POST[txt_lot]',DATE_SUB(NOW(), INTERVAL 1 hour),'$_POST[no_mc]','$_POST[nokk]','$_POST[bruto]','$_SESSION[username]','','')") or die("gagal");
-if($_POST['tdkm']==""){$simpan=mysqli_query($con,"insert into detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");}
-$simpantmp=mysqli_query($con,"insert into tmp_detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");
+$simpan=sqlsrv_query($con,"INSERT INTO tbl_kite values('','$_POST[txt_pelanggan]','$_POST[txt_item]','$_POST[txt_warna]','$_POST[txt_no_warna]','$_POST[txt_lebar]','$_POST[txt_berat]','$_POST[txt_paket]','$_POST[txt_nopo]',																																												  '$jns','$_POST[txt_order]','$stl','$_POST[txt_lot]',DATE_SUB(NOW(), INTERVAL 1 hour),'$_POST[no_mc]','$_POST[nokk]','$_POST[bruto]','$_SESSION[username]','','')") or die("gagal");
+if($_POST['tdkm']==""){$simpan=sqlsrv_query($con,"insert into detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");}
+$simpantmp=sqlsrv_query($con,"insert into tmp_detail_kite values('','$_POST[nokk]','$_POST[txt_grade]','$_POST[txt_roll]','$_POST[txt_net_weight]','$_POST[txt_yard]','$_POST[satuan]','$sisa')") or die("Gagal");
 }
 if($simpan ||$simpantmp )
 { 

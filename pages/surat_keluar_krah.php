@@ -62,13 +62,13 @@ function checkAll(form1){
 ini_set('error_reporting',1);	
 function listurut(){
 //include"koneksi.php";	
-$con=mysqli_connect("10.0.0.10","dit","4dm1n","db_qc");	
+$con=sqlsrv_connect("10.0.0.10","dit","4dm1n","db_qc");	
 date_default_timezone_set("Asia/Jakarta");
 $format = date("y");
-$sqlnu=mysqli_query($con,"SELECT no_sj FROM packing_list WHERE substr(no_sj,1,2) like '%".$format."%' ORDER BY no_sj DESC LIMIT 1 ") or die (mysql_error());
-$d=mysqli_num_rows($sqlnu);
+$sqlnu=sqlsrv_query($con,"SELECT no_sj FROM packing_list WHERE substr(no_sj,1,2) like '%".$format."%' ORDER BY no_sj DESC LIMIT 1 ") or die (mysql_error());
+$d=sqlsrv_num_rows($sqlnu);
 if($d>0){
-$r=mysqli_fetch_array($sqlnu);
+$r=sqlsrv_fetch_array($sqlnu);
 $d=$r['no_sj'];
 $str=substr($d,2,4);
 $Urut = (int)$str;
@@ -85,15 +85,15 @@ $nipbr =$format.$Nol.$Urut;
 return $nipbr;
 }
 $no=listurut();
-$sqlSkrng=mysqli_query($con,"SELECT DATE_FORMAT(now(),'%Y-%m-%d') AS tgl");
-$rskrng=mysqli_fetch_array($sqlSkrng);	
+$sqlSkrng=sqlsrv_query($con,"SELECT DATE_FORMAT(now(),'%Y-%m-%d') AS tgl");
+$rskrng=sqlsrv_fetch_array($sqlSkrng);	
 $tglSkrng=$rskrng['tgl'];	
 ?>
 <?php 
 	  
 	  if($_GET['dono']==""){ $order11="00";}else{ $order11=$_GET['dono']; }
 	{ 
-	$sqllist= mysqli_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc"); 
+	$sqllist= sqlsrv_query($con,"SELECT listno from packing_list where `no_order`='".$order11."' GROUP BY listno order by listno asc"); 
 		
 	}
 	  ?>
@@ -122,7 +122,7 @@ $tglSkrng=$rskrng['tgl'];
       *</td>
       <?php if($_GET['nosj']!='')
 	{ 
-	$sqltgl= mysqli_query($con,"SELECT `tgl_update` from packing_list where `no_sj`='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y') GROUP BY no_sj"); $rtgl=mysqli_fetch_array($sqltgl);
+	$sqltgl= sqlsrv_query($con,"SELECT `tgl_update` from packing_list where `no_sj`='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y') GROUP BY no_sj"); $rtgl=sqlsrv_fetch_array($sqltgl);
 		
 	}
 	  ?>
@@ -137,7 +137,7 @@ $tglSkrng=$rskrng['tgl'];
     <td><select name="no_list" onchange="window.location='index1.php?p=surat_keluar_krah&amp;dono=<?php echo $_GET['dono']?>&amp;nosj=<?php echo $_GET['nosj'];?>&amp;nolist='+this.value" >
       <option value="">-PILIH-</option>
       <?php 
-	while($r=mysqli_fetch_array($sqllist)){
+	while($r=sqlsrv_fetch_array($sqllist)){
 	?>
       <option value="<?php echo $r['listno'];?>" <?php if($_GET['nolist']==$r['listno']){echo"SELECTED";}?>><?php echo $r['listno'];?></option>
       <?php }?>
@@ -192,11 +192,11 @@ LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 where packing_list.listno='".$_GET['nolist']."'
 GROUP BY no_item,no_lot,no_warna,warna,ukuran"; 
 		
-		$data=mysqli_query($con,$sql);
+		$data=sqlsrv_query($con,$sql);
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
+	 while($rowd=sqlsrv_fetch_array($data)){
 		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  {
 		 ?>
@@ -252,11 +252,11 @@ LEFT JOIN tbl_kite ON tmp_detail_kite.id_kite=tbl_kite.id
 where packing_list.no_sj='".$_GET['nosj']."' and DATE_FORMAT(tgl_update,'%y')=DATE_FORMAT(NOW(),'%y')
 GROUP BY no_item,no_lot,no_warna,warna,ukuran"; 
 		
-		$data=mysqli_query($con,$sql);
+		$data=sqlsrv_query($con,$sql);
 	$nb=1;
 	$n=1;
 	$c=0;
-	 while($rowd=mysqli_fetch_array($data)){
+	 while($rowd=sqlsrv_fetch_array($data)){
 		    $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 	  {
 		 ?>
@@ -295,4 +295,4 @@ GROUP BY no_item,no_lot,no_warna,warna,ukuran";
 
 </body>
 </html>
-<?php mysqli_close($con); ?>
+<?php sqlsrv_close($con); ?>

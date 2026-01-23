@@ -79,19 +79,19 @@ $tt=date("Y-m-d", strtotime($_POST['awal']));
   $nawal=$awal."01";
   $newdate1 = strtotime( '-1 day' , strtotime ($_POST['awal']) );
   $ttm=date("Y-m-d", $newdate1);
-  $sql1=mysqli_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
+  $sql1=sqlsrv_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
 WHERE tmp_hapus='0' AND not no_sj='' AND tgl_kirim BETWEEN '$nawal' AND '$tt' AND kategori='lain-lain' ");
-$row1=mysqli_fetch_array($sql1);
- $sql2=mysqli_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
+$row1=sqlsrv_fetch_array($sql1);
+ $sql2=sqlsrv_query($con,"SELECT sum(qty) as qty from tbl_pengiriman 
 WHERE tmp_hapus='0' AND not no_sj='' AND tgl_kirim BETWEEN '$nawal' AND '$ttm' AND kategori='lain-lain'");
-$row2=mysqli_fetch_array($sql2);	
+$row2=sqlsrv_fetch_array($sql2);	
     if($_POST['awal']!=""){
       $tgl2l= " tmp_hapus='0' AND tgl_kirim='".$_POST['awal']."' ";
       }else{$tgl2l= " tmp_hapus='0' AND tgl_update!='' ";}	  
     if($_POST['no_sj']!=""){
       $sj2= " AND no_sj='".$_POST['no_sj']."' ";
       }	 
-	$sqlbr=mysqli_query($con,"SELECT
+	$sqlbr=sqlsrv_query($con,"SELECT
 	id,tgl_kirim,tgl_buat,no_sj,warna,rol,qty,buyer,no_po,no_order,jenis_kain,lot,tujuan,ket,foc,approve
 FROM
 	tbl_pengiriman
@@ -100,7 +100,7 @@ WHERE
 ORDER BY no_sj asc");
 $no=1;
 $c=0;
-while($row3=mysqli_fetch_array($sqlbr)){
+while($row3=sqlsrv_fetch_array($sqlbr)){
   $bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
   ?>
   <tr bgcolor="<?php echo $bgcolor;?>" >
