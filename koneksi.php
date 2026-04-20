@@ -1,6 +1,6 @@
 <?php
 ############### Koneksi via username & password ###############
-$serverName = "10.0.0.221"; // Contoh: localhost\SQLEXPRESS
+$serverName = "sql-db-prd.indotaichen.com"; // Contoh: localhost\SQLEXPRESS
 $connectionInfo = array("Database" => "db_qc", "UID" => "sa", "PWD" => "Ind@taichen2024", "CharacterSet" => "UTF-8");
 $con = sqlsrv_connect($serverName, $connectionInfo);
 
